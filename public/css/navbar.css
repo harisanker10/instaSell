@@ -1,0 +1,89 @@
+.logo{
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 2px;
+    margin-right: 0.5rem;
+}
+
+.log-in, .sign-up{
+    border-radius: 0px;
+    box-sizing: border-box;
+
+
+}
+
+.primary-btn{
+    background-color: #ADFF45;
+    border: none;
+}
+
+.primary-btn:hover{
+    background-color: #93dd31;
+}
+
+.log-in{
+    
+    border: 1px solid #aeff455e;
+    color: #ADFF45;
+    margin-right: 10px;
+    margin-left: 40vw;
+    font-size: 1px;
+    background-color: #000000;
+}
+
+.log-in:hover{
+    border: 1px solid #aeff45d3;
+    background-color: #000000;
+    color: #ADFF45;
+}
+
+.sign-up{
+    background-color: #ADFF45;
+    border: none;
+}
+
+.sign-up:hover{
+    background-color: #93dd31;
+}
+
+.dropdown-menu{
+    background-color: #ffffff;
+    border-radius: 0px;
+    box-shadow: 1px 1px 20px rgb(43, 49, 41);
+    
+    
+}
+
+.profile-item:hover{
+    background-color: #ADFF45;
+}
+
+.profile-btn:focus{
+    background-color: #93dd31;
+}
+
+.profile-btn:active{
+    background-color: #93dd31;
+}
+.log-out-href:hover{
+    background-color: #ff0000;
+}
+
+.search-input{
+    box-sizing: border-box;
+    border: none;
+    margin-right: 0px;
+}
+
+.search-input:focus{
+    border: 0px
+}
+
+.search-btn{
+    border-radius: 0px;
+    margin-left: 0px;
+    
+}
+
+
+

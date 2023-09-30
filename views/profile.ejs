@@ -1,0 +1,55 @@
+<%- include('partials/head.ejs') %>
+    <%- include('partials/navbar.ejs') %>
+
+
+        <div class="d-flex ms-4 ">
+
+            <div class="col-3 mt-5 me-4">
+                <div class="card text-center profile-card col-3 " style="width: 85%; margin-left: 15%;">
+                    <div class="card-body">
+                        <div class="p-5">image
+                            <img src="data:image/jpg;base64,<%= imgURI %> alt="">
+                    
+                </div>
+                <h5 class=" card-title fs-4">
+
+                            <%= user.firstName.toUpperCase()%>
+                                <%= user.secondName.toUpperCase() %>
+
+                                    </h5>
+                                    <div>
+                                        <%= user.rating || '' %>
+                                    </div>
+                                    <p class="card-text m-1 mt-2 mb-0">
+                                        <%= user.location || '' %>
+                                    </p>
+                                    <p class="card-text m-1 mt-0">Joined <%= joinedDate %>
+                                    </p>
+                                    <p class="card-text m-1 mt-3 fw-light" style="font-size: 0.8rem;">
+                                        <%= user.bio || '' %>
+                                    </p>
+
+                                    <a href="#" class="btn btn-primary btn-black-default m-2 ">Edit Profile</a>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="col-8 mt-5 profile-main-container d-flex me-3" style="height:100vw">
+                    <div class="d-flex profile-nav-container align-items-center"
+                        style="height: 10%; width: 100%; max-height: 2.5rem;">
+                        <div class="profile-nav-item col-4 text-center fs-4 h-100 active">Listings</div>
+                        <div class="profile-nav-item col-4 text-center fs-4 h-100">Purchases</div>
+                        <div class="profile-nav-item col-4 text-center fs-4 h-100">Wishlist</div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+            <script src="/js/profile.js"></script>
+
+            <%- include('partials/closingHead.ejs') %>

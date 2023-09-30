@@ -1,0 +1,32 @@
+.profile-card{
+    border: 2px solid #ADFF45;
+    border-radius: 0px;
+    /* border-right: 0px; */
+}
+
+.profile-main-container{
+    border: 2px solid #ADFF45;
+    
+}
+.profile-nav-item{
+    border: 1px solid #ADFF45;
+    border-left: 0px;
+    border-top: 0px;
+}
+
+.profile-nav-item:last-child{
+    border-right: 0;
+}
+
+.profile-nav-item:hover{
+    transition: 150ms;
+    background-color: #ADFF45;
+}
+
+.active{
+    background-color: #ADFF45;
+}
+
+.profile-picture{
+    border-radius: 50%;
+}
