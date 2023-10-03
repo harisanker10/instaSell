@@ -1,13 +1,21 @@
-
 const express = require('express');
 const app = express();
 require('dotenv').config();
+const mongoose = require('mongoose');
 const ejs = require('ejs');
-const connection = require('../config/development/connection');
+const { init } = require('../config/development/connection');
 const path = require('path')
 const bodyParser = require('body-parser')
 const multer = require('multer');
 const session = require('express-session');
+// let db,connection,bucket;
+
+// mongoose.connection.on('connected',()=>{
+//     db = mongoose.connection.db;
+//     bucket = new mongoose.mongo.GridFSBucket(db, { bucketName: 'images' });
+// })
+
+
 
 
 
@@ -43,10 +51,14 @@ app.use((req,res,next)=>{
 
 
 
+
+
 app.set('views', path.join(__dirname, '../views'))
 const userRouter = require('../src/routes/user');
+const productRouter = require('../src/routes/product.js');
 
 app.use('/user', userRouter);
+app.use('/product',productRouter);
 
 
 app.get('/', (req, res) => {
@@ -54,11 +66,8 @@ app.get('/', (req, res) => {
     res.render('landing',{title:"Home"});
 })
 
-app.get('/profile',(req,res)=>{
-    
-    res.render('profile',{title: 'Profile',user: user})
 
-})
+
 
 
 

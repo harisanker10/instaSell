@@ -26,7 +26,7 @@
     border: 1px solid #aeff455e;
     color: #ADFF45;
     margin-right: 10px;
-    margin-left: 40vw;
+    /* margin-left: 40vw; */
     font-size: 1px;
     background-color: #000000;
 }
@@ -73,10 +73,15 @@
     box-sizing: border-box;
     border: none;
     margin-right: 0px;
+    padding-left: 10px;
+    width: 20rem;
 }
 
 .search-input:focus{
-    border: 0px
+    border: 0px;
+    border-style: none;
+    outline: none;
+    
 }
 
 .search-btn{
@@ -85,5 +90,30 @@
     
 }
 
+.search-input::placeholder{
 
+    margin-left: 10%;
+}
+ .location-btn{
+    margin-left: 1rem;
+    color: #ffffff;
+    border: 1px solid #ADFF45;
+    width: 8rem;
+    border-right: 0px;
+ }
+
+ .profile-dropdown{
+    /* margin-right: 5rem; */
+    margin-left: -1rem;
+ }
+
+ #sell-link{
+    text-decoration: none;
+    color: #ADFF45
+
+ }
+
+ #sell-link:hover{
+    color: #93dd31;
+ }
 

@@ -41,8 +41,9 @@ router.post('/signup', upload.any(), async (req, res) => {
         const exist = await checkUserExist(req.body);
         console.log(`User exist ::::: ${exist}`)
         if(!exist){
-        await addUser(req.body);
+        const user = await addUser(req.body);
         req.session.username = req.body.username; 
+        req.session.userID = user._id;
         res.status(201).send({message:'registered succesfully'});
         }
         else{
@@ -60,13 +61,12 @@ router.get('/logout',(req,res)=>{
 })
 
 router.get('/profile',async(req,res)=>{
-    if(!req.session.userID)res.redirect('/user/login')
-    const {user, imgURI,joinedDate} = await getUser(req.session.userID)
-    console.log(user)
-    res.render('profile',{title: 'Profile',user: user, imgURI:imgURI, joinedDate:joinedDate})
+    if(!req.session.userID)res.redirect('/user/login');
+    const {user, joinedDate} = await getUser(req.session.userID);
+    res.render('profile',{title: 'Profile', joinedDate:joinedDate, user: user});
 
 })
-2
+
 
 
 

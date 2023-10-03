@@ -1,46 +1,61 @@
-
-  <nav class="navbar navbar-expand-sm navbar-dark bg-black d-flex justify-content-between">
-      <div class="container d-flex justify-content-between">
+<nav class="navbar navbar-expand-sm navbar-dark bg-black d-flex justify-content-between">
+    <div class="container d-flex justify-content-between">
         <svg fill="#ffffff" class="logo pb-2" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 496 512">
-            
-            <path d="M88 216c81.7 10.2 273.7 102.3 304 232H0c99.5-8.1 184.5-137 88-232zm32-152c32.3 35.6 47.7 83.9 46.4 133.6C249.3 231.3 373.7 321.3 400 448h96C455.3 231.9 222.8 79.5 120 64z"/>
+
+            <path
+                d="M88 216c81.7 10.2 273.7 102.3 304 232H0c99.5-8.1 184.5-137 88-232zm32-152c32.3 35.6 47.7 83.9 46.4 133.6C249.3 231.3 373.7 321.3 400 448h96C455.3 231.9 222.8 79.5 120 64z" />
         </svg>
         <a class="navbar-brand fw-bold" href="/">instaSell</a>
-        <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavId" aria-controls="collapsibleNavId"
-            aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse"
+            data-bs-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false"
+            aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse d-flex justify-content-end ml-4" id="collapsibleNavId">
-          
-            <form class="d-flex">
-                <input class="form-control me-2 search-input" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success primary-btn search-btn" type="submit"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512" fill="black" ><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></button>
-              </form>
-             
-                    <% if(username){%>
-                        <div class="btn-group profile-dropdown">
-                            <button type="button" class="btn btn-secondary dropdown-toggle btn-green-default profile-btn" data-bs-toggle="dropdown" aria-expanded="false">
-                                <%=username%>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item profile-item" href="/user/profile">Profile</a></li>
-                                <li><a class="dropdown-item profile-item" href="#">Wishlist</a></li><hr>
-                                <li><a class="dropdown-item profile-item log-out-href" href="/user/logout">Logout</a></li>
-                            </ul>
-                        </div>
-                        <% } else { %>
-                            <div>
+        <div class="collapse navbar-collapse d-flex justify-content-between ml-4" id="collapsibleNavId">
+            <div class="d-flex ">
 
-                                <a type="button" class="btn btn-outline-success log-in fs-6" href="/user/login" >LOG IN</a>
-                                <a type="button" class="btn btn-success mx-1 sign-up text-black" href="/user/signup" >SIGN UP<a/>
-                                </div>
-                            
-                         
-                            <% } %>
-                  
-                
+                <a class="btn btn-primary btn-black-default location-btn" href="">location</a>
+                <form class="d-flex">
+                    <input class="search-input" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success primary-btn search-btn " type="submit"><svg
+                            xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512" fill="black">
+                            <path
+                                d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
+                        </svg></button>
+                    <div class="d-flex align-items-center ms-4">
+
+                        <a id="sell-link" href="/product/post">Sell Now</a>
+                    </div>
+                </form>
+            </div>
+
+            <% if(username){%>
+                <div class="btn-group profile-dropdown me--4">
+                    <button type="button" class="btn btn-secondary dropdown-toggle btn-green-default profile-btn"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <%=username%>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item profile-item" href="/user/profile">Profile</a></li>
+                        <li><a class="dropdown-item profile-item" href="#">Wishlist</a></li>
+                        <hr>
+                        <li><a class="dropdown-item profile-item log-out-href" href="/user/logout">Logout</a></li>
+                    </ul>
+                </div>
+                <% } else { %>
+                    <div class="d-flex justify-content-end justify-self-end "
+                        style="width: 15rem; margin-right: -25rem;">
+
+                        <a type="button" class="btn btn-outline-success log-in fs-6" href="/user/login">LOG IN</a>
+                        <a type="button" class="btn btn-success mx-1 sign-up text-black" href="/user/signup">SIGN
+                            UP<a />
+                    </div>
+
+
+                    <% } %>
+
+
 
         </div>
     </div>
-  </nav>
-  
+</nav>

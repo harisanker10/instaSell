@@ -1,0 +1,11 @@
+.plus-btn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 1rem;
+    width: 1rem;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.463);
+
+}
