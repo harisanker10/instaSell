@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema({
     bio: { type: String, default: '' },
     wishlist: [mongoose.Schema.Types.ObjectId],
     receivingAccount: mongoose.Schema.Types.ObjectId,
+    isBlocked : {type: Boolean, default: false}
   });
   
 

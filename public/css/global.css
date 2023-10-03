@@ -54,7 +54,12 @@ body {
 
 }
 
+.sign-up-btn:focus, .btn-green-default:focus{
+    color: #000000;
+}
+
 .sign-up-btn:hover , .btn-green-default:hover{
+    color: #000000;
     background-color: #93dd31;
 
 }
@@ -116,6 +121,50 @@ body {
 
 .btn-black-default:hover{
     background-color: #7b7b7b;
+}
+
+.default-black-btn{
+    color:#ffffff ;
+    background-color: #000000;
+    outline: none;
+    border: 0px;
+    border-radius: 0px;
+
+}
+
+.default-black-btn:hover{
+    transition: 100ms;
+    background-color: #2b2b2b;
+}
+
+
+/* .default-green-btn{
+    color:#ffffff ;
+    background-color: #000000;
+    outline: none;
+    border: 0px;
+    border-radius: 0px;
+
+}
+
+.default-green-btn:hover{
+    transition: 100ms;
+    background-color: #2b2b2b;
+} */
+
+.outline-black-btn{
+    color:#000000 ;
+    background-color: #ffffff;
+    outline: none;
+    border: 2px solid #000000;
+    border-radius: 0px;
+
+}
+
+.outline-black-btn:hover{
+    transition: 100ms;
+    background-color: #ececec;
+    color: #000000;
 }
 
 

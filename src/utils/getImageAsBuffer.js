@@ -1,29 +1,22 @@
 const axios = require('axios');
 
-async function getImageAsBuffer(imageURL){
+async function getImageAsBuffer(imageURL) {
+  try {
+    const response = await axios.get(imageURL, {
+      responseType: 'arraybuffer',
+    });
 
-    try{
-        const response = await axios.get(imageURL,{
-            responseType: 'arraybuffer',
-        });
+    const data = Buffer.from(response.data); // Use Buffer.from to convert arraybuffer to Buffer
+    const contentType = response.headers['content-type'];
 
-        const data = response.data;
-        contentType = response.headers['content-type']
-        return imageBuffer = {
-            data: data,
-            contentType: contentType
-        };
-        
-        
-    }
-    catch(error){
-        console.log(`Error fetching image: ${error}`);
-        
-    }
-
-
+    return {
+      data: data,
+      contentType: contentType,
+    };
+  } catch (error) {
+    console.log(`Error fetching image: ${error}`);
+    throw error; // Rethrow the error to handle it elsewhere if needed
+  }
 }
-
-
 
 module.exports = getImageAsBuffer;
