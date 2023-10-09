@@ -1,0 +1,56 @@
+<div id="users-section" class="d-flex-col w-100 p-5">
+
+
+
+
+
+    <table class="table table-strrped">
+        <thead>
+            <tr>
+
+                <th class="text-center" scope="col">Username</th>
+                <th class="text-center" scope="col">Email</th>
+                <th class="text-center" scope="col">Phone</th>
+                <th class="text-center" scope="col">Joined</th>
+                <th class="text-center" scope="col">Block</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <% data.users.forEach(element=> { %>
+
+
+
+                <tr class="w-100 text-center">
+                    <td class="">
+                        <%=element.username%>
+                    </td>
+                    <td>
+                        <%=element.email%>
+                    </td>
+                    <td>
+                        <%=element.phone%>
+                    </td>
+                    <td>
+                        <%=element.joinedDate%>
+                    </td>
+                    <td>
+                        <% if (element.isBlocked) { %>
+                        <a id="block-user-btn" class="default-black-btn p-2 px-4 text-decoration-none" href="/user/blockuser?unblock=<%= element._id %>" >
+                                UNBLOCK
+                            </a>
+                                <% } else{%>
+                                    <a id="block-user-btn" class="default-black-btn p-2 px-4 text-decoration-none" href="/user/blockuser?block=<%= element._id %>" >
+                                        BLOCK
+                                    </a>
+                                    <% } %>   
+                    </td>
+                </tr>
+
+
+                <% }) %>
+        </tbody>
+    </table>
+
+
+</div>

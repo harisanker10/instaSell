@@ -1,22 +1,27 @@
 const mongoose = require('mongoose');
 
-const adminAcc = new mongoose.Schema({
+const adminSchema = new mongoose.Schema({
     role: {
         type: String,
-        default: admin
+        default: 'admin'
     },
     username:{
         type: String,
-        required:True
+        required:true
     },
     password:{
         type: String,
-        required: True
+        required: true
     },
 
-    createdAt:{
+    creationDate:{
         type: Date,
         default: Date.now()
     }
 
 })
+
+
+const admin = mongoose.model('Admin', adminSchema);
+
+module.exports = admin;

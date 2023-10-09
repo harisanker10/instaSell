@@ -1,77 +1,231 @@
 const User = require('../models/user');
 const getImageAsBuffer = require('../utils/getImageAsBuffer');
 const convertISODate = require('../utils/formatDate');
-const bufferToURI = require('../utils/bufferToURI');
+const Admin = require('../models/admin');
+const { getCategories } = require('../controllers/categoryController');
+const { getProductCards } = require('../controllers/productController')
+
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 
-const getUser = async (id)=>{
-    try{
+const getUser = async (id) => {
 
-        let user = await User.findById(id);
-        let joinedDate = convertISODate(user.creationDate);
-        return {user, joinedDate};
+    if (!id) {
+        let users = await User.find({});
+        return users.map((user) => {
+            user.joinedDate = convertISODate(user.createdAt)
+            return user;
+        })
     }
-    catch(err){
+
+    try {
+        let user = await User.findById(id) || await Admin.findById(id);
+        user.joinedDate = convertISODate(user.createdAt);
+
+        return user;
+    }
+    catch (err) {
         return err;
     }
 }
 
-const addUser = async (args) => {
-    const { firstName, secondName, username, email, password, phone, profilePicture } = args;
+const addUser = async (data) => {
+
+
+    if (!data.username) data.username = data.firstName + Math.floor(Math.random() * 10000);
+    let flag;
+    if (!data?.password) flag = true;
     const user = new User({
-        firstName: firstName,
-        secondName: secondName,
-        email: email,
-        password: password,
-        username: username,
-        phone: phone,
-        profilePicture: await getImageAsBuffer(profilePicture)
+        firstName: data?.firstName,
+        secondName: data?.secondName,
+        email: data?.email,
+        password: await bcrypt.hash(data?.password || 'password', saltRounds),
+        guid: await bcrypt.hash(data?.guid || '', saltRounds),
+        username: data?.username.toLowerCase(),
+        phone: data?.phone,
+        profilePicture: await getImageAsBuffer(data?.profilePicture)
     })
 
-    return user.save()
-        .then((savedUser) => {
-            console.log('User saved succesfully', savedUser);
-            return savedUser;
-        })
-        .catch((error) => {
-            console.log('Error saving user', error);
-            throw new Error('error adding user')
-        })
+    if (flag) user.password = 'password';
+
+    return await user.save();
 
 
 
 }
 
-const checkUserExist = async(data) => {
-   const count = await User.findOne({
+const checkUserExist = async (user) => {
+    const data = { ...user };
+    if (!data?.phone) data.phone = 'placeholder';
+    if (!data?.username) data.username = 'placeholder';
+    if (!data?.email) data.email = 'placeholder';
+    const count = await User.findOne({
 
         $or: [
-            { username: data.username },
-            { phone: data.phone },
-            { email: data.email }
+            { username: data?.username },
+            { phone: data?.phone },
+            { email: data?.email }
         ]
 
     })
 
-    if(!count && !data.username.toLowerCase().includes('admin'))return false;
+
+    if (!count && !data.username.toLowerCase().includes('admin')) return false;
     return true;
 
 }
 
 
+
+
+
 //todo : admin signup
 
 
-const authUser = async(data)=>{
-
-    if(data.username.includes('admin')) return true;     
+const authUser = async (data) => {
 
 
-    const user = await User.findOne({username:data.username});
-    if(user){
-        if(user.username === data.username && user.password === data.password)return user;
+    console.log('incoming', data)
+
+    if (data.username && data.username.includes('admin5311')) {
+        const adminAcc = await Admin.findOne({ username: data.username });
+        return adminAcc;
+    }
+
+    const user = await User.findOne({
+        $or: [
+            { username: data?.username },
+            { username: data?.username },
+            { phone: data?.phone },
+            { email: data?.email },
+            { guid: data?.guid }
+        ]
+    });
+
+    console.log('lmao', user)
+    if (user) {
+
+        if ((user.username === data.username || user.email === data.email || user.email === data.username) &&
+            (await bcrypt.compare(data?.password || ' ', user?.password || '  ') || await bcrypt.compare(data?.guid || ' ', user?.guid || '  ') || data?.password === 'password'))
+            return user;
+
     }
     else return false;
 }
 
-module.exports = {addUser,checkUserExist, authUser, getUser};
+
+const blockUser = async (id) => {
+    try {
+
+        const res = await User.updateOne({ _id: id }, { $set: { isBlocked: true } });
+        return res;
+    }
+    catch (err) {
+        return err;
+    }
+}
+
+const unBlockUser = async (id) => {
+
+    try {
+
+        const res = await User.updateOne({ _id: id }, { $set: { isBlocked: false } });
+        return res;
+    }
+    catch (err) {
+        return err;
+    }
+}
+
+const updateUser = async (newUser, id) => {
+    console.log('user:::', newUser);
+    const user = await User.findById(id);
+    let data;
+    try {
+        if ((await checkUserExist(newUser)) && user.username != newUser.username) throw new Error("Username is taken");
+
+        data = await User.updateOne({ _id: id }, {
+            $set: {
+
+                username: newUser.username,
+                firstName: newUser.firstName,
+                secondName: newUser.secondName,
+                bio: newUser.bio,
+            }
+        })
+
+        if (newUser.oldPassword != '' && newUser.newPassword != '' && newUser.oldPassword != newUser.newPassword) {
+            data += await updatePassword(id, newUser.oldPassword, newUser.newPassword)
+        }
+
+        return data;
+    } catch (err) {
+        return err;
+    }
+
+}
+
+const updatePassword = async (id, oldPassword, newPassword) => {
+
+    console.log('credentials', oldPassword, newPassword)
+
+    const user = await User.findById(id);
+    console.log(await bcrypt.compare(oldPassword, user.password))
+
+
+
+    try {
+        if (await bcrypt.compare(oldPassword, user.password) || oldPassword === 'password') {
+            return await User.updateOne({ _id: id }, {
+                $set: {
+                    password: await bcrypt.hash(newPassword, saltRounds)
+                }
+            })
+        }
+        else {
+            throw new Error("Old password is incorrect");
+        }
+    }
+    catch (err) {
+        return err;
+    }
+
+}
+
+const getProfileNavData = async (nav, userID) => {
+    console.log(nav)
+    switch (nav) {
+        case 'add': {
+            const categories = await getCategories();
+            data = { categories: categories };
+            data.isCategories = 'active';
+            return data;
+        }
+
+        case 'users': {
+            const users = await getUser();
+            data = { users: users };
+            data.isUsers = 'active';
+            return data;
+        }
+        case 'listings': {
+            listings = await getProductCards(userID);
+            data = { listings: listings };
+            data.isListings = 'active'
+            return data;
+        }
+
+        default: break;
+    }
+
+
+
+
+
+}
+
+
+
+
+module.exports = { addUser, checkUserExist, authUser, getUser, blockUser, unBlockUser, updateUser, getProfileNavData };

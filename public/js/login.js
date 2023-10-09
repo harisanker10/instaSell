@@ -58,37 +58,31 @@ googleSigninBtn.addEventListener('click', () => {
             const credential = GoogleAuthProvider.credentialFromResult(result);
             const token = credential.accessToken;
             // The signed-in user info.
-
             const user = result.user;
-            console.log('userrrrrrrrr', user);
-            console.log('usennnnnnnn', user.email);
-            console.log('userrrrrpiccccccc', user.photoURL);
-            console.log('displayyyynameeeeeee', user.displayName);
 
-            const formData = new FormData();
-            formData.append('token', token);
-            formData.append('email', user.email);
-            formData.append('working','gucci test')
-            console.log(formData)
             
-            axios.post('/user/login', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                }
+            const formData = new FormData();
+            
+            formData.append('email', user.email);
+            formData.append('guid', user.uid);
+
+            fetch('/user/login',{
+                method:'post',
+                body:formData
             }).then((res)=>{
-
-                if(res.status === 404){
-                    alert('User not found, try again');
-                    window.location.href = '/user/login';
-                }
-
-
+                console.log(res);
+                if(res.status === 200) window.location.href = '/';
+            }).catch(err=>{
+                console.log(err);
             })
-            .catch((err)=>{
-                console.log('ente mone')
-                alert('User not found, try again');
-                window.location.href = '/user/login';
-            });
+            
+
+            console.log('user', user);
+           
+
+            
 
         })
 })
+
+console.log('elon ma')

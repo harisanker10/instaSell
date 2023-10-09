@@ -117,3 +117,9 @@
     color: #93dd31;
  }
 
+ #navbar{
+    position: sticky;
+    top: 0px;
+    z-index: 1000;
+ }
+

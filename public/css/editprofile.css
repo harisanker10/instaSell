@@ -1,0 +1,53 @@
+.nav-section{
+
+    border-right: 2px solid #ADFF45;
+    height: 91.95vh
+    
+
+}
+
+.nav-item{
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    height: 10%;
+    padding-right: 10px;
+    
+
+}
+
+.nav-item:first-child{
+    margin-top: 5rem;
+}
+
+h4,h2{
+    margin: 0px;
+    padding: 0px;
+}
+.header{
+    height: 5.1rem;
+    display: flex;
+    align-items: end;
+    border-bottom: 2px solid #ADFF45;
+    padding-left: 2rem;
+}
+
+.basic-info-section{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.basic-info-section h4{
+    align-self: flex-start;
+    /* margin: 0.5rem;
+    margin-left: 10rem; */
+
+    
+}
+
+.main-container{
+    height: 80vh;
+    overflow: auto;
+
+}
