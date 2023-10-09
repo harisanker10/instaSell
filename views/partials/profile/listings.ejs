@@ -1,0 +1,36 @@
+
+<div class="grid-container p-4">
+    <% data.listings.forEach(elt=> { %>
+
+        <div class="card text-center list-card">
+            <div class="img-continer">
+                <% if (elt.images[0]) { %>
+
+                    <img class="list-card-img" src="data:image/;base64,<%=elt.images[0].toString('base64') || ''%>"
+                        alt="Title">
+                    <% } %>
+            </div>
+
+            <span class="card-price">
+                ₹<%=elt.price%>
+            </span>
+            <span class="card-title">
+                <%=elt.title%>
+            </span>
+            <div class="d-flex justify-content-between w-100 mt-3 text-muted">
+
+                <span class="card-location">
+                    <%=elt.location%>
+                </span>
+                <span class="card-data">
+                    <%=elt.createdAt%>
+                </span>
+            </div>
+
+
+        </div>
+        <% }) %>
+
+
+
+</div>

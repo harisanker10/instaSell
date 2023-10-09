@@ -1,6 +1,7 @@
 const axios = require('axios');
 
 async function getImageAsBuffer(imageURL) {
+  if(!imageURL)return;
   try {
     const response = await axios.get(imageURL, {
       responseType: 'arraybuffer',

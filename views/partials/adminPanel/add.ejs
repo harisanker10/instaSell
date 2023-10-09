@@ -1,0 +1,75 @@
+<div id="add-section" class="">
+
+    <h4 class="ms-4 mt-4">Create Category</h4>
+    
+    <form action="/category" method="post" class="d-flex-col  p-4 pt-2 mt-2">
+        <div class="w-100">
+            <input id="create-category" type="text" name="name"
+                class="form-control w-50 ms-0 mt-0 m-1" required>
+            <button class="outline-black-btn h-60 " id="create-category"
+                type="submit">Create</button>
+        </div>
+
+
+    </form>
+
+    <h4 class="ms-4 mt-4">Create Sub Category</h4>
+
+    <form action="/category/subcategory" method="post" class="d-flex-col  p-4 pt-2 mt-2">
+        <div class=" w-100">
+
+            <select name="category" class="form-select w-50 " aria-label="Default select example"
+                required>
+                <option selected disabled>Select Category</option>
+
+                <% data.categories.forEach(element=> { %>
+
+                    <option value="<%= element._id%>">
+                        <%= element.name %>
+                    </option>
+                    <% }) %>
+
+
+
+            </select>
+            <input id="create-category-input" name="subCategory" type="text"
+                class="form-control ms-0 m-1 w-50" required>
+            <button id="create-category" type="submit"
+                class="outline-black-btn h-60">Create</button>
+        </div>
+
+
+    </form>
+    <h4 class="ms-4 mt-4">Delete a Category or Sub Category</h4>
+    <form action="/category/delete" class="d-flex-col p-4 pt-2 mt-2">
+        <div class=" w-100">
+
+            <select id="delete-cat-input" class="form-select w-50 mb-1 "
+                aria-label="Default select example" name="category" required>
+                
+                <% data.categories.forEach(element=> { %>
+                    
+                    <option value="<%= element._id%>">
+                        <%= element.name %>
+                    </option>
+                    <% }) %>
+                    
+                    
+                    
+                </select>
+                <select id="delete-SubCat-input" name="subCategory" class="form-select w-50 mb-1"
+                aria-label="Default select example"  required>
+                
+                <option selected value="all" >Entire Category</option>
+
+
+
+            </select>
+            <button id="delete-category" type="submit"
+                class="outline-black-btn h-60">Delete</button>
+        </div>
+
+
+    </form>
+
+</div>

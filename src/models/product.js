@@ -21,17 +21,32 @@ const productSchema = new mongoose.Schema({
         type:Number,
         required:true
     },
-    details:{
-        type:[{String:String}]
-
+    description:{
+        type: String,
+        default:''
     },
-    imageID:{
+    details: [
+        [
+        String,String
+    ]
+    ],
+    images:{
         type:[mongoose.mongo.ObjectId]
+    },
+
+    userID:{
+        type:mongoose.mongo.ObjectId,
+        required:true
+    },
+
+    isListed:{
+        type:Boolean,
+        default: true
     }
 
 
 
-})
+},{timestamps:true})
 
 const product = mongoose.model('Product',productSchema);
 

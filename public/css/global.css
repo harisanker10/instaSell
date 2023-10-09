@@ -13,7 +13,10 @@
 body {
     font-family: 'Poppins',sans-serif;
     font-size: 1rem;
+   
 }
+
+
 
 .login-form-container{
     width: 50vw;
@@ -51,7 +54,12 @@ body {
     box-sizing: border-box;
     box-shadow: 1px 1px 10px #aeff459f;
     padding: 0.5rem 1rem;
+    width: 20%;
+    
+}
 
+#username , #password{
+    width: 44rem;
 }
 
 .sign-up-btn:focus, .btn-green-default:focus{
@@ -84,18 +92,19 @@ body {
     border: none;
 
 }
-#verify-para{
+.verify-para{
     padding: 5px;
     padding-bottom: 0px;
+    font-size: 0.7rem;
 }
 
-.show{
-    display: block;
+#signup-form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.hide{
-    display:none;
-}
+
 
 #login-phone-validate-btn{
     background-color: #8a8a8a;
@@ -167,5 +176,62 @@ body {
     color: #000000;
 }
 
+.show{
+    display: block;
+}
+
+.hidden{
+    display: none;
+}
+.notification {
+    z-index: 999;
+    display: inline; 
+    position: absolute;
+    height: auto;
+    width: auto;
+
+    min-height: 3rem;
+    min-width: 10rem;
+
+    background-color: #ADFF45;
+    margin: 0rem auto;
+    overflow: hidden; 
+    box-sizing: content-box; 
+
+    display: flex;
+    padding-left:1% ;
+    box-shadow: 0.5px 0.5px 10px rgb(211, 211, 211);
+    opacity: 0%;
+    transition: 300ms;
+    
+    
+}
 
 
+
+.notification-close{
+    width: 2rem;
+    height: 2rem;
+    outline: none;
+    border: 0px;
+    background-color: #93525200;
+   
+
+}
+
+.notification-content{
+    font-size: 1.2rem;
+    
+}
+
+.show{
+    display: block;
+}
+
+.hide{
+    display:none;
+}
+
+.active{
+    background-color: #ADFF45;
+}

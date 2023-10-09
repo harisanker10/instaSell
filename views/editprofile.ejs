@@ -1,0 +1,167 @@
+<%- include('partials/head.ejs') %>
+    <%- include('partials/navbar.ejs') %>
+        <div class="d-flex">
+
+            <div class="nav-section col-2 bg-light d-flex-col">
+                <div class="nav-item active">
+                    <h4>Basic Information</h4>
+                </div>
+                <div class="nav-item">
+                    <h4>Addresses</h4>
+                </div>
+                <div class="nav-item">
+                    <h4>Financial Details</h4>
+                </div>
+            </div>
+
+
+
+
+            <div class="col-10 bg-light d-flex-col" style="height: auto;">
+                <div class="header">
+                    <h2>Edit Details</h2>
+                </div>
+
+                <div class="main-container p-5">
+
+                    <div class="basic-info-section">
+                        <div class="col-10">
+
+                            <h4 class="mb-3">Basic Information</h4>
+                            <div class="col-7 ">
+                                <form id="edit-form" action="/user/editprofile" method="post" class="form-group ">
+
+                                    <div class="input-group my-2">
+
+                                        <div class="form-floating">
+                                            <input name="firstName" type="text" class="form-control"
+                                                placeholder="First Name" id="form-first-name"
+                                                value="<%= user.firstName %>">
+                                            <label for="form-first-name" class="form-label">First Name</label>
+                                        </div>
+                                        <div class="form-floating">
+                                            <input name="secondName" type="text" class="form-control"
+                                                placeholder="Surname" id="form-surname" value="<%= user.secondName %>">
+                                            <label for="form-surname" class="form-label">Surname</label>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-floating my-2">
+                                        <input name="username" type=" text" class="form-control w-100" id="username"
+                                            placeholder="Username" value="<%= user.username%>">
+                                        <label for="username class=" form-label">Username</label>
+                                    </div>
+
+                                    <div class="input-group my-2 ">
+                                        <% if
+                                            (user.password==='password'
+                                            ) { %>
+
+                                            <div class="form-floating hide">
+                                                <input name="oldPassword" type="password" class="form-control w-100"
+                                                    placeholder="Password" id="password" value="password" hide>
+                                                <label for="password" class="form-label">Old Password</label>
+                                            </div>
+                                            <% } else{ %>
+                                                <div class="form-floating">
+                                                    <input name="oldPassword" type="password" class="form-control w-100"
+                                                        placeholder="Password" id="password">
+                                                    <label for="password" class="form-label">Old Password</label>
+                                                </div>
+
+                                                <% } %>
+                                                    <div class="form-floating ">
+                                                        <input name="newPassword" type="password"
+                                                            class="form-control w-100" placeholder="Password"
+                                                            id="password">
+                                                        <label for="password" class="form-label">New Password</label>
+                                                    </div>
+
+
+                                    </div>
+
+                                    <div class="form-floating my-2">
+                                        <textarea name="bio" class="form-control" placeholder="Leave a comment here"
+                                            id="floatingTextarea2" style="height: 100px"><%= user.bio %></textarea>
+                                        <label for="floatingTextarea2">Bio</label>
+                                    </div>
+
+
+
+
+
+                                    <button class="sign-up-btn" type="submit">Update</button>
+
+                                </form>
+                                <hr>
+
+                                <h4 class="my-2 mt-5 mb-3">Contact Information</h4>
+
+                                <form action="">
+
+
+
+                                    <div class="input-group">
+                                        <button id="google-validate-btn"
+                                            class="btn btn-outline-secondary google-check-btn" type="button"
+                                            id="button-addon2"><svg fill="#ffffff" xmlns="http://www.w3.org/2000/svg"
+                                                height="1em" viewBox="0 0 488 512">
+                                                <path
+                                                    d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" />
+                                            </svg>&nbsp;Validate with google</button>
+                                        <input name="email" id="email-input" type="text" class="form-control"
+                                            placeholder="<%= user.email %>" aria-label="E-mail" disabled>
+
+                                    </div>
+                                    <div class="input-group mt-2">
+                                        <span class="input-group-text" id="addon-wrapping">+91</span>
+
+                                        <input id="phone-input" type="text" class="form-control" placeholder="Phone"
+                                            aria-label="Phone" value="<%= user.phone  %>">
+                                        <input id="otp-input" type="text" class="form-control " placeholder="OTP"
+                                            aria-label="otp" disabled>
+                                        <button class="btn btn-outline-secondary phone-check-btn" type="button"
+                                            id="phone-verify-btn">Send
+                                            OTP
+                                        </button>
+                                        <button class="btn btn-outline-secondary phone-check-btn hide" type="button"
+                                            id="otp-verify-btn">Confirm OTP&nbsp;<span
+                                                class="spinner-border spinner-border-sm otp-spinner hide" role="status"
+                                                aria-hidden="true"></span>
+                                            <svg class="otp-confirmed hide" style="fill: #ADFF45"
+                                                xmlns="http://www.w3.org/2000/svg" height="1em"
+                                                viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                                                <path
+                                                    d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
+                                            </svg>
+                                            <svg class="otp-declined hide" xmlns="http://www.w3.org/2000/svg"
+                                                height="2em" viewBox="0 0 384 512"
+                                                style="fill:#ff0000"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                                                <path
+                                                    d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                                            </svg>
+
+                                        </button>
+                                    </div>
+                                    <button class="sign-up-btn my-2" type="submit">Update</button>
+                                </form>
+                                <hr>
+                                  
+
+
+
+
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+
+        <%- include('partials/closingHead.ejs') %>

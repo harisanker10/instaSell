@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-sm navbar-dark bg-black d-flex justify-content-between">
+<nav class="navbar navbar-expand-sm navbar-dark bg-black d-flex justify-content-between" id="navbar">
     <div class="container d-flex justify-content-between">
         <svg fill="#ffffff" class="logo pb-2" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 496 512">
 
@@ -14,7 +14,7 @@
         <div class="collapse navbar-collapse d-flex justify-content-between ml-4" id="collapsibleNavId">
             <div class="d-flex ">
 
-                <a class="btn btn-primary btn-black-default location-btn" href="">location</a>
+                <a class="btn btn-primary btn-black-default location-btn" id="location-btn" href="">location</a>
                 <form class="d-flex">
                     <input class="search-input" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success primary-btn search-btn " type="submit"><svg
@@ -36,7 +36,7 @@
                         <%=username%>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item profile-item" href="/user/profile">Profile</a></li>
+                        <li><a class="dropdown-item profile-item" href="/user/profile?nav=listings">Profile</a></li>
                         <li><a class="dropdown-item profile-item" href="#">Wishlist</a></li>
                         <hr>
                         <li><a class="dropdown-item profile-item log-out-href" href="/user/logout">Logout</a></li>
