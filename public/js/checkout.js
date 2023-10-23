@@ -3,7 +3,8 @@ const addressBtn = document.querySelector('.new-address-btn')
 const existingAddresses = document.querySelectorAll('.existing-address');
 
 const addressForm = document.querySelector('.new-address-form');
-const container = document.querySelector('.content'); 
+const container = document.querySelector('.content');
+const productTitle = container.getAttribute('productName')
 const checkoutContainer = document.querySelector('.checkout-container');
 
 const productId = checkoutContainer.getAttribute('productId');
@@ -36,20 +37,20 @@ addressForm.addEventListener('submit', (event) => {
                 addressCard.classList.add('address-card', 'p-2', 'ps-3', 'shadow-sm', 'my-2', 'border', 'existing-address');
                 addressCard.setAttribute('addressId', _id);
                 address = _id;
-                
+
                 // Create the <h5> element for fullname
                 const h5 = document.createElement('h5');
                 h5.textContent = fullname;
                 addressCard.appendChild(h5);
-                
+
                 // Create <h6> elements for the other fields
                 const fieldData = [addressLine, city, state, postalCode, phone];
                 fieldData.forEach(data => {
-                  const h6 = document.createElement('h6');
-                  h6.textContent = data;
-                  addressCard.appendChild(h6);
+                    const h6 = document.createElement('h6');
+                    h6.textContent = data;
+                    addressCard.appendChild(h6);
                 });
-                
+
                 // Append the addressCard element to the desired container in your document
                 container.innerHTML = '';
                 container.appendChild(addressCard);
@@ -63,41 +64,52 @@ addressForm.addEventListener('submit', (event) => {
 })
 
 
-existingAddresses.forEach(card=>{
+existingAddresses.forEach(card => {
 
-    card.addEventListener('click',(event)=>{
+    card.addEventListener('click', (event) => {
         event.preventDefault();
-        address= card.getAttribute('addressid');
+        address = card.getAttribute('addressid');
         container.innerHTML = '';
         container.append(card)
         console.log(address)
 
-        
+
     })
 })
 
-orderBtn.addEventListener('click',(event)=>{
+orderBtn.addEventListener('click', (event) => {
     event.preventDefault();
     const formData = new FormData();
-    if(!address){
+    if (!address) {
         window.notify("Add address");
         return;
-    }    
-    formData.append('address',address)
-    formData.append('productID',productId);
-    formData.append('price',price);
-    formData.append('sellerID',userId);
+    }
+    formData.append('address', address)
+    formData.append('productID', productId);
+    formData.append('price', price);
+    formData.append('sellerID', userId);
+    formData.append('productTitle', productTitle);
 
-    fetch('/product/order',{
-        method:'POST',
+    console.log(formData);
+
+    fetch('/product/order', {
+        method: 'POST',
         body: formData
-    }).then(res=>{
-        console.log(res)
-    }).catch(err=>console.log(err))
-    
-
-
+    }).then(res => {
+        console.log(res);
+        return res.json()
+        
+    }).then(({url}) => {
+        console.log(url);
+        window.location.href = url
+    })
+        .catch(err => console.log(err))
 
 })
+
+
+
+
+
 
 

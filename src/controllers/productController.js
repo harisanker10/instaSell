@@ -5,14 +5,15 @@ const Product = require("../models/product");
 const Address = require("../models/address");
 const User = require("../models/user");
 const convertISODate = require("../utils/formatDate");
-const expressAsyncHandler = require("express-async-handler");
 const asyncHandler = require("express-async-handler");
 const { Category, SubCategory } = require("../models/category");
 const Request = require("../models/request");
 const product = require("../models/product");
 const getImageAsBuffer = require("../utils/getImageAsBuffer");
-const { default: getDistance } = require("geolib/es/getPreciseDistance");
-const blueText = "\x1b[34m";
+
+const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY)
+
+
 
 let db, bucket;
 
@@ -426,9 +427,54 @@ const renderCheckout = asyncHandler(async (req, res) => {
   });
 });
 
+
+/*const stripe = require('stripe')('sk_test_51NvA0wSASzCg3MyV7b4YT44fdTCN29ZuaAGr7BzsCrfsepIM1o2nWb1H3K1kmqKXv7h88pQY7OCUofKKj7Ox6jan00dBjSGHWC');
+
+const session = await stripe.checkout.sessions.create({
+  success_url: 'https://example.com/success',
+  line_items: [
+    {price: 'price_H5ggYwtDq4fbrJ', quantity: 2},
+  ],
+  mode: 'payment',
+});
+*/
+
+
+
+
+
+
 const placeOrder = asyncHandler(async (req, res) => {
   console.log(req.body);
+
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    mode: 'payment',
+    line_items: [{
+
+      price_data:{
+        currency:'inr',
+        product_data:{
+          name: req.body.productTitle,
+        },
+        unit_amount: req.body.price*101
+      },
+      quantity:1
+
+
+    }],
+    success_url: `${process.env.SERVER_URL}/`,
+    cancel_url: `${process.env.SERVER_URL}/product/${req.body.productID}`
+  })
+
+  console.log(session.url)
+
+  res.status(200).json({ url: session.url })
+
+
+
 });
+
 
 const getCards = asyncHandler(async (req, res) => {
   const products = await Product.getProductCards(
@@ -446,6 +492,15 @@ const getCards = asyncHandler(async (req, res) => {
 
   res.status(200).json(products);
 });
+
+
+
+const renderBuyStatus = asyncHandler(async(req,res)=>{
+
+  res.render('buyStatus')
+
+})
+
 
 module.exports = {
   saveProduct,
@@ -466,6 +521,7 @@ module.exports = {
   renderCheckout,
   placeOrder,
   getCards,
+  renderBuyStatus
 };
 
 const getQueryStateProduct = async (matchConditions, sortConditions) => {

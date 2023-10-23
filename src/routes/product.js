@@ -16,6 +16,7 @@ const { saveProduct,
     renderCheckout,
     placeOrder,
     getCards,
+    renderBuyStatus,
 } = require('../controllers/productController');
 
 
@@ -78,7 +79,9 @@ router.get('/acceptRequest', acceptRequest)
 
 router.get('/checkout', renderCheckout)
 
-router.post('/order', placeOrder)
+router.post('/order', upload.any(),placeOrder)
+
+router.get('/buyStatus',renderBuyStatus)
 
 
 
