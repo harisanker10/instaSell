@@ -11,7 +11,12 @@ const catInput = document.querySelector('#category-input');
 const subCatInput = document.querySelector('#sub-category-input');
 
 
+const getLocationBtn = document.querySelector('#get-location-btn');
+const locationInput = document.querySelector('#sell-form-location');
+const initialLocationValue = locationInput.value;
+
 let images = [];
+let locationData;
 
 
 const addDetail = () => {
@@ -77,36 +82,43 @@ form.addEventListener('submit', async (event) => {
         formData.append('images', images[i]);
     }
 
-    if(!formData.get('images') || formData.get('images' === '')) {
+    if (!formData.get('images') || formData.get('images' === '')) {
         window.notify("Add Images");
         return;
     }
+
 
 
     if (formData.get('category') === '' || formData.get('subCategory') === '') {
         window.notify("Enter categories", "5000");
         return;
     }
+
+    formData.delete('location');
+
+    formData.append('location', JSON.stringify(locationData));
+
+
     console.log(formData)
 
-    try {
-        const response = await fetch('/product/post', {
-            method: 'POST',
-            body: formData,
+
+    fetch('/product/post', {
+        method: 'POST',
+        body: formData,
+    }).then(res => {
+        console.log(res);
+        if (res.status === 200) {
+            window.location.href = '/';
+        }
+    })
+        .catch(err => {
+            console.log(err);
+            alert(err)
+            window.location.href = '/product/post'
+
+
         });
 
-        if (response.ok) {
-            
-            window.location.href = '/'
-
-        } else {
-
-            console.log('Request failed:', response.status);
-        }
-    } catch (err) {
-        console.error('Fetch error:', err);
-        // Handle the error here
-    }
 
 
 
@@ -140,6 +152,83 @@ catInput.addEventListener('input', async (event) => {
             // Handle any errors that occur during the fetch
             console.error('Fetch error:', error);
         });
+})
+
+
+getLocationBtn.addEventListener('click', (event) => {
+    event.preventDefault();
+    navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
+        console.log('latitude', latitude);
+        console.log('longitude', longitude);
+
+        const url = `https://api.geoapify.com/v1/geocode/reverse?lat=${latitude}&lon=${longitude}&apiKey=5b8cbdeeff9f48a7be8492329512e1e8`;
+
+
+
+
+        fetch(url)
+            .then((res) => res.json())
+            .then((data) => {
+                locationInput.value = data.features[0].properties.city;
+
+                locationData = {
+                    name: data.features[0].properties?.suburb || data.features[0].properties?.city,
+                    city: data.features[0].properties?.city,
+                    lat: data.features[0].properties?.lat,
+                    lon: data.features[0].properties?.lon
+                }
+                console.log(locationData)
+
+
+            })
+            .catch((error) => {
+                window.notify('Something went wrong while adding location. Try again.')
+                console.error('Fetch error:', error);
+            });
+
+
+    });
+})
+
+
+locationInput.addEventListener('blur', (event) => {
+    const name = event.target.value;
+    if (initialLocationValue === name) return;
+
+    let locationAddress = name.split(/[\s,]+/);
+    locationAddress = locationAddress.join('%20') + '%20india';
+    const url = `https://api.geoapify.com/v1/geocode/search?text=${locationAddress}&format=json&apiKey=5b8cbdeeff9f48a7be8492329512e1e8`
+
+    console.log(url)
+    fetch(url)
+        .then(res => res.json())
+        .then(data => {
+
+            const locationDetails = data.results[0]
+
+            console.log(locationDetails)
+
+            locationInput.value = `${event.target.value}, ${locationDetails?.city}, ${locationDetails?.state}`;
+
+            if (locationInput.value.includes('undefined')) locationInput.value = '';
+
+            locationData = {
+                name: name,
+                city: locationDetails.city,
+                lat: locationDetails.lat,
+                lon: locationDetails.lon
+            }
+
+            console.log(locationData)
+        })
+        .catch(err => {
+            console.log(err);
+            locationInput.value = '';
+            window.notify("Try a different location")
+        })
+
+        
 })
 
 

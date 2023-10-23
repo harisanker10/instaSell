@@ -17,7 +17,7 @@ const months = [
 const convertISODate = (data)=>{
 
     const date = new Date(data);
-    return `${date.getDate()} ${months[date.getMonth()-1]}, ${date.getFullYear()} `;
+    return `${date.getDate()} ${months[date.getMonth()]}, ${date.getFullYear()} `;
 
 } 
 

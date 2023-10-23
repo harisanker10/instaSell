@@ -1,4 +1,4 @@
-.profile-card{
+.profile-card {
     border: 2px solid #ADFF45;
     border-radius: 0px;
     box-shadow: 0.5px 0.5px 20px #00000022;
@@ -6,14 +6,15 @@
     /* border-right: 0px; */
 }
 
-.profile-main-container{
+.profile-main-container {
     border: 2px solid #ADFF45;
     height: 38vw;
     overflow: scroll;
     box-shadow: 0.5px 0.5px 20px #00000022;
-    
+
 }
-.profile-nav-item{
+
+.profile-nav-item {
     border: 1px solid #ADFF45;
     border-top: 0px;
     height: 4rem;
@@ -23,29 +24,29 @@
     padding-right: 1rem;
 }
 
-.profile-nav-item:first-child{
-    border-top:1px solid #ADFF45 ;
+.profile-nav-item:first-child {
+    border-top: 1px solid #ADFF45;
 }
 
 
-.profile-nav-item:hover{
+.profile-nav-item:hover {
     transition: 150ms;
     background-color: #ADFF45;
 }
 
-.active{
+.active {
     background-color: #ADFF45;
 }
 
-.profile-picture{
+.profile-picture {
     border-radius: 50%;
 }
 
-.profile-nav-container{
+.profile-nav-container {
     /* margin-top: 1.5rem;
     margin-left: 15.7rem; */
     align-self: flex-end;
-    width: 85%; 
+    width: 85%;
     margin-left: 15%;
     margin-top: 2rem;
     color: black;
@@ -55,11 +56,11 @@
 
 }
 
-a{
+a {
     color: black
 }
 
-.list-card{
+.list-card {
     width: 100%;
     height: auto;
     padding: 1rem;
@@ -67,26 +68,28 @@ a{
     border-radius: 0px;
 }
 
-.grid-container{
+.grid-container {
     display: grid;
+    position: relative;
     gap: 1rem;
     grid-template-columns: 1fr 1fr 1fr;
 }
 
-.list-card{
+.list-card {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     box-shadow: 0.1px 0.1px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
 }
 
-.img-continer{
+.img-continer {
     width: 16rem;
     height: 12rem;
 }
 
-.list-card-img{
+.list-card-img {
     object-fit: contain;
     width: 100%;
     height: 100%;
@@ -97,12 +100,95 @@ a{
     align-self: flex-start;
     padding-top: 10px;
     font-size: 1.2rem;
-    margin-top: 1rem;
+    margin-top: 0.5rem;
     font-weight:bold;
 }
 
 .card-title{
     align-self: flex-start;
-    font-size: 1.2rem;
+    font-size: 1rem;
     margin-top: 0.4rem;
+    font-weight: 900;
+}
+
+
+#image-container {
+    height: 10rem;
+    width: 10rem;
+    object-fit: contain;
+    overflow: hidden;
+    border-radius: 50%;
+
+    margin: 0rem auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#image-container>img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+}
+
+.unlisted-overlay{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.product-card {
+    position: relative;
+
+}
+
+.product-card:hover .card-controls {
+    display: flex;
+    transform: translateY(0);
+
+}
+
+.card-controls {
+
+    padding: 1rem;
+    position: absolute;
+    top: 65%;
+    width: 100%;
+    height: 35%;
+    box-sizing: border-box;
+    background-color: #ADFF45;
+    display: flex;
+    justify-content: space-evenly;
+    display: none;
+    transition: transform 0.3s; /* Add a transition for translateY */
+    transform: translateY(-100%); /
+
+
+}
+
+.card-controls>div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+
+}
+
+.card-option>svg {
+    height: 70%;
+    width: 20%;
+}
+
+.vertical-rule {
+    border: 0.5px solid rgba(127, 127, 127, 0.293);
+}
+
+
+
+.location-container {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
 }

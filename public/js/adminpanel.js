@@ -11,16 +11,10 @@ const profileNavItem = document.querySelectorAll(".profile-nav-item");
 
 
 
-const addNav = document.querySelector('#add-nav')
+// const addNav = document.querySelector('#add-nav')
 const container = document.querySelector('#content-container');
 
-console.log(addNav, container)
 
-addNav.addEventListener('click', () => {
-
-addContainer.classList.remove('hide');    
-
-})
 
 
 
@@ -33,6 +27,7 @@ const deleteSubCatInput = document.querySelector('#delete-SubCat-input');
 if(deleteCatBtn){
 
 deleteCatInput.addEventListener('input', (event) => {
+    console.log('fetchingg')
     deleteSubCatInput.innerHTML = '';
     const allOption = document.createElement('option')
     allOption.setAttribute('value','all')

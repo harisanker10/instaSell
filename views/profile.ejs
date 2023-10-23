@@ -1,75 +1,80 @@
 <%- include('partials/head.ejs') %>
     <%- include('partials/navbar.ejs') %>
 
-                    <div class="d-flex ms-4 ">
+        <div class="d-flex ms-4 ">
 
-                        <div class="col-3 mt-5 me-4 d-flex-col">
-                            <div class="card text-center profile-card col-3 " style="width: 85%; margin-left: 15%;">
-                                <div class="card-body">
-                                    <% if (user && user.profilePicture) { %>
-                                    <div class="p-2 pb-4">
-
-
-                                         
-                                            <img src="data:<%= user?.profilePicture?.contentType || ''%>;base64,<%=user?.profilePicture?.data.toString('base64') || ''%>"
-                                            alt="" style="border-radius: 50%;">
-                                            
-                                            
-                                            
-                                        </div>
-                                        <% } %>
-                                    <h5 class=" card-title fs-4">
-
-                                        <%= user?.firstName.toUpperCase() || '' %>
-                                            <%= user?.secondName.toUpperCase() || '' %>
-
-                                    </h5>
-                                    <div>
-                                        <%= user?.rating || '' %>
-                                    </div>
-                                    <p class="card-text m-1 mt-2 mb-0">
-                                        <%= user?.location || '' %>
-                                    </p>
-                                    <p class="card-text m-1 mt-0">Joined <%= user?.joinedDate || "N/A" %>
-                                    </p>
-                                    <p class="card-text m-1 mt-3 fw-light" style="font-size: 0.8rem;">
-                                        <%= user?.bio || '' %>
-                                    </p>
-
-                                    <a href="/user/editprofile" class="btn btn-primary btn-black-default m-2 ">Edit Profile</a>
-                                </div>
+            <div class="col-3 mt-5 me-4 d-flex-col">
+                <div class="card text-center profile-card col-3 " style="width: 85%; margin-left: 15%;">
+                    <div class="card-body">
+                        <% if (user && user.profilePicture) { %>
+                            <div class="mb-3" id="image-container">
+                                <%if(user && user.profilePicture){%>
+                                <img src="data:<%= user?.profilePicture?.contentType%>;base64,<%=user?.profilePicture?.data.toString('base64') %>"
+                                    alt="">
+                                    <%}%>
                             </div>
-                            <div class="d-flex-col profile-nav-container align-items-center"
-                                    >
-                                    <a href="/user/profile?nav=listings" class="text-decoration-none">
+                            <% } %>
+                                <h5 class=" card-title fs-4">
 
-                                        <div class="profile-nav-item text-center fs-5 active">Listings</div>
-                                    </a>
-                                    <a href="" class="text-decoration-none">
+                                    <%= user?.firstName.toUpperCase() || '' %>
+                                        <%= user?.secondName.toUpperCase() || '' %>
 
-                                        <div class="profile-nav-item text-center fs-5 ">Purchases</div>
-                                    </a>
-                                    <a href="" class="text-decoration-none">
-
-                                        <div class="profile-nav-item text-center fs-5 ">Wishlist</div>
-                                    </a>
-                                    
+                                </h5>
+                                <div>
+                                    <%= user?.rating || '' %>
                                 </div>
+                                <p class="card-text m-1 mt-2 mb-0">
+                                    <%= user?.location || '' %>
+                                </p>
+                                <p class="card-text m-1 mt-0">Joined <%= user?.joinedDate || "N/A" %>
+                                </p>
+                                <p class="card-text m-1 mt-3 fw-light" style="font-size: 0.8rem;">
+                                    <%= user?.bio || '' %>
+                                </p>
 
-                        </div>
-
-
-
-                            <div class="col-8 mt-5 profile-main-container d-flex-col me-3" >
-                                    <% if (data?.isListings) { %>
-                                        <%- include('partials/profile/listings.ejs') %>
-                                    <% } %>
-                            </div>
+                                <a href="/editprofile" class="btn btn-primary btn-black-default m-2 ">Edit
+                                    Profile</a>
                     </div>
+                </div>
+                <div class="d-flex-col profile-nav-container align-items-center
+                ">
+                    <a href="/profile?nav=listings" class="text-decoration-none">
+
+                        <div class="profile-nav-item text-center fs-5 
+                <%= data?.isListings %>
+                ">Listings</div>
+                    </a>
+                    <a href="/profile?nav=purchases" class="text-decoration-none">
+
+                        <div class="profile-nav-item text-center fs-5 
+                <%= data?.isPurchases %>
+                        ">Purchases</div>
+                    </a>
+                    <a href="" class="text-decoration-none">
+
+                        <div class="profile-nav-item text-center fs-5 ">Wishlist</div>
+                    </a>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="col-8 mt-5 profile-main-container d-flex-col me-3">
+                <% if (data?.listings) { %>
+                    <%- include('partials/profile/listings.ejs') %>
+                        <% }else if(data?.purchases){ %>
+                            <%- include('partials/profile/purchases.ejs') %>
+
+
+                                <% } %>
+            </div>
+        </div>
 
 
 
 
-                    <script src="/js/profile.js"></script>
+        <script src="/js/profile.js"></script>
 
-                    <%- include('partials/closingHead.ejs') %>
+        <%- include('partials/closingHead.ejs') %>

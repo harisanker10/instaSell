@@ -1,0 +1,41 @@
+<%- include('partials/head.ejs') %>
+    <%- include('partials/navbar.ejs') %>
+
+        <div class="container main-container mt-4">
+
+            <div class="request-container">
+                <div class="header">Requests</div>
+                <div class="content p-4">
+
+                    <div class="req-table w-100 p-4">
+                        <% requests.forEach(request=> { %>
+                        <div class="request w-100 p-2">
+                            <h4>
+                                <%= request.requesterID.firstName%>
+                                    <%= request.requesterID.secondName%>
+                            </h4>
+                            <h4>
+                                ₹<%= request.amount%>
+                            </h4>
+                            <button class="on-click-btn outline-black-btn accept-req-btn"
+                                navLink="/product/acceptRequest?requestID=<%= request._id %>&productID=<%=request.productID%>">
+                            <% if (request.isAccepted) { %>
+                                Cancel request
+                                <% }else{ %>
+                                    Accept Request
+                                    <% } %>
+                            
+                            </button>
+                        </div>
+                        <% }) %>
+
+                    </div>
+
+                   
+                </div>
+            </div>
+           
+        </div>
+
+        <script src="/js/landing.js"></script>
+        <%- include('partials/closingHead.ejs') %>

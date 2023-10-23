@@ -147,7 +147,7 @@ googleSigninBtn.addEventListener('click', () => {
             formData.append('profilePicture',user.photoURL);
             formData.append('guid',user.uid);
 
-            fetch('/user/signup',{
+            fetch('/signup',{
                 method:'post',
                 body: formData,
             })

@@ -1,7 +1,79 @@
 <%- include('partials/head.ejs') %>
-<%- include('partials/navbar.ejs') %>
+  <%- include('partials/navbar.ejs') %>
+ 
+    <div class="hero bg-dark">
+      <div class="gradient"></div>
+      <img src="/static/Air-Jordan-I-High-Strap-Just-Don-BHM.jpg" alt="">
+      <div class="hero-text">
+
+        <h1>Sell Smarter, Buy Safer.</h1>
+        <h3>We're your trusted middleman, ensuring your payment reaches the seller only after your product
+          arrives.</h3>
+      </div>
+    </div>
+
+    <!-- <div class="p-4 bg-light" style="width: 100vw; height:140vh">
+      <h1 class="ms-4 mt-4 ps-4">Trending Products</h1>
+      <div class="card-container">
 
 
 
-<script src="/js/landing.js" ></script>
-<%- include('partials/closingHead.ejs') %>
+        <%//products.forEach(elt=> { %>
+
+          <button class="on-click-btn"  navLink="/product?id=<%=//elt._id%>">
+
+            <div class="card text-center " id="<%=//elt._id%>">
+
+
+
+
+              <div class="img-continer">
+
+
+                <img class="list-card-img" src="data:image/;base64,<%=//elt.images[0].toString('base64') || ''%>"
+                  alt="Title">
+
+              </div>
+
+              <span class="card-price mt-2">
+                ₹<%=//elt.price%>
+              </span>
+              <span class="card-title fs-4">
+                <%=//elt.title%>
+              </span>
+              <div class="location-date mt-3 text-muted">
+
+                <p class="card-location ">
+                  <%=//elt.location%>
+                </p>
+                <p class="card-datams-4">
+                  <%=//elt.createdAt.split(',')[0]%>
+                </p>
+              </div>
+
+
+            </div>
+
+          </button>
+
+          <% //}) %>
+
+
+      </div>
+
+    </div> -->
+
+    <div class="info-card">
+      <img src="static/info.png" alt="">
+
+    </div>
+    <div class="info-card">
+      <img src="static/faq.png" alt="">
+
+    </div>
+
+
+
+
+    <script src="/js/landing.js"></script>
+    <%- include('partials/closingHead.ejs') %>

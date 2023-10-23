@@ -2,20 +2,31 @@ const mongoose = require('mongoose')
 require('dotenv').config();
 
 
-let db, bucket, connection;
-mongoose.connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+
+
+const connect = () => {
+    return mongoose.connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         console.log('DB Connected succesfully');
-        connection = mongoose.connection;
-        // db = mongoose.connection.db;
-        // bucket = new mongoose.mongo.GridFSBucket(db, { bucketName: 'images' });
+        const connection = mongoose.connection;
+        return {connection}
     })
-       
+
     .catch((err) => {
         console.log(`Error connecting to DB ${err}`);
     })
+}
 
-module.exports = { connection, bucket};
+const getBucket = async()=>{
+    const conn = await mongoose.connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+    const db = mongoose.connection.db
+    const bucket = new mongoose.mongo.GridFSBucket(db, { bucketName: 'images' });
+    return {bucket,db}
+}
+
+getBucket();
+
+module.exports = { connect,getBucket };
 
 
 

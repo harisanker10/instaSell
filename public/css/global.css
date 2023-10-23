@@ -17,6 +17,16 @@ body {
 }
 
 
+.on-click-btn{
+    border: 0px;
+    background-color: #00000000;
+    outline: none;
+}
+
+.on-click-btn:focus{
+    outline: none;
+}
+
 
 .login-form-container{
     width: 50vw;
@@ -52,7 +62,7 @@ body {
     border-radius: 0px;
     border-style: none;
     box-sizing: border-box;
-    box-shadow: 1px 1px 10px #aeff459f;
+    box-shadow: 1px 1px 5px #6b6b6b9f;
     padding: 0.5rem 1rem;
     width: 20%;
     
@@ -172,7 +182,7 @@ body {
 
 .outline-black-btn:hover{
     transition: 100ms;
-    background-color: #ececec;
+    background-color: #ADFF45;
     color: #000000;
 }
 
@@ -184,7 +194,7 @@ body {
     display: none;
 }
 .notification {
-    z-index: 999;
+    z-index: 9999;
     display: inline; 
     position: absolute;
     height: auto;
@@ -235,3 +245,26 @@ body {
 .active{
     background-color: #ADFF45;
 }
+
+
+
+
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield; 
+}
+a{
+    text-decoration: none;
+}
+
+.d-90{
+    transform: rotateZ(90deg);
+}
+

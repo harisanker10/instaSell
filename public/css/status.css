@@ -1,0 +1,39 @@
+.main-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.request-container{
+    width: 80%;
+}
+.header{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem 0rem;
+    color: #ADFF45;
+    background-color: black;
+    height: 1.8rem;
+    font-size: 1.2rem;
+}
+.content{
+    border: 2px solid rgb(163, 163, 163);
+    border-top:0px;
+}
+
+.request{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    background-color: #d0ff92;
+}
+h4{
+    padding: 0%;
+    margin: 0%;
+}
+
+.deselected{
+    background-color: rgb(177, 177, 177);
+}

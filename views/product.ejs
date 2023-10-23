@@ -1,0 +1,179 @@
+<%- include('partials/head.ejs') %>
+  <%- include('partials/navbar.ejs') %>
+
+    <div class="container d-flex-col mt-4">
+
+
+      <div class="d-flex">
+        <div class="col-9 image-container shadow-sm">
+          <!-- <img class="list-card-img" src="data:image/;base64,<%=//product.images[0].toString('base64') || ''%>" -->
+          <div id="carouselExample" class="carousel slide w-100 h-100">
+            <div class="carousel-inner">
+              <% let active='active' %>
+                <% product.images.forEach(elt=> { %>
+                  <div class="carousel-item <%= active;  %> ">
+                    <% active='' %>
+                      <div class=" image-frame">
+
+
+
+                        <img src="data:image/;base64,<%=elt.toString('base64') || ''%>" class="d-block w-100" alt="..."
+                          style="object-fit: contain;">
+                      </div>
+                  </div>
+                  <% }) %>
+
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+
+        </div>
+
+
+
+        <div class="col-3 right-container">
+
+
+
+          <div class="buy-container 
+          
+          
+          <% if (userID == product.userID) { %>
+             
+            h-100
+            <% } %>
+
+          
+          shadow-sm">
+            <span class="product-price">
+              <h2>
+
+                ₹<%= product.price %>
+              </h2>
+            </span>
+            <span class="product-title">
+              <h2>
+                <%= product.title %>
+              </h2>
+            </span>
+            <span class="product-location">
+              <%= product.location %>
+            </span>
+            <span class="product-date">
+              <%= product.createdAt %>
+            </span>
+
+
+
+            <% if (userID !=product.userID) { %>
+
+
+
+              <% if (!request) { %>
+                <form action="/product/request" class="mt-3">
+
+
+
+                  <div class="input-group mt-2">
+                    <input class="form-control border-secondary " type="number" placeholder="₹" name="amount">
+                    <input class="form-control border-secondary hide" placeholder="₹" name="productID"
+                      value="<%= product._id %>">
+                    <button class="btn btn-outline-secondary default-black-btn" type="submit" id="button-addon2">Request
+                      to
+                      buy</button>
+                  </div>
+
+
+                </form>
+                <% }else if(request.isAccepted){ %>
+                  <button class="on-click-btn default-black-btn mt-4" style="height:2.5rem" navLink="/product/checkout?productID=<%=product._id%>">Place Order</button>
+                <% }else{ %>
+
+                  <button class="on-click-btn btn btn-outline-secondary default-black-btn my-2 mt-3" navLink="/product/cancelRequest?productID=<%=product._id%>" style="background-color: black;">Cancel Request</button>
+                  <p class="mb-2 text-center">Requested for ₹<%= request.amount%></p>
+
+                  <% } %>
+
+                    <% } %>
+          </div>
+
+
+          <% if (userID !=product.userID) { %>
+
+            <div class="chat-container shadow-sm p-4">
+              <button class="on-click-btn" navLink="/viewProfile?id=<%=product.userID%>">
+
+                <div class="seller-profile-picture ">
+                  <img
+                    src="data:<%= user?.profilePicture?.contentType || ''%>;base64,<%=user?.profilePicture?.data.toString('base64') || ''%>">
+                </div>
+              </button>
+              <div class="seller">
+                <div>
+                  <button class="on-click-btn" navLink="/viewProfile?id=<%=product.userID%>">
+
+                    <%= user?.firstName %>
+                      <%= user?.secondName %>
+                  </button>
+
+                  <br>
+                  <span class="fs-6"><i> Ratings Goes here</i></span>
+                </div>
+
+                <div class="my-2">
+                  <span href="" class="mt-3 btn-green-default text-decoration-none shadow-sm">Chat With Seller</span>
+                </div>
+              </div>
+
+            </div>
+
+            <% } %>
+
+        </div>
+      </div>
+
+      <div class="product-details p-4">
+        <div class="w-50">
+          <div>
+            <h3>Details</h3>
+          </div>
+          <div>
+
+            <table class="table table-borderless">
+              <tbody>
+
+                <% product.details.forEach(elt=> { %>
+
+
+                  <tr>
+                    <td>
+                      <%= elt[0] %>
+                    </td>
+                    <td>
+                      <%= elt[1] %>
+                    </td>
+
+                  </tr>
+                  <% }) %>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+        <hr>
+        <h3>Description</h3>
+        <p>
+          <%= product.description %>
+        </p>
+      </div>
+
+    </div>
+
+    <%- include('partials/closingHead.ejs') %>

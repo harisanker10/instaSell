@@ -15,8 +15,8 @@
             <div class="d-flex ">
 
                 <a class="btn btn-primary btn-black-default location-btn" id="location-btn" href="">location</a>
-                <form class="d-flex">
-                    <input class="search-input" type="search" placeholder="Search" aria-label="Search">
+                <form class="d-flex" action="/search">
+                    <input class="search-input" type="search" placeholder="Search" name="search" aria-label="Search">
                     <button class="btn btn-outline-success primary-btn search-btn " type="submit"><svg
                             xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512" fill="black">
                             <path
@@ -36,18 +36,30 @@
                         <%=username%>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item profile-item" href="/user/profile?nav=listings">Profile</a></li>
-                        <li><a class="dropdown-item profile-item" href="#">Wishlist</a></li>
-                        <hr>
-                        <li><a class="dropdown-item profile-item log-out-href" href="/user/logout">Logout</a></li>
+                        <% if (isAdmin) { %>
+
+                            <li><a class="dropdown-item profile-item" href="/adminPanel?nav=users">Admin Panel</a></li>
+                            <% }else{ %>
+
+                                <li><a class="dropdown-item profile-item" href="/profile?nav=listings">Profile</a>
+                                </li>
+                                <% } %>
+                                    <% if (!isAdmin) { %>
+
+                                        <li><a class="dropdown-item profile-item" href="#">Wishlist</a></li>
+                                        <% } %>
+                                            <hr>
+                                            <li><a class="dropdown-item profile-item log-out-href"
+                                                    href="/logout">Logout</a>
+                                            </li>
                     </ul>
                 </div>
                 <% } else { %>
                     <div class="d-flex justify-content-end justify-self-end "
                         style="width: 15rem; margin-right: -25rem;">
 
-                        <a type="button" class="btn btn-outline-success log-in fs-6" href="/user/login">LOG IN</a>
-                        <a type="button" class="btn btn-success mx-1 sign-up text-black" href="/user/signup">SIGN
+                        <a type="button" class="btn btn-outline-success log-in fs-6" href="/login">LOG IN</a>
+                        <a type="button" class="btn btn-success mx-1 sign-up text-black" href="/signup">SIGN
                             UP<a />
                     </div>
 
