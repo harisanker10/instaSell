@@ -101,6 +101,12 @@
     width: 8rem;
     border-right: 0px;
  }
+ .location-btn:hover{
+    background-color: #ADFF45;
+    color: #000000;
+    outline: #000000;
+    border: 0px;
+ }
 
  .profile-dropdown{
     /* margin-right: 5rem; */
@@ -120,6 +126,6 @@
  #navbar{
     position: sticky;
     top: 0px;
-    z-index: 1000;
+    z-index: 94000;
  }
 

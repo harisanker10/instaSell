@@ -20,16 +20,20 @@
                     <div class="input-group my-2">
 
                         <div class="" style="width: 50%;">
-                            <select id="category-input" name="category" class="form-select" aria-label="Default select example" required>
+                            <select id="category-input" name="category" class="form-select"
+                                aria-label="Default select example" required>
                                 <option selected value="">Category</option>
-                                <% categories.forEach(elt => { %>
-                                    <option value="<%=elt._id%>"><%=elt.name%></option>
-                                 
-                                <% }) %>
+                                <% categories.forEach(elt=> { %>
+                                    <option value="<%=elt._id%>">
+                                        <%=elt.name%>
+                                    </option>
+
+                                    <% }) %>
                             </select>
                         </div>
                         <div style="width: 50%;">
-                            <select id="sub-category-input" name="subCategory" class="form-select" aria-label="Default select example" required>
+                            <select id="sub-category-input" name="subCategory" class="form-select"
+                                aria-label="Default select example" required>
                                 <option selected value="">Sub Category</option>
                             </select>
 
@@ -43,17 +47,38 @@
 
 
 
-                    <div class="form-floating my-2">
-                        <input name="location" type="text" class="form-control" placeholder="Location"
-                            id="sell-form-location" required>
-                        <label for="sell-form-location" class="form-label" required>Location</label>
+
+                    <!-- <div class=" input-group my-2">
+                        <input type="text" class="form-control" placeholder="Location eg: HSR layout, Bangalore, Karnataka" aria-label="Location" aria-describedby="button-addon2">
+                        <input type="text" class="form-control" placeholder="Location eg: HSR layout, Bangalore, Karnataka" aria-label="Location" aria-describedby="button-addon2">
+                        <input type="text" class="form-control" placeholder="Location eg: HSR layout, Bangalore, Karnataka" aria-label="Location" aria-describedby="button-addon2">
+                        <button class="btn btn-outline-secondary outline-black-btn border" type="button" id="button-addon2">
+
+                        </button>
+                      </div> -->
+
+                    <div class="input-group">
+
+                        <div class="form-floating my-1">
+                            <input name="location" type="text" class="form-control" placeholder="Location"
+                                id="sell-form-location" required>
+                            <label for="sell-form-location" class="form-label" required>Location</label>
+                        </div>
+                        <button class="outline-black-btn border px-3 py-0 mt-1" id="get-location-btn"
+                            style="height: 58px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="1em"
+                                viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                                <path
+                                    d="M256 0c17.7 0 32 14.3 32 32V66.7C368.4 80.1 431.9 143.6 445.3 224H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H445.3C431.9 368.4 368.4 431.9 288 445.3V480c0 17.7-14.3 32-32 32s-32-14.3-32-32V445.3C143.6 431.9 80.1 368.4 66.7 288H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H66.7C80.1 143.6 143.6 80.1 224 66.7V32c0-17.7 14.3-32 32-32zM128 256a128 128 0 1 0 256 0 128 128 0 1 0 -256 0zm128-80a80 80 0 1 1 0 160 80 80 0 1 1 0-160z" />
+                            </svg>
+                        </button>
                     </div>
 
 
 
                     <div class="form-floating my-2">
-                        <input type="number" name="price" type="text" class="form-control" placeholder="price" id="sell-form-price"
-                            required>
+                        <input type="number" name="price" type="text" class="form-control" placeholder="price"
+                            id="sell-form-price" required>
                         <label for="sell-form-price" class="form-label" required>Price</label>
                     </div>
 
@@ -83,7 +108,8 @@
                                     disabled value="Year">
                             </div>
                             <div class="mb-1 w-50">
-                                <input type="text" class="form-control" name="" type="number" placeholder="Eg: 2015,2020" required>
+                                <input type="text" class="form-control" name="" type="number"
+                                    placeholder="Eg: 2015,2020" required>
                             </div>
                         </div>
 

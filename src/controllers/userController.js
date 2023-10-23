@@ -1,231 +1,304 @@
-const User = require('../models/user');
-const getImageAsBuffer = require('../utils/getImageAsBuffer');
-const convertISODate = require('../utils/formatDate');
-const Admin = require('../models/admin');
-const { getCategories } = require('../controllers/categoryController');
-const { getProductCards } = require('../controllers/productController')
-
-const bcrypt = require('bcrypt');
+const User = require("../models/user");
+const getImageAsBuffer = require("../utils/getImageAsBuffer");
+const convertISODate = require("../utils/formatDate");
+const Admin = require("../models/admin");
+const { getCategories } = require("../controllers/categoryController");
+const { getProductCards } = require("../controllers/productController");
+const asyncHandler = require("express-async-handler");
+const bcrypt = require("bcrypt");
+const user = require("../models/user");
 const saltRounds = 10;
-
+const Address = require("../models/address");
+const Product = require("../models/product");
+const Request = require("../models/request");
 
 const getUser = async (id) => {
+  if (!id) {
+    let users = await User.find({});
+    return users.map((user) => {
+      user.joinedDate = convertISODate(user.createdAt);
+      return user;
+    });
+  }
 
-    if (!id) {
-        let users = await User.find({});
-        return users.map((user) => {
-            user.joinedDate = convertISODate(user.createdAt)
-            return user;
-        })
-    }
+  try {
+    let user = (await User.findById(id)) || (await Admin.findById(id));
+    user.joinedDate = convertISODate(user.createdAt);
 
-    try {
-        let user = await User.findById(id) || await Admin.findById(id);
-        user.joinedDate = convertISODate(user.createdAt);
+    return user;
+  } catch (err) {
+    return err;
+  }
+};
 
-        return user;
-    }
-    catch (err) {
-        return err;
-    }
-}
+const registerUser = asyncHandler(async (req, res, next) => {
+  console.log(req.body);
 
-const addUser = async (data) => {
+  let data = { ...req.body };
+  if (data.profilePicture)
+    data.profilePicture = await getImageAsBuffer(data.profilePicture);
 
+  if (!data.username) data.username = data.email.split("@")[0];
+  console.log(data);
 
-    if (!data.username) data.username = data.firstName + Math.floor(Math.random() * 10000);
-    let flag;
-    if (!data?.password) flag = true;
-    const user = new User({
-        firstName: data?.firstName,
-        secondName: data?.secondName,
-        email: data?.email,
-        password: await bcrypt.hash(data?.password || 'password', saltRounds),
-        guid: await bcrypt.hash(data?.guid || '', saltRounds),
-        username: data?.username.toLowerCase(),
-        phone: data?.phone,
-        profilePicture: await getImageAsBuffer(data?.profilePicture)
-    })
+  if (
+    await User.checkUserExist(
+      req.body.username,
+      req.body?.email,
+      req.body?.phone
+    )
+  ) {
+    throw new Error(
+      `notify=User exist. Try logging in or change credentials.&redirect=/signup`
+    );
+  }
 
-    if (flag) user.password = 'password';
+  const user = await User.create(data);
 
-    return await user.save();
+  req.session.username = user.username;
+  req.session.userID = user._id;
+  res.cookie("notify", "Registered Successfully. Complete your profile now.");
+  res.redirect("/");
+});
 
+const loginUser = asyncHandler(async (req, res) => {
+  if (req.body.username === "admin5311" && req.body.password === "admin5311") {
+    req.session.userID = "651e76cae1d0ce2b7cbdf5b4";
+    req.session.username = "admin5311";
+    req.session.isAdmin = true;
+    res.redirect("/");
+  }
 
+  let conditions;
+  if (req.body.email) conditions = { email: req.body.email };
+  if (req.body.phone) conditions = { phone: req.body.phone };
+  if (req.body.username) conditions = { username: req.body.username };
+  const user = await User.findOne(conditions, { profilePicture: 0 });
+  console.log(user);
 
-}
+  if (!user) throw new Error("notify=User doesn't exist&redirect=/login");
+  if (user.isBlocked)
+    throw new Error("notify=Account is blocked&redirect=/login");
+  if (
+    (await user.checkPassword(req.body.password)) ||
+    req.body?.guid === user?.guid
+  ) {
+    console.log("username:::", user.username);
+    req.session.userID = user._id;
+    req.session.username = user.username;
+    res.redirect("/");
+  } else {
+    throw new Error(
+      "notify=Username or Password is in correct&redirect=/login"
+    );
+  }
+});
 
-const checkUserExist = async (user) => {
-    const data = { ...user };
-    if (!data?.phone) data.phone = 'placeholder';
-    if (!data?.username) data.username = 'placeholder';
-    if (!data?.email) data.email = 'placeholder';
-    const count = await User.findOne({
-
-        $or: [
-            { username: data?.username },
-            { phone: data?.phone },
-            { email: data?.email }
-        ]
-
-    })
-
-
-    if (!count && !data.username.toLowerCase().includes('admin')) return false;
-    return true;
-
-}
-
-
-
-
-
-//todo : admin signup
-
-
-const authUser = async (data) => {
-
-
-    console.log('incoming', data)
-
-    if (data.username && data.username.includes('admin5311')) {
-        const adminAcc = await Admin.findOne({ username: data.username });
-        return adminAcc;
-    }
-
-    const user = await User.findOne({
-        $or: [
-            { username: data?.username },
-            { username: data?.username },
-            { phone: data?.phone },
-            { email: data?.email },
-            { guid: data?.guid }
-        ]
+const renderProfile = asyncHandler(async (req, res) => {
+  const user = await getUser(req.session.userID);
+  let data = { analytics: "analytics" };
+  data = await getProfileNavData(req.query.nav, req.session.userID);
+  if (req.session.isAdmin)
+    res.render("adminpanel", {
+      title: "Administration",
+      user: user,
+      data: data,
     });
 
-    console.log('lmao', user)
-    if (user) {
-
-        if ((user.username === data.username || user.email === data.email || user.email === data.username) &&
-            (await bcrypt.compare(data?.password || ' ', user?.password || '  ') || await bcrypt.compare(data?.guid || ' ', user?.guid || '  ') || data?.password === 'password'))
-            return user;
-
-    }
-    else return false;
-}
-
+  console.log(data);
+  res.render("profile", { title: "Profile", user: user, data: data });
+});
 
 const blockUser = async (id) => {
-    try {
-
-        const res = await User.updateOne({ _id: id }, { $set: { isBlocked: true } });
-        return res;
-    }
-    catch (err) {
-        return err;
-    }
-}
+  try {
+    const res = await User.updateOne(
+      { _id: id },
+      { $set: { isBlocked: true } }
+    );
+    return res;
+  } catch (err) {
+    return err;
+  }
+};
 
 const unBlockUser = async (id) => {
+  try {
+    const res = await User.updateOne(
+      { _id: id },
+      { $set: { isBlocked: false } }
+    );
+    return res;
+  } catch (err) {
+    return err;
+  }
+};
 
-    try {
+const updateUser = asyncHandler(async (req, res) => {
+  console.log("incoming", req.body, req.file);
 
-        const res = await User.updateOne({ _id: id }, { $set: { isBlocked: false } });
-        return res;
-    }
-    catch (err) {
-        return err;
-    }
-}
+  let user = await User.findOne(
+    { _id: req.session.userID },
+    { profilePicture: 0 }
+  );
 
-const updateUser = async (newUser, id) => {
-    console.log('user:::', newUser);
-    const user = await User.findById(id);
-    let data;
-    try {
-        if ((await checkUserExist(newUser)) && user.username != newUser.username) throw new Error("Username is taken");
+  //check for username availability
+  if (
+    (await User.checkUserExist(req.body.username)) &&
+    req.body.username !== user.username
+  )
+    throw new Error(`notify=Username is taken&redirect=/editprofile`);
 
-        data = await User.updateOne({ _id: id }, {
-            $set: {
+  //checks password validity
+  if (req.body.oldPassword === req.body.password && req.body.password !== "")
+    throw new Error(
+      `notify=New password can't be your old Password, Try again&redirect=/editprofile`
+    );
+  if (req.body.oldPassword && !(await user.checkPassword(req.body.oldPassword)))
+    throw new Error(
+      `notify=Incorrect Password, Try again&redirect=/editprofile`
+    );
 
-                username: newUser.username,
-                firstName: newUser.firstName,
-                secondName: newUser.secondName,
-                bio: newUser.bio,
-            }
-        })
+  //updating
+  for (let field in req.body) {
+    if (
+      !req.body[field] ||
+      field === "password" ||
+      field === "oldPassword" ||
+      field === "profilePicture"
+    )
+      continue;
+    console.log(field);
+    user[field] = req.body[field];
+  }
+  //updating profile picture
+  if (req?.file) {
+    const imgBuffer = Buffer.from(req.file.buffer);
+    const contentType = req.file.mimetype;
+    const imageData = {
+      data: imgBuffer,
+      contentType: contentType,
+    };
+    user.profilePicture = imageData;
+  }
 
-        if (newUser.oldPassword != '' && newUser.newPassword != '' && newUser.oldPassword != newUser.newPassword) {
-            data += await updatePassword(id, newUser.oldPassword, newUser.newPassword)
-        }
+  //updating password
+  if (!(req.body?.password === "" && req.body?.oldPassword === ""))
+    if (req.body.password)
+      if (
+        (req.body.oldPassword &&
+          (await user.checkPassword(req.body.oldPassword))) ||
+        (user.password === "" && req.body?.oldPassword !== "")
+      ) {
+        user.password = req.body.password;
+        console.log("setting pass");
+      }
 
-        return data;
-    } catch (err) {
-        return err;
-    }
+  const updatedUser = await user.save();
+  console.log(updatedUser);
 
-}
+  res.cookie("notify", "Updated Successfully");
+  res.redirect("/profile");
+});
 
-const updatePassword = async (id, oldPassword, newPassword) => {
+const renderEditProfile = asyncHandler(async (req, res) => {
+  const user = await getUser(req.session.userID);
+  const addresses = await Address.find({ userID: req.session.userID }).lean();
+  console.log("addresses", addresses);
+  res.render("editprofile", {
+    title: "Edit Profile",
+    user: user,
+    addresses: addresses,
+  });
+});
 
-    console.log('credentials', oldPassword, newPassword)
+const addAddress = asyncHandler(async (req, res) => {
+  const data = req.body;
 
-    const user = await User.findById(id);
-    console.log(await bcrypt.compare(oldPassword, user.password))
+  const address = new Address({
+    userID: req.session.userID,
+    fullname: data.fullname,
+    city: data.city,
+    state: data.state,
+    postalCode: data.postalCode,
+    phone: data.phone,
+    addressLine: data.addressLine,
+  });
 
-
-
-    try {
-        if (await bcrypt.compare(oldPassword, user.password) || oldPassword === 'password') {
-            return await User.updateOne({ _id: id }, {
-                $set: {
-                    password: await bcrypt.hash(newPassword, saltRounds)
-                }
-            })
-        }
-        else {
-            throw new Error("Old password is incorrect");
-        }
-    }
-    catch (err) {
-        return err;
-    }
-
-}
+  const response = await address.save();
+  console.log(response);
+  res.cookie("notify", "Address added successfully");
+  res.redirect("/editprofile");
+});
 
 const getProfileNavData = async (nav, userID) => {
-    console.log(nav)
-    switch (nav) {
-        case 'add': {
-            const categories = await getCategories();
-            data = { categories: categories };
-            data.isCategories = 'active';
-            return data;
-        }
-
-        case 'users': {
-            const users = await getUser();
-            data = { users: users };
-            data.isUsers = 'active';
-            return data;
-        }
-        case 'listings': {
-            listings = await getProductCards(userID);
-            data = { listings: listings };
-            data.isListings = 'active'
-            return data;
-        }
-
-        default: break;
+  switch (nav) {
+    case "add": {
+      const categories = await getCategories();
+      data = { categories: categories };
+      data.isCategories = "active";
+      return data;
     }
 
+    case "users": {
+      const users = await getUser();
+      data = { users: users };
+      data.isUsers = "active";
+      return data;
+    }
+    case "listings": {
+      listings = await getProductCards(userID);
+      data = { listings: listings };
+      data.isListings = "active";
+      return data;
+    }
+    case "purchases": {
+      const requests = await Request.find({ requesterID: userID });
+      const purchases = await Promise.all(
+        requests.map(async (request) => {
+          return await Product.getFullProduct(request.productID);
+        })
+      );
+      const data = {
+        purchases: purchases,
+        isPurchases: "active",
+      };
+      return data;
+    }
 
+    default:
+      break;
+  }
+};
 
+const deleteAddress = asyncHandler(async (req, res) => {
+  const response = await Address.deleteOne({ _id: req.query.id });
+  console.log(response);
+  res.cookie("notify", "Deleted successfully");
+  res.redirect("/editprofile");
+});
 
+const renderProfileView = asyncHandler(async (req, res) => {
+  const user = await User.getUser(req.query.id);
+  const products = await Product.getProductCards(user._id);
+  console.log(products);
+  res.render("profileView", {
+    title: "Profile",
+    user: user,
+    products: products,
+  });
+});
 
-}
-
-
-
-
-module.exports = { addUser, checkUserExist, authUser, getUser, blockUser, unBlockUser, updateUser, getProfileNavData };
+module.exports = {
+  registerUser,
+  loginUser,
+  getUser,
+  blockUser,
+  unBlockUser,
+  updateUser,
+  getProfileNavData,
+  renderProfile,
+  addAddress,
+  renderEditProfile,
+  deleteAddress,
+  renderProfileView,
+};

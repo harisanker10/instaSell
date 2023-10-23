@@ -6,9 +6,7 @@
                 <div class="nav-item active">
                     <h4>Basic Information</h4>
                 </div>
-                <div class="nav-item">
-                    <h4>Addresses</h4>
-                </div>
+
                 <div class="nav-item">
                     <h4>Financial Details</h4>
                 </div>
@@ -25,80 +23,100 @@
                 <div class="main-container p-5">
 
                     <div class="basic-info-section">
-                        <div class="col-10">
+                        <div class="col-10" id="form-container">
+                           
+                           
+                            <form id="edit-form" action="/editprofile" method="post" class="form-group " enctype="multipart/form-data">
+                            <div id="profilePicture" class="border">
+                                <img id="profile-picture"
+                                    src="data:<%= user?.profilePicture?.contentType || ''%>;base64,<%=user?.profilePicture?.data.toString('base64') || ''%>"
+                                    alt="">
 
-                            <h4 class="mb-3">Basic Information</h4>
+                                <label for="image-input" class="mb-2 fs-4 fw-lighter bg-light">
+
+
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                                        <path
+                                            d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z" />
+                                    </svg>
+
+                                </label>
+                                <input class="form-control hide" name="profilePicture" type="file" id="image-input">
+
+                            </div>
+                            
+                            <h4 class="mb-3 w-50">Basic Information</h4>
                             <div class="col-7 ">
-                                <form id="edit-form" action="/user/editprofile" method="post" class="form-group ">
-
-                                    <div class="input-group my-2">
-
-                                        <div class="form-floating">
-                                            <input name="firstName" type="text" class="form-control"
-                                                placeholder="First Name" id="form-first-name"
-                                                value="<%= user.firstName %>">
-                                            <label for="form-first-name" class="form-label">First Name</label>
-                                        </div>
-                                        <div class="form-floating">
-                                            <input name="secondName" type="text" class="form-control"
-                                                placeholder="Surname" id="form-surname" value="<%= user.secondName %>">
-                                            <label for="form-surname" class="form-label">Surname</label>
-                                        </div>
-                                    </div>
+                                <div >
 
 
-                                    <div class="form-floating my-2">
-                                        <input name="username" type=" text" class="form-control w-100" id="username"
-                                            placeholder="Username" value="<%= user.username%>">
-                                        <label for="username class=" form-label">Username</label>
-                                    </div>
+                                        <div class="input-group my-2">
 
-                                    <div class="input-group my-2 ">
-                                        <% if
-                                            (user.password==='password'
-                                            ) { %>
-
-                                            <div class="form-floating hide">
-                                                <input name="oldPassword" type="password" class="form-control w-100"
-                                                    placeholder="Password" id="password" value="password" hide>
-                                                <label for="password" class="form-label">Old Password</label>
+                                            <div class="form-floating">
+                                                <input name="firstName" type="text" class="form-control"
+                                                    placeholder="First Name" id="form-first-name"
+                                                    value="<%= user.firstName %>">
+                                                <label for="form-first-name" class="form-label">First Name</label>
                                             </div>
-                                            <% } else{ %>
+                                            <div class="form-floating">
+                                                <input name="secondName" type="text" class="form-control"
+                                                    placeholder="Surname" id="form-surname"
+                                                    value="<%= user.secondName %>">
+                                                <label for="form-surname" class="form-label">Surname</label>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-floating my-2">
+                                            <input name="username" type=" text" class="form-control w-100" id="username"
+                                                placeholder="Username" value="<%= user.username%>">
+                                            <label for="username class=" form-label">Username</label>
+                                        </div>
+
+                                        <div class="input-group my-2 ">
+                                            <% if (user.password) { %>
                                                 <div class="form-floating">
                                                     <input name="oldPassword" type="password" class="form-control w-100"
-                                                        placeholder="Password" id="password">
+                                                        placeholder="Password" id="oldPassword">
                                                     <label for="password" class="form-label">Old Password</label>
                                                 </div>
-
-                                                <% } %>
+                                                <div class="form-floating ">
+                                                    <input name="password" type="password" class="form-control w-100"
+                                                        placeholder="Password" id="password">
+                                                    <label for="password" class="form-label">New Password</label>
+                                                </div>
+                                                <% } else{ %>
                                                     <div class="form-floating ">
-                                                        <input name="newPassword" type="password"
+                                                        <input name="password" type="password"
                                                             class="form-control w-100" placeholder="Password"
                                                             id="password">
-                                                        <label for="password" class="form-label">New Password</label>
+                                                        <label for="password" class="form-label">Create a
+                                                            Password</label>
                                                     </div>
+                                                    <% } %>
 
 
-                                    </div>
+                                        </div>
 
-                                    <div class="form-floating my-2">
-                                        <textarea name="bio" class="form-control" placeholder="Leave a comment here"
-                                            id="floatingTextarea2" style="height: 100px"><%= user.bio %></textarea>
-                                        <label for="floatingTextarea2">Bio</label>
-                                    </div>
-
-
+                                        <div class="form-floating my-2">
+                                            <textarea name="bio" class="form-control " placeholder="Leave a comment here"
+                                                id="floatingTextarea2" style="height: 100px"><%= user.bio %></textarea>
+                                            <label for="floatingTextarea2">Bio</label>
+                                        </div>
 
 
 
-                                    <button class="sign-up-btn" type="submit">Update</button>
 
-                                </form>
+
+                                        <button class="sign-up-btn" type="submit">Update</button>
+
+                                    </form>
+                                </div>
                                 <hr>
 
                                 <h4 class="my-2 mt-5 mb-3">Contact Information</h4>
 
-                                <form action="">
+                                <form action="/" method="post">
 
 
 
@@ -144,10 +162,87 @@
 
                                         </button>
                                     </div>
-                                    <button class="sign-up-btn my-2" type="submit">Update</button>
+                                    <button class="sign-up-btn my-4" type="submit">Update</button>
                                 </form>
-                                <hr>
-                                  
+                                <hr class="my-4">
+                                <h4 class="my-3 mt-4">Addresses</h4>
+
+                                <div  id="current-addresses" class=" shadow border p-2 d-flex-col" >
+
+                                    <% addresses.forEach(elt => { %>
+                                     
+                                        <div class="address-card p-2 ps-3 shadow-sm bg-white m-2">
+                                            <h5><%= elt.fullname %></h5>
+                                            <h6><%= elt.addressLine %></h6>
+                                            <h6><%= elt.city %></h6>
+                                            <h6><%= elt.state %></h6>
+                                            <h6><%= elt.postalCode %></h6>
+                                            <h6><%= elt.phone %></h6>
+                                        <a href="/address/delete?id=<%=elt._id%>" class="p-1 outline-black-btn shadow-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg>
+                                        </a>
+                                        </div>
+
+                                    <% }) %>
+
+                                </div>
+
+                                <form id="edit-form" action="/address" method="post" class="form-group ">
+
+                                    <div class="form-floating my-2">
+                                        <input name="addressLine" type=" text" class="form-control w-100"
+                                            id="addressLine" placeholder="Username">
+                                        <label for="addressLine" class=" form-label">Address Line</label>
+                                    </div>
+                                    <div class="form-floating my-2">
+                                        <input name="fullname" type=" text" class="form-control w-100" id="fullname"
+                                            placeholder="Username">
+                                        <label for="fullname" class=" form-label">Full Name</label>
+                                    </div>
+                                    <div class="input-group my-2">
+
+                                        <div class="form-floating">
+                                            <input name="city" type="text" class="form-control" placeholder="City"
+                                                id="city" ">
+                                            <label for=" city" class="form-label">City</label>
+                                        </div>
+                                        <div class="form-floating">
+                                            <input name="state" type="text" class="form-control" placeholder="Surname"
+                                                id="state">
+                                            <label for="state" class="form-label">State</label>
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="input-group my-2 ">
+
+                                        <div class="form-floating">
+                                            <input name="phone" type="number" class="form-control w-100"
+                                                placeholder="Phone" id="phone">
+                                            <label for="phone" class="form-label">Phone</label>
+                                        </div>
+
+
+                                        <div class="form-floating mb-3">
+                                            <input name="postalCode" type="number" class="form-control w-100"
+                                                placeholder="Postal Code" id="postalCode">
+                                            <label for="postalCode" class="form-label">Postal Code</label>
+                                        </div>
+
+
+                                    </div>
+
+
+
+
+
+
+
+                                    <button class="sign-up-btn" type="submit">Update</button>
+
+                                </form>
+
 
 
 
@@ -163,5 +258,24 @@
 
             </div>
         </div>
+
+
+        <script>
+            const imgInput = document.querySelector('#image-input');
+            const img = document.querySelector('#profile-picture');
+            imgInput.addEventListener('input', (event) => {
+
+
+                image = event.target.files;
+                console.log(image)
+                img.src = URL.createObjectURL(image[0]);
+                img.style.objectFit = "contain";
+
+
+
+
+            })
+
+        </script>
 
         <%- include('partials/closingHead.ejs') %>

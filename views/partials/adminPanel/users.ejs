@@ -36,11 +36,11 @@
                     </td>
                     <td>
                         <% if (element.isBlocked) { %>
-                        <a id="block-user-btn" class="default-black-btn p-2 px-4 text-decoration-none" href="/user/blockuser?unblock=<%= element._id %>" >
+                        <a id="block-user-btn" class="default-black-btn p-2 px-4 text-decoration-none" href="/blockuser?unblock=<%= element._id %>" >
                                 UNBLOCK
                             </a>
                                 <% } else{%>
-                                    <a id="block-user-btn" class="default-black-btn p-2 px-4 text-decoration-none" href="/user/blockuser?block=<%= element._id %>" >
+                                    <a id="block-user-btn" class="default-black-btn p-2 px-4 text-decoration-none" href="/blockuser?block=<%= element._id %>" >
                                         BLOCK
                                     </a>
                                     <% } %>   

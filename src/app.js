@@ -1,13 +1,13 @@
 const express = require('express');
 const app = express();
 require('dotenv').config();
-const ejs = require('ejs');
-const { connection, bucket } = require('../config/development/connection');
-const path = require('path')
-const bodyParser = require('body-parser')
-const multer = require('multer');
+const { connect } = require('../config/development/connection');
+connect();
+const path = require('path');
+const bodyParser = require('body-parser');
 const session = require('express-session');
 
+const errorHandler = require('./middleware/errorHandler');
 
 
 app.use(express.static(path.join(__dirname, '../public')));
@@ -16,7 +16,7 @@ app.set('view engine', 'ejs');
 
 
 app.use(session({
-    secret: 'your-secret-key',
+    secret: 'sdafhna324bjsdf62621%^%61266@!#asdasdfafd',
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -29,45 +29,46 @@ app.use((req, res, next) => {
     next();
 })
 
-
-app.use((req, res, next) => {
-    if (req.session.username) {
-        res.locals.username = req.session.username
+app.use((req,res,next)=>{
+    if(req.session.isAdmin)res.locals.isAdmin =true;
+    else res.locals.isAdmin = null;
+    if(req.session.username){
+        res.locals.username = req.session.username;
+        res.locals.userID = req.session.userID;
     }
-    else { res.locals.username = null }
+    else {
+        res.locals.username = null;
+        res.locals.userID = null;
 
-    next();
+    }
+    next()
 })
+
+
+
 
 
 
 
 
 app.set('views', path.join(__dirname, '../views'))
-const userRouter = require('../src/routes/user');
+const indexRouter = require('./routes/index');
 const productRouter = require('../src/routes/product.js');
 const categoryRouter = require('../src/routes/category')
+const addressRouter = require('../src/routes/address')
 
-app.use('/user', userRouter);
+app.use('/',indexRouter);
 app.use('/product', productRouter);
 app.use('/category', categoryRouter);
-
-app.get('/', (req, res) => {
-    res.render('landing', { title: "Home" });
-})
+app.use('/address', addressRouter)
 
 
 
 
-app.use((err, req, res, next) => {
-    console.log('ERROR LOGGER:', err);
-    res.cookie("notify", "Some error occured");
-    if (err.message) res.cookie("notify", err.message);
 
-    if (err.notify) res.cookie("notify", err.notify);
-    if (err.redirect) res.redirect(err.redirect);
-    res.redirect('/');
-})
+
+
+app.use(errorHandler);
 
 
 
@@ -76,3 +77,6 @@ app.listen(process.env.PORT, () => {
     console.log(`Listening at PORT ${process.env.PORT}`);
 })
 
+
+  
+  

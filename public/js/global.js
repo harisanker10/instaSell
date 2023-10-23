@@ -43,5 +43,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     })
 
+    const onClickBtns = document.querySelectorAll('.on-click-btn');
+    onClickBtns.forEach(btn=>{
+        btn.addEventListener('click',(event)=>{
+            const link = btn.getAttribute('navLink');
+            if(link){
+                event.preventDefault();
+                window.location.href = btn.getAttribute('navLink');
+            }
+        })
+    })
+
     
 // });
