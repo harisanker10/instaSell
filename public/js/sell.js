@@ -12,8 +12,8 @@ const subCatInput = document.querySelector('#sub-category-input');
 
 
 const getLocationBtn = document.querySelector('#get-location-btn');
-const locationInput = document.querySelector('#sell-form-location');
-const initialLocationValue = locationInput.value;
+const locationBtn = document.querySelector('#sell-form-location');
+const initialLocationValue = locationBtn.value;
 
 let images = [];
 let locationData;
@@ -170,7 +170,7 @@ getLocationBtn.addEventListener('click', (event) => {
         fetch(url)
             .then((res) => res.json())
             .then((data) => {
-                locationInput.value = data.features[0].properties.city;
+                locationBtn.value = data.features[0].properties.city;
 
                 locationData = {
                     name: data.features[0].properties?.suburb || data.features[0].properties?.city,
@@ -192,7 +192,7 @@ getLocationBtn.addEventListener('click', (event) => {
 })
 
 
-locationInput.addEventListener('blur', (event) => {
+locationBtn.addEventListener('blur', (event) => {
     const name = event.target.value;
     if (initialLocationValue === name) return;
 
@@ -209,9 +209,9 @@ locationInput.addEventListener('blur', (event) => {
 
             console.log(locationDetails)
 
-            locationInput.value = `${event.target.value}, ${locationDetails?.city}, ${locationDetails?.state}`;
+            locationBtn.value = `${event.target.value}, ${locationDetails?.city}, ${locationDetails?.state}`;
 
-            if (locationInput.value.includes('undefined')) locationInput.value = '';
+            if (locationBtn.value.includes('undefined')) locationBtn.value = '';
 
             locationData = {
                 name: name,
@@ -224,11 +224,11 @@ locationInput.addEventListener('blur', (event) => {
         })
         .catch(err => {
             console.log(err);
-            locationInput.value = '';
+            locationBtn.value = '';
             window.notify("Try a different location")
         })
 
-        
+
 })
 
 

@@ -98,8 +98,8 @@ orderBtn.addEventListener('click', (event) => {
     }).then(res => {
         console.log(res);
         return res.json()
-        
-    }).then(({url}) => {
+
+    }).then(({ url }) => {
         console.log(url);
         window.location.href = url
     })

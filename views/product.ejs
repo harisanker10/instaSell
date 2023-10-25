@@ -59,9 +59,9 @@
               </h2>
             </span>
             <span class="product-title">
-              <h2>
+              <h5 class="fw-bolder">
                 <%= product.title %>
-              </h2>
+              </h5>
             </span>
             <span class="product-location">
               <%= product.location %>
@@ -93,15 +93,19 @@
 
                 </form>
                 <% }else if(request.isAccepted){ %>
-                  <button class="on-click-btn default-black-btn mt-4" style="height:2.5rem" navLink="/product/checkout?productID=<%=product._id%>">Place Order</button>
-                <% }else{ %>
+                  <button class="on-click-btn default-black-btn mt-4" style="height:2.5rem"
+                    navLink="/product/checkout?productID=<%=product._id%>">Place Order</button>
+                  <% }else{ %>
 
-                  <button class="on-click-btn btn btn-outline-secondary default-black-btn my-2 mt-3" navLink="/product/cancelRequest?productID=<%=product._id%>" style="background-color: black;">Cancel Request</button>
-                  <p class="mb-2 text-center">Requested for ₹<%= request.amount%></p>
-
-                  <% } %>
+                    <button class="on-click-btn btn btn-outline-secondary default-black-btn my-2 mt-3"
+                      navLink="/product/cancelRequest?productID=<%=product._id%>"
+                      style="background-color: black;">Cancel Request</button>
+                    <p class="mb-2 text-center">Requested for ₹<%= request.amount%>
+                    </p>
 
                     <% } %>
+
+                      <% } %>
           </div>
 
 
@@ -139,39 +143,66 @@
         </div>
       </div>
 
-      <div class="product-details p-4">
-        <div class="w-50">
-          <div>
-            <h3>Details</h3>
+      <div class="product-details d-flex justify-content-between">
+        <div class="col-8 p-4">
+
+          <div class="">
+            <div>
+              <h3>Details</h3>
+            </div>
+            <div>
+
+              <table class="table table-borderless" style="width: 50%;">
+                <tbody>
+
+                  <% product.details.forEach(elt=> { %>
+
+
+                    <tr>
+                      <td>
+                        <%= elt[0] %>
+                      </td>
+                      <td>
+                        <%= elt[1] %>
+                      </td>
+
+                    </tr>
+                    <% }) %>
+                </tbody>
+              </table>
+            </div>
+
           </div>
+          <hr>
+          <h3>Description</h3>
+          <p>
+            <%= product.description %>
+          </p>
+        </div>
+        <div class=" border" style="width :23.35rem;">
+          <div class="btn-green-default ongoing-req w-100 text-center fw-bold" style="box-shadow: 0px;">Ongoing Requests</div>
           <div>
-
-            <table class="table table-borderless">
+            <table class="table ">
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Price</th>
+                 
+                </tr>
+              </thead>
               <tbody>
-
-                <% product.details.forEach(elt=> { %>
-
-
-                  <tr>
-                    <td>
-                      <%= elt[0] %>
-                    </td>
-                    <td>
-                      <%= elt[1] %>
-                    </td>
-
+                <% requests.forEach(req => { %>
+                 
+                  <tr class="">
+                    <td><%= req.requesterID.firstName %> <%= req.requesterID.secondName %></td>
+                    <td><%=req.amount  %></td>
                   </tr>
                   <% }) %>
+               
               </tbody>
             </table>
           </div>
-
         </div>
-        <hr>
-        <h3>Description</h3>
-        <p>
-          <%= product.description %>
-        </p>
       </div>
 
     </div>

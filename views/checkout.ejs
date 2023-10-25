@@ -76,14 +76,14 @@
             <% }) %>
         </div>
     </div>
-    <div class="checkout-container border border-2 " productId="<%=product._id%>" price="<%=product.price%>" userId="<%=product.userId%>">
+    <div class="checkout-container border border-2 " productId="<%=product._id%>" price="<%=request.amount%>" userId="<%=product.userId%>">
             <div class="img-container">
                 <img class="list-card-img" src="data:image/;base64,<%=product.images[0].toString('base64') || ''%>"
                 alt="Title">                
             </div>
 
             <div class="details d-flex-col ps-4 pt-4 border border-bottom">
-                <h3 class="mb-0">₹<%= product.price%></h3>
+                <h3 class="mb-0">₹<%= request.amount%></h3>
                 <h4 class="p-2 ps-0"><b><%= product.title%></b></h4>
                 <div class="d-flex mt-2 justify-content-between px-4 ps-0">
 
@@ -99,15 +99,15 @@
                     <tbody >
                       <tr >
                         <th scope="row">Amount</th>
-                        <td>₹<%=product.price%></td>
+                        <td>₹<%=request.amount%></td>
                       </tr>
                       <tr>
                         <th scope="row">Transaction Fee (1%)</th>
-                        <td>₹<%=product.price*0.01%></td>
+                        <td>₹<%=request.amount*0.01%></td>
                       </tr>
                       <tr class="my-2">
                         <th scope="row">Total</th>
-                        <td><%=product.price + (product.price*0.01)%></td>
+                        <td><%=request.amount + (request.amount*0.01)%></td>
                       </tr>
                     </tbody>
                   </table>

@@ -1,5 +1,4 @@
 const express = require('express');
-const app = express();
 const router = require('express').Router();
 
 const multer = require('multer');
@@ -17,6 +16,7 @@ const { saveProduct,
     placeOrder,
     getCards,
     renderBuyStatus,
+    addCourier
 } = require('../controllers/productController');
 
 
@@ -29,7 +29,6 @@ const { isAuth } = require('../middleware/isAuth');
 const upload = multer({ storage: multer.memoryStorage() });
 
 router.get('/', renderProduct)
-router.get('/getCards', getCards);
 
 
 router.use(isAuth);
@@ -81,7 +80,10 @@ router.get('/checkout', renderCheckout)
 
 router.post('/order', upload.any(),placeOrder)
 
-router.get('/buyStatus',renderBuyStatus)
+router.get('/buyStatus',renderBuyStatus);
+
+router.post('/courier',upload.any(),addCourier)
+
 
 
 
