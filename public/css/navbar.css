@@ -106,6 +106,12 @@
     color: #000000;
     outline: #000000;
     border: 0px;
+
+ }
+
+ .location-btn:focus{
+    background-color: #ADFF45;
+    outline: none;
  }
 
  .profile-dropdown{

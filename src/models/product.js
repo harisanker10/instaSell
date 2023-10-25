@@ -89,7 +89,8 @@ async function getImages(imageIDs) {
 
 productSchema.statics.getFullProduct = async function (productID) {
 
-    const product = await this.findOne({ _id: productID }).lean();
+    const product = await this.findOne({ _id: new mongoose.mongo.ObjectId(productID) }).lean();
+    console.log(product);
     product.images = await getImages(product.images);
     product.createdAt = convertISODate(product.createdAt)
     product.updatedAtAt = convertISODate(product.updatedAt)

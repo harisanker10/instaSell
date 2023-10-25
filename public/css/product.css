@@ -106,3 +106,12 @@ hr{
     border: 1px solid #a7a7a7;
 }
 
+.ongoing-req:hover{
+background-color: #ADFF45;
+overflow: scroll;
+}
+
+.ongoing-req{
+    box-shadow: 0px;
+}
+

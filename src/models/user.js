@@ -70,7 +70,6 @@ userSchema.methods.checkPassword = async function (password) {
 
 
 userSchema.pre('save', async function (next) {
-  console.log('----------------------------This is a pre save message from middleware-----------------------------')
   if (this.isModified('password') && this.password !== '') {
     const saltRounds = 10;
     const salt = await bcrypt.genSalt(saltRounds);

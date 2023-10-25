@@ -11,27 +11,34 @@ const orderSchema = new mongoose.Schema({
         required: true,
         ref: 'User'
     },
+    productID:{
+        type:mongoose.Types.ObjectId,
+        required:true,
+        ref:'Product'
+    },
     price: {
-        type: Number,
-        required: true,
+        listPrice: Number,
+        transactionPercent: Number,
+        totalPrice:Number,
     },
     status: {
         type: String,
-        enum: [placed, inTransit, delivered],
-        default:'placed'
+        enum: ['placed', 'inTransit', 'delivered'],
+        default: 'placed'
     },
     address: {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.mongo.ObjectId,
         ref: 'Address'
     },
     courier: {
         carrier: String,
         trackingId: String
     },
-    buyerTransaction: mongoose.Types.ObjectId,
-    sellerTransaction: mongoose.Types.ObjectId
+    stripeTransactionId: {
+        type: String,
+        required: true
 
-}, { timestamps: true });
+    }}, { timestamps: true });
 
 const Order = mongoose.model('Order', orderSchema);
 

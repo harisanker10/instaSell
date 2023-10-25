@@ -1,26 +1,37 @@
 const mongoose = require("mongoose");
 const geolib = require("geolib");
+const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY)
+const asyncHandler = require("express-async-handler");
 
 const Product = require("../models/product");
 const Address = require("../models/address");
 const User = require("../models/user");
-const convertISODate = require("../utils/formatDate");
-const asyncHandler = require("express-async-handler");
 const { Category, SubCategory } = require("../models/category");
 const Request = require("../models/request");
-const product = require("../models/product");
-const getImageAsBuffer = require("../utils/getImageAsBuffer");
+const Order = require('../models/order')
+const Configuration = require('../models/configuration');
+const Courier = require('../models/courier')
 
-const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY)
+const getImageAsBuffer = require("../utils/getImageAsBuffer");
+// const isInRadius = require('../utils/isInRadius');
+const convertISODate = require("../utils/formatDate");
 
 
 
 let db, bucket;
-
 mongoose.connection.on("connected", () => {
   db = mongoose.connection.db;
   bucket = new mongoose.mongo.GridFSBucket(db, { bucketName: "images" });
 });
+
+const isInRadius = (cord1, cord2, distance) => {
+  console.log(cord1, cord2, distance);
+
+  if (geolib.getDistance(cord1, cord2) > distance * 1000) return false;
+  return true;
+};
+
+
 
 const saveProduct = asyncHandler(async (item, images) => {
   const { name, city, lat, lon } = JSON.parse(item.location);
@@ -30,9 +41,6 @@ const saveProduct = asyncHandler(async (item, images) => {
     lat,
     lon,
   };
-
-  console.log("location", location);
-
   const imageIDs = await saveImgs(images);
   const product = new Product({
     title: item.title,
@@ -50,7 +58,6 @@ const saveProduct = asyncHandler(async (item, images) => {
 });
 
 const saveImgs = asyncHandler(async (files) => {
-  //returns an array of IDs of images after saving
 
   const imageIds = [];
   for (const file of files) {
@@ -61,12 +68,6 @@ const saveImgs = asyncHandler(async (files) => {
   return imageIds;
 });
 
-const isInRadius = (cord1, cord2, distance) => {
-  console.log(cord1, cord2, distance);
-
-  if (geolib.getDistance(cord1, cord2) > distance * 1000) return false;
-  return true;
-};
 
 async function getImages(imageIDs) {
   const images = await Promise.all(
@@ -112,23 +113,40 @@ const getProductCards = async (id) => {
   return products;
 };
 
-const renderProduct = asyncHandler(async (req, res) => {
-  const product = await Product.getFullProduct(req.query.id);
-  const user = await User.findOne(
-    { _id: product.userID },
-    { profilePicture: 1, firstName: 1, secondName: 1 }
-  );
-  const request = await Request.findOne({
-    requesterID: req.session?.userID,
-    productID: req.query.id,
-  });
+const renderProduct = asyncHandler(async (req, res, next) => {
 
-  res.render("product", {
-    title: "Product",
-    product: product,
-    user: user,
-    request: request,
-  });
+  const order = await Order.findOne({ productID: req.query.id, buyerID: req.session.userID });
+  if (order) {
+    res.redirect(`/product/buyStatus?id=${req.query.id}`)
+  } else {
+
+
+    const product = await Product.getFullProduct(req.query.id);
+    const user = await User.findOne(
+      { _id: product.userID },
+      { profilePicture: 1, firstName: 1, secondName: 1 }
+    );
+    const request = await Request.findOne({
+      requesterID: req.session?.userID,
+      productID: req.query.id,
+    });
+
+    const requests = await Request.find({productID:req.query.id})
+                                .populate({
+                                  path:'requesterID',
+                                  select: 'firstName secondName _id'
+                                });
+  console.log(requests)                                
+
+
+    res.render("product", {
+      title: "Product",
+      product,
+      user,
+      request,
+      requests
+    });
+  }
 });
 
 const renderEdit = asyncHandler(async (req, res) => {
@@ -196,7 +214,7 @@ const renderSearch = asyncHandler(async (req, res) => {
     maxPrice,
   } = req.query;
 
-  if (searchQuery || searchQuery) {
+  if (!searchQuery) {
     searchQuery = "";
   }
 
@@ -252,7 +270,7 @@ const renderSearch = asyncHandler(async (req, res) => {
 
   let products = await getQueryStateProduct(matchConditions, sortConditions);
 
-  //    console.log(products);
+
 
   if (distance) {
     if (!lat || !lon)
@@ -363,7 +381,6 @@ const toggleWishlist = asyncHandler(async (req, res) => {
     res.status(200).json({ message: false });
   }
 
-  // res.status(500).json({ message: 'Something went wrong' })
 });
 
 const cancelRequest = asyncHandler(async (req, res) => {
@@ -381,6 +398,32 @@ const cancelRequest = asyncHandler(async (req, res) => {
 });
 
 const renderStatus = asyncHandler(async (req, res) => {
+
+  let order,courier;
+  order = await Order.findOne({ productID: req.query.productID }).populate({
+    path: 'buyerID',
+    select: 'firstName secondName _id'
+  }).populate({
+    path: 'address'
+  }).populate({
+    path: 'sellerID',
+    select: 'firstName secondName _id'
+  }).populate({
+    path: 'productID',
+    select: 'location price title images'
+  }).lean()
+
+  console.log('orderrrrr', order);
+  if (order) {
+
+    order.productID.images = await getImages(order.productID.images);
+
+    const buffer = order.productID.images[0];
+    const base64Image = buffer.toString("base64");
+    order.productID.images = `data:image/jpeg;base64,${base64Image}`;
+  }
+
+
   const requests = await Request.find({
     productID: req.query.productID,
   }).populate({
@@ -389,16 +432,19 @@ const renderStatus = asyncHandler(async (req, res) => {
     select: "firstName secondName",
   });
 
-  console.log(requests);
+  courier = await Courier.findOne({productID:req.query.productID});
 
-  res.render("status", { title: "Status", requests });
+
+  res.render("status", { title: "Status", requests, order, courier });
 });
 
 const acceptRequest = asyncHandler(async (req, res) => {
   console.log(req.query.requestID);
+  console.log(req.query.to)
+  const to = JSON.parse(req.query.to);
   const response = await Request.updateOne(
     { _id: req.query.requestID },
-    { $set: { isAccepted: true } }
+    { $set: { isAccepted: to } }
   );
   console.log(response);
   if (!response.modifiedCount) throw new Error(`Couldn't update request`);
@@ -420,25 +466,15 @@ const renderLanding = asyncHandler(async (req, res) => {
 const renderCheckout = asyncHandler(async (req, res) => {
   const product = await Product.getFullProduct(req.query.productID);
   const addresses = await Address.find({ userID: req.session.userID });
+  const request = await Request.findOne({productID:req.query.productID,requesterID:req.session.userID});
+  console.log(request)
   res.render("checkout", {
     title: "Checkout",
-    product: product,
-    addresses: addresses,
+    product,
+    addresses,
+    request
   });
 });
-
-
-/*const stripe = require('stripe')('sk_test_51NvA0wSASzCg3MyV7b4YT44fdTCN29ZuaAGr7BzsCrfsepIM1o2nWb1H3K1kmqKXv7h88pQY7OCUofKKj7Ox6jan00dBjSGHWC');
-
-const session = await stripe.checkout.sessions.create({
-  success_url: 'https://example.com/success',
-  line_items: [
-    {price: 'price_H5ggYwtDq4fbrJ', quantity: 2},
-  ],
-  mode: 'payment',
-});
-*/
-
 
 
 
@@ -452,22 +488,23 @@ const placeOrder = asyncHandler(async (req, res) => {
     mode: 'payment',
     line_items: [{
 
-      price_data:{
-        currency:'inr',
-        product_data:{
+      price_data: {
+        currency: 'inr',
+        product_data: {
           name: req.body.productTitle,
         },
-        unit_amount: req.body.price*101
+        unit_amount: req.body.price * 101
       },
-      quantity:1
+      quantity: 1
 
 
     }],
-    success_url: `${process.env.SERVER_URL}/`,
-    cancel_url: `${process.env.SERVER_URL}/product/${req.body.productID}`
+    success_url: `${process.env.SERVER_URL}/product/buyStatus?id=${req.body.productID}`,
+    cancel_url: `${process.env.SERVER_URL}/product?id=${req.body.productID}`
   })
 
-  console.log(session.url)
+  req.session.order = { stripeTransactionId: session.id, address: req.body.address,requestedAmont:req.body.price };
+  console.log(session.url);
 
   res.status(200).json({ url: session.url })
 
@@ -476,28 +513,80 @@ const placeOrder = asyncHandler(async (req, res) => {
 });
 
 
-const getCards = asyncHandler(async (req, res) => {
-  const products = await Product.getProductCards(
-    undefined,
-    req.query?.catId,
-    req.query?.subCatId
-  );
-  products.forEach((item) => {
-    const buffer = item.images[0];
-    const base64Image = buffer.toString("base64");
-    item.images = `data:image/jpeg;base64,${base64Image}`;
-  });
-
-  console.log(product[0]);
-
-  res.status(200).json(products);
-});
 
 
+const renderBuyStatus = asyncHandler(async (req, res) => {
 
-const renderBuyStatus = asyncHandler(async(req,res)=>{
 
-  res.render('buyStatus')
+  let order,courier;
+
+  const product = await Product.getFullProduct(req.query.id);
+  if (req.session.order && req.session.order.stripeTransactionId) {
+
+    const { stripeTransactionId, address,requestedAmont } = req.session.order;
+    console.log(stripeTransactionId, address)
+    const stripeSession = await stripe.checkout.sessions.retrieve(req.session.order.stripeTransactionId);
+    const order = new Order({
+      buyerID: req.session.userID,
+      sellerID: product.userID,
+      productID: req.query.id,
+      price: {
+        transactionPercent: (await Configuration.findOne({ name: 'transactionFeePercent' })).value,
+        totalPrice: stripeSession.amount_total / 100,
+        listPrice: requestedAmont
+      },
+      address,
+      stripeTransactionId
+    })
+    const data = await order.save();
+    if (!data) throw new Error(`Couldn't save order details`);
+    res.cookie("notify", "Order placed successfully");
+    req.session.order = null;
+  }
+
+  order = await Order.findOne({ productID: req.query.id }).populate({
+    path: 'buyerID',
+    select: 'firstName secondName _id'
+  }).populate({
+    path: 'address'
+  }).populate({
+    path: 'sellerID',
+    select: 'firstName secondName _id'
+  }).populate({
+    path: 'productID',
+    select: 'location price title images'
+  }).lean()
+
+  order.productID.images = await getImages(order.productID.images);
+
+  const buffer = order.productID.images[0];
+  const base64Image = buffer.toString("base64");
+  order.productID.images = `data:image/jpeg;base64,${base64Image}`;
+
+  courier = await Courier.findOne({productID:req.query.id});
+
+
+  console.log('order:::::::::', order)
+
+
+
+  res.render('buyStatus', { title: 'Status', order,courier })
+
+})
+
+
+const addCourier = asyncHandler(async (req, res) => {
+
+  console.log(req.body)
+  const courier = new Courier({
+    carrier: req.body.carrier,
+    courierID: req.body.courierID,
+    productID: req.body.productID,
+
+  })
+  const data = await courier.save();
+  if(!data) throw new Error("couldn't add courier details");
+  res.redirect(`/product/status?productID=${req.body.productID}`);
 
 })
 
@@ -520,12 +609,23 @@ module.exports = {
   renderLanding,
   renderCheckout,
   placeOrder,
-  getCards,
-  renderBuyStatus
+  renderBuyStatus,
+  addCourier
 };
 
+
+
 const getQueryStateProduct = async (matchConditions, sortConditions) => {
+  matchConditions.push({ orders: { $size: 0 } });
   const products = await Product.aggregate([
+    {
+      $lookup: {
+        from: 'orders',
+        localField: '_id',
+        foreignField: 'productID',
+        as: 'orders'
+      }
+    },
     {
       $match: {
         $and: matchConditions,
@@ -550,10 +650,7 @@ const getQueryStateProduct = async (matchConditions, sortConditions) => {
   return products;
 };
 
-// const func = async () => {
-//     console.log(
-//         geolib.getDistance({latitude:9.9380519,longitude:76.321859},{latitude:29.1229234,longitude:79.6868848})
-//     )
-// }
+const func = async () => {
 
-// func()
+}
+
