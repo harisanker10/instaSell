@@ -115,6 +115,8 @@ const getProductCards = async (id) => {
 
 const renderProduct = asyncHandler(async (req, res, next) => {
 
+  console.log('reqqqqqq', req.query.id)
+
   const order = await Order.findOne({ productID: req.query.id, buyerID: req.session.userID });
   if (order) {
     res.redirect(`/product/buyStatus?id=${req.query.id}`)
@@ -131,13 +133,14 @@ const renderProduct = asyncHandler(async (req, res, next) => {
       productID: req.query.id,
     });
 
-    const requests = await Request.find({productID:req.query.id})
-                                .populate({
-                                  path:'requesterID',
-                                  select: 'firstName secondName _id'
-                                });
-  console.log(requests)                                
+    const requests = await Request.find({ productID: req.query.id })
+      .populate({
+        path: 'requesterID',
+        select: 'firstName secondName _id'
+      });
+    console.log(requests)
 
+    user.imgSrc = `data:${user.profilePicture.contentType};base64,${user.profilePicture.data.toString('base64')}`
 
     res.render("product", {
       title: "Product",
@@ -151,8 +154,9 @@ const renderProduct = asyncHandler(async (req, res, next) => {
 
 const renderEdit = asyncHandler(async (req, res) => {
   console.log("query params", req.query.id);
+
   const categories = await Category.find({});
-  const product = await Product.getFullProduct({ _id: req.query.id });
+  const product = await Product.getFullProduct(req.query.id);
   console.log(product);
   res.render("editProduct", {
     title: "Edit Product",
@@ -220,7 +224,7 @@ const renderSearch = asyncHandler(async (req, res) => {
 
   console.log(searchQuery, category, subCategory, sort, lat, lon);
 
-  let sortConditions = { createdAt: -1 };
+  let sortConditions = { specificity: 1 };
 
   switch (sort) {
     case "plth":
@@ -245,17 +249,18 @@ const renderSearch = asyncHandler(async (req, res) => {
       $or: [
         { title: { $regex: searchQuery, $options: "i" } },
         { details: { $regex: searchQuery, $options: "i" } },
-        { category: { $regex: searchQuery, $options: "i" } },
-        { subCategory: { $regex: searchQuery, $options: "i" } },
+        { description: { $regex: searchQuery, $options: "i" } },
+        { category: { $regex: searchQuery, $options: 'i' } },
+        { subCategory: { $regex: searchQuery, $options: 'i' } }
       ],
     },
   ];
 
   if (category)
-    matchConditions.push({ category: new mongoose.mongo.ObjectId(category) });
+    matchConditions.push({ category: category });
   if (subCategory)
     matchConditions.push({
-      subCategory: new mongoose.mongo.ObjectId(subCategory),
+      subCategory: subCategory,
     });
 
   if (minPrice && maxPrice) {
@@ -268,8 +273,8 @@ const renderSearch = asyncHandler(async (req, res) => {
   }
   console.log(matchConditions);
 
-  let products = await getQueryStateProduct(matchConditions, sortConditions);
-
+  let products = await getQueryStateProduct(matchConditions, sortConditions, searchQuery);
+  console.log(products[0])
 
 
   if (distance) {
@@ -399,7 +404,7 @@ const cancelRequest = asyncHandler(async (req, res) => {
 
 const renderStatus = asyncHandler(async (req, res) => {
 
-  let order,courier;
+  let order, courier;
   order = await Order.findOne({ productID: req.query.productID }).populate({
     path: 'buyerID',
     select: 'firstName secondName _id'
@@ -421,6 +426,7 @@ const renderStatus = asyncHandler(async (req, res) => {
     const buffer = order.productID.images[0];
     const base64Image = buffer.toString("base64");
     order.productID.images = `data:image/jpeg;base64,${base64Image}`;
+
   }
 
 
@@ -432,7 +438,7 @@ const renderStatus = asyncHandler(async (req, res) => {
     select: "firstName secondName",
   });
 
-  courier = await Courier.findOne({productID:req.query.productID});
+  courier = await Courier.findOne({ productID: req.query.productID });
 
 
   res.render("status", { title: "Status", requests, order, courier });
@@ -466,7 +472,7 @@ const renderLanding = asyncHandler(async (req, res) => {
 const renderCheckout = asyncHandler(async (req, res) => {
   const product = await Product.getFullProduct(req.query.productID);
   const addresses = await Address.find({ userID: req.session.userID });
-  const request = await Request.findOne({productID:req.query.productID,requesterID:req.session.userID});
+  const request = await Request.findOne({ productID: req.query.productID, requesterID: req.session.userID });
   console.log(request)
   res.render("checkout", {
     title: "Checkout",
@@ -503,7 +509,7 @@ const placeOrder = asyncHandler(async (req, res) => {
     cancel_url: `${process.env.SERVER_URL}/product?id=${req.body.productID}`
   })
 
-  req.session.order = { stripeTransactionId: session.id, address: req.body.address,requestedAmont:req.body.price };
+  req.session.order = { stripeTransactionId: session.id, address: req.body.address, requestedAmont: req.body.price };
   console.log(session.url);
 
   res.status(200).json({ url: session.url })
@@ -518,12 +524,12 @@ const placeOrder = asyncHandler(async (req, res) => {
 const renderBuyStatus = asyncHandler(async (req, res) => {
 
 
-  let order,courier;
+  let order, courier;
 
   const product = await Product.getFullProduct(req.query.id);
   if (req.session.order && req.session.order.stripeTransactionId) {
 
-    const { stripeTransactionId, address,requestedAmont } = req.session.order;
+    const { stripeTransactionId, address, requestedAmont } = req.session.order;
     console.log(stripeTransactionId, address)
     const stripeSession = await stripe.checkout.sessions.retrieve(req.session.order.stripeTransactionId);
     const order = new Order({
@@ -563,14 +569,14 @@ const renderBuyStatus = asyncHandler(async (req, res) => {
   const base64Image = buffer.toString("base64");
   order.productID.images = `data:image/jpeg;base64,${base64Image}`;
 
-  courier = await Courier.findOne({productID:req.query.id});
+  courier = await Courier.findOne({ productID: req.query.id });
 
 
   console.log('order:::::::::', order)
 
 
 
-  res.render('buyStatus', { title: 'Status', order,courier })
+  res.render('buyStatus', { title: 'Status', order, courier })
 
 })
 
@@ -585,7 +591,7 @@ const addCourier = asyncHandler(async (req, res) => {
 
   })
   const data = await courier.save();
-  if(!data) throw new Error("couldn't add courier details");
+  if (!data) throw new Error("couldn't add courier details");
   res.redirect(`/product/status?productID=${req.body.productID}`);
 
 })
@@ -615,7 +621,7 @@ module.exports = {
 
 
 
-const getQueryStateProduct = async (matchConditions, sortConditions) => {
+const getQueryStateProduct = async (matchConditions, sortConditions, searchQuery) => {
   matchConditions.push({ orders: { $size: 0 } });
   const products = await Product.aggregate([
     {
@@ -627,9 +633,61 @@ const getQueryStateProduct = async (matchConditions, sortConditions) => {
       }
     },
     {
+      $lookup: {
+        from: 'categories',
+        localField: 'category',
+        foreignField: '_id',
+        as: 'category'
+      }
+    },
+    {
+      $lookup: {
+        from: 'subcategories',
+        localField: 'subCategory',
+        foreignField: '_id',
+        as: 'subCategory'
+      }
+    },
+    {
+      $addFields: {
+        category: {
+          $arrayElemAt: ['$category.name', 0]
+        },
+        subCategory: {
+          $arrayElemAt: ['$subCategory.name', 0]
+        }
+      }
+    },
+    {
       $match: {
         $and: matchConditions,
       },
+    },
+    {
+      $addFields: {
+        specificity: {
+          $switch: {
+            branches: [
+              { case: { $regexMatch: { input: "$title", regex: searchQuery, options: "i" } }, then: 1 },
+              { case: { $regexMatch: { input: "$details", regex: searchQuery, options: "i" } }, then: 2 },
+              { case: { $regexMatch: { input: "$description", regex: searchQuery, options: "i" } }, then: 5 },
+              {
+                case: {
+                  $regexMatch: { input: "$category", regex: searchQuery, options: "i" },
+                },
+                then: 4
+              },
+              {
+                case: {
+                  $regexMatch: { input: "$subCategory", regex: searchQuery, options: "i" },
+                },
+                then: 3
+              }
+            ],
+            default: 10
+          }
+        }
+      }
     },
     {
       $sort: sortConditions,
@@ -640,9 +698,11 @@ const getQueryStateProduct = async (matchConditions, sortConditions) => {
         price: 1,
         title: 1,
         location: 1,
-
+        category: 1,
+        subCategory: 1,
         createdAt: 1,
         userID: 1,
+        specificity: 1
       },
     },
   ]);
