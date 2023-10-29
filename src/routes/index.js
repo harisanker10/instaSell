@@ -15,6 +15,7 @@ const { registerUser,
     renderEditProfile,
     deleteAddress,
     renderProfileView,
+    getUsers
 
 } = require('../controllers/userController');
 
@@ -81,6 +82,8 @@ router.post('/editprofile', isAuth, upload.single('profilePicture'), updateUser)
 router.post('/address', isAuth, addAddress)
 
 router.get('/address/delete', isAuth, deleteAddress)
+
+router.get('/getUsers', isAuth, getUsers)
 
 
 

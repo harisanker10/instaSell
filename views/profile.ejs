@@ -8,10 +8,7 @@
                     <div class="card-body">
                         <% if (user && user.profilePicture) { %>
                             <div class="mb-3" id="image-container">
-                                <%if(user && user.profilePicture){%>
-                                <img src="data:<%= user?.profilePicture?.contentType%>;base64,<%=user?.profilePicture?.data.toString('base64') %>"
-                                    alt="">
-                                    <%}%>
+                                <img src="<%= user.imgSrc %>" alt="">                                
                             </div>
                             <% } %>
                                 <h5 class=" card-title fs-4">

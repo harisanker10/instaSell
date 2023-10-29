@@ -29,7 +29,7 @@
                             <form id="edit-form" action="/editprofile" method="post" class="form-group " enctype="multipart/form-data">
                             <div id="profilePicture" class="border">
                                 <img id="profile-picture"
-                                    src="data:<%= user?.profilePicture?.contentType || ''%>;base64,<%=user?.profilePicture?.data.toString('base64') || ''%>"
+                                    src=<%= user?.imgSrc %>
                                     alt="">
 
                                 <label for="image-input" class="mb-2 fs-4 fw-lighter bg-light">

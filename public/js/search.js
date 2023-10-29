@@ -63,6 +63,7 @@ subCats.forEach((scat) => {
     state.category = category;
     state.search = "";
     state.subCategory = scat.getAttribute("subCatId");
+    
     fetchProducts();
   });
 });

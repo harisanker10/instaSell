@@ -97,6 +97,10 @@ const loginUser = asyncHandler(async (req, res) => {
 const renderProfile = asyncHandler(async (req, res) => {
   const user = await getUser(req.session.userID);
   let data = { analytics: "analytics" };
+  if (user.profilePicture && user.profilePicture.data) {
+    user.imgSrc = `data:${user?.profilePicture?.contentType};base64,${user?.profilePicture?.data.toString('base64')}`
+  }
+
   data = await getProfileNavData(req.query.nav, req.session.userID);
   if (req.session.isAdmin)
     res.render("adminpanel", {
@@ -202,8 +206,12 @@ const updateUser = asyncHandler(async (req, res) => {
 
 const renderEditProfile = asyncHandler(async (req, res) => {
   const user = await getUser(req.session.userID);
+  if (user.profilePicture.data) {
+    user.imgSrc = `data:${user?.profilePicture?.contentType};base64,${user?.profilePicture?.data.toString('base64')}`
+  }
   const addresses = await Address.find({ userID: req.session.userID }).lean();
   console.log("addresses", addresses);
+
   res.render("editprofile", {
     title: "Edit Profile",
     user: user,
@@ -240,7 +248,10 @@ const getProfileNavData = async (nav, userID) => {
     }
 
     case "users": {
-      const users = await getUser();
+      const users = await User.find({},{username:1,email:1,phone:1,createdAt:1, isBlocked:1}).limit(10).lean();
+      users.forEach(user=>{
+        user.createdAt = convertISODate(user.createdAt);
+      })
       data = { users: users };
       data.isUsers = "active";
       return data;
@@ -280,6 +291,8 @@ const deleteAddress = asyncHandler(async (req, res) => {
 const renderProfileView = asyncHandler(async (req, res) => {
   const user = await User.getUser(req.query.id);
   const products = await Product.getProductCards(user._id);
+  user.imgSrc = `data:${user?.profilePicture?.contentType};base64,${user?.profilePicture?.data.toString('base64')}`
+
   console.log(products);
   res.render("profileView", {
     title: "Profile",
@@ -287,6 +300,16 @@ const renderProfileView = asyncHandler(async (req, res) => {
     products: products,
   });
 });
+
+const getUsers = asyncHandler(async(req,res)=>{
+  const users = await User.find({},{username:1,email:1,phone:1,createdAt:1, isBlocked:1}).skip(req.query.skip).limit(10).lean();
+  users.forEach(user=>{
+    user.createdAt = convertISODate(user.createdAt);
+  })
+  console.log(users)
+  
+  res.json(users);
+})
 
 module.exports = {
   registerUser,
@@ -301,4 +324,5 @@ module.exports = {
   renderEditProfile,
   deleteAddress,
   renderProfileView,
+  getUsers
 };

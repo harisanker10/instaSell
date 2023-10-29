@@ -32,13 +32,13 @@
 
 
                   <strong x-on:click="open = ! open" class="d-inline text-uppercase category-name"
-                    catId="<%= cat._id %>">
+                    catId="<%= cat.name %>">
                     <%= cat.name %>
                   </strong>
 
                   <div x-show="open" x-collapse.duration.150ms class="sub-category ps-4 pb-3">
                     <% cat.subCategories.forEach(scat=> { %>
-                      <div class="p-0 m-0 subCat-filter" subCatId="<%=scat._id  %>">
+                      <div class="p-0 m-0 subCat-filter" subCatId="<%=scat.name  %>">
                         <%= scat.name %>
                       </div>
                       <% }) %>

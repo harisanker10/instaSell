@@ -12,8 +12,6 @@ const Order = require('../models/order')
 const Configuration = require('../models/configuration');
 const Courier = require('../models/courier')
 
-const getImageAsBuffer = require("../utils/getImageAsBuffer");
-// const isInRadius = require('../utils/isInRadius');
 const convertISODate = require("../utils/formatDate");
 
 
@@ -140,6 +138,7 @@ const renderProduct = asyncHandler(async (req, res, next) => {
       });
     console.log(requests)
 
+    if(user?.profilePicture) 
     user.imgSrc = `data:${user.profilePicture.contentType};base64,${user.profilePicture.data.toString('base64')}`
 
     res.render("product", {
@@ -669,7 +668,7 @@ const getQueryStateProduct = async (matchConditions, sortConditions, searchQuery
           $switch: {
             branches: [
               { case: { $regexMatch: { input: "$title", regex: searchQuery, options: "i" } }, then: 1 },
-              { case: { $regexMatch: { input: "$details", regex: searchQuery, options: "i" } }, then: 2 },
+              // { case: { $regexMatch: { input: "$details", regex: searchQuery, options: "i" } }, then: 2 },
               { case: { $regexMatch: { input: "$description", regex: searchQuery, options: "i" } }, then: 5 },
               {
                 case: {
@@ -711,6 +710,10 @@ const getQueryStateProduct = async (matchConditions, sortConditions, searchQuery
 };
 
 const func = async () => {
+
+
+ 
+
 
 }
 
