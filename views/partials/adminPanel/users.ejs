@@ -1,8 +1,4 @@
-<div id="users-section" class="d-flex-col w-100 p-5">
-
-
-
-
+<div id="users-section" class="d-flex flex-column w-100 p-5 py-0 align-items-center" over>
 
     <table class="table table-strrped">
         <thead>
@@ -16,7 +12,7 @@
             </tr>
         </thead>
 
-        <tbody>
+        <tbody class="table-body">
             <% data.users.forEach(element=> { %>
 
 
@@ -32,7 +28,7 @@
                         <%=element.phone%>
                     </td>
                     <td>
-                        <%=element.joinedDate%>
+                        <%=element.createdAt%>
                     </td>
                     <td>
                         <% if (element.isBlocked) { %>
@@ -52,5 +48,10 @@
         </tbody>
     </table>
 
-
+   <prev class="d-flex w-75 justify-content-between" >
+       <button class="outline-black-btn shadow-sm px-2" style="background-color: gainsboro; border: 1px solid gray;" id="prev">Prev</button>
+    <button class="outline-black-btn shadow-sm px-2" style="background-color: gainsboro; border: 1px solid gray;" id="home">Home</button>
+    <button class="outline-black-btn shadow-sm px-2" style="background-color: gainsboro; border: 1px solid gray;" id="next">Next</button>
+   </div>
 </div>
+<script src="/js/users.js" defer></script>

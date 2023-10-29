@@ -39,4 +39,5 @@ a{
 
 #content-container{
     margin: 0px;
+    overflow: none;
 }
