@@ -1,30 +1,33 @@
+
+
 .profile-card{
-    border: 2px solid #ADFF45;
+    /* border: 2px solid #ADFF45; */
     border-radius: 0px;
     /* border-right: 0px; */
 }
 
-.profile-main-container{
-    border: 2px solid #ADFF45;
-    
-}
 .profile-nav-item{
-    border: 1px solid #ADFF45;
+    padding-left: 2rem;
     border-left: 0px;
     border-right: 0px;
     border-top: 0px;
-    height: 100%;
+    height: 5rem;
     height: 4rem;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
+    justify-content: start;
+    border-bottom: 1px solid rgb(208, 208, 208);
     
 }
+
 .profile-nav-item:first-child{
-    border-top: 2px solid #ADFF45;
+    
+    border-top: 1px solid rgb(208, 208, 208);
 }
 
+
 .profile-nav-item:hover{
+    cursor: pointer;
     transition: 150ms;
     background-color: #ADFF45;
 }
@@ -41,3 +44,10 @@ a{
     margin: 0px;
     overflow: none;
 }
+
+.svg{
+    width: 2rem;
+    height: 2rem;
+    margin-right: 1rem;
+}
+

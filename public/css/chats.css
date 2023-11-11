@@ -1,0 +1,45 @@
+.sent{
+    width: auto;
+    text-align: end;
+    background-color: #ADFF45;
+    align-self: flex-end;
+    padding: 0.75rem;
+    margin-top:5px;
+}
+
+.room{
+    position: relative;
+}
+.received{
+    width: auto;
+    align-self: flex-start;
+    text-align: start;
+    background-color: #ADFF45;
+    padding: 0.75rem;
+    margin-top:5px;    
+}
+
+.chat-container{
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    overflow-y: scroll;
+}
+
+.room:nth-child(1){
+    margin-top: 5px;
+}
+
+.acitve{
+    z-index: 9000;
+}
+
+.unread::after{
+    position: absolute;
+    content: '\2022';
+    font-size: 2rem;
+    color: red;
+    font-weight: 900;
+    top: 20%;
+    right: 10%;
+}

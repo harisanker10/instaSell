@@ -1,5 +1,4 @@
 const cardsContainer = document.querySelector(".grid-container");
-
 const datas = document.querySelector(".screen-container");
 const userID = datas.getAttribute("userId");
 const wishlist = datas.getAttribute("wishlist");
@@ -12,13 +11,19 @@ const sortBtns = document.querySelectorAll(".sort-buttons");
 const minPriceInput = document.querySelector('#price-min-input')
 const maxPriceInput = document.querySelector('#price-max-input')
 
+const prevBtn = document.querySelector('.previous-btn');
+const homeBtn = document.querySelector('.home-btn');
+const nextBtn = document.querySelector('.next-btn');
+
+
+
 const state = {};
+state.page = 0;
 
 let locationDetails = localStorage.getItem("locationDetails");
 console.log(locationDetails?.lat);
 
 if (locationDetails) {
-  console.log(typeof locationDetails);
   console.log(locationDetails?.lon);
   locationDetails = JSON.parse(locationDetails);
 } else {
@@ -29,7 +34,8 @@ if (locationDetails) {
 state.lat = locationDetails.lat;
 state.lon = locationDetails.lon;
 
-state.search = datas.getAttribute("searchParam");
+const url = new URL(window.location.href)
+state.search = url.searchParams.get('search')
 
 sortBtns.forEach((btn) => {
   btn.addEventListener("click", (event) => {
@@ -63,7 +69,7 @@ subCats.forEach((scat) => {
     state.category = category;
     state.search = "";
     state.subCategory = scat.getAttribute("subCatId");
-    
+
     fetchProducts();
   });
 });
@@ -142,7 +148,11 @@ const gridTemplate = `
 
   `;
 
+
+
+
 function fetchProducts() {
+  window.loadingOn();
   let url = `/search?`;
   console.log("state", state);
 
@@ -151,7 +161,10 @@ function fetchProducts() {
   }
   console.log(url);
   fetch(url)
-    .then((res) => res.json())
+    .then((res) => {
+      console.log(res.body)
+      return res.json()
+    })
     .then((res) => {
       console.log(res);
 
@@ -161,25 +174,13 @@ function fetchProducts() {
         wishlist: wishlist,
       });
       cardsContainer.innerHTML = html;
+      window.loadingOff();
       main();
     })
     .catch((err) => console.log(err));
 }
 
-/*
-var template = new EJS({
-  text: `
-    <ul>
-      <% for(i = 0; i < the_list.length; i++) { %>
-        <li>the_list[i]</li>
-      <% } %>
-    </ul>
-  `
-});
-var html = template.render({ the_list: data });
-document.getElementById('list-wrapper').innerHTML = html;
 
-*/
 
 const main = () => {
   const cards = document.querySelectorAll(".product-card");
@@ -241,18 +242,33 @@ locationMaxInput.addEventListener("blur", (event) => {
   fetchProducts();
 });
 
-minPriceInput.addEventListener('blur',()=>{
-  if(!maxPriceInput.value)return;
+minPriceInput.addEventListener('blur', () => {
+  if (!maxPriceInput.value) return;
   state.minPrice = minPriceInput.value;
   state.maxPrice = maxPriceInput.value;
   fetchProducts();
 })
-maxPriceInput.addEventListener('blur',()=>{
-  if(!minPriceInput.value)return;
+maxPriceInput.addEventListener('blur', () => {
+  if (!minPriceInput.value) return;
   state.minPrice = minPriceInput.value;
   state.maxPrice = maxPriceInput.value;
   fetchProducts();
 })
 
+homeBtn.addEventListener('click', () => {
+  state.page = 0;
+  fetchProducts();
+})
+nextBtn.addEventListener('click', () => {
+  state.page += 1;
+  fetchProducts();
+})
+prevBtn.addEventListener('click', () => {
+  state.page -= 1;
+  fetchProducts();
+})
+
+
 console.log(state);
 console.log(locationDetails);
+console.log('search param:::', url.searchParams.get('search'));

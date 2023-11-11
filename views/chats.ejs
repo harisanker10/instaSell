@@ -1,0 +1,64 @@
+<%- include('partials/head.ejs') %>
+    <%- include('partials/navbar.ejs') %>
+        <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
+            integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
+            crossorigin="anonymous"></script>
+
+        <div class="d-flex" style="width: 100vw; height: calc(100vh - 56px);">
+            <div class="col-2 bg-light conversations-container" style="height: calc(100vh - 56px);">
+                <% conversations.forEach(chat=> { %>
+
+                    <button class="on-click-btn room w-100 border-bottom " style="height: 5rem;" room="<%= chat?.room || '' %>" senderID="<%= userID %>" recipientID="
+                        <% if (userID.toString() === chat.buyerID._id.toString()) { %>
+                            <%= chat.sellerID._id %>
+                        <% } else{%>
+                                <%= chat.buyerID._id %>                        
+                            <% } %>" productID="<%= chat.productID._id %>">
+                        <div class="w-100  d-flex  align-items-center">
+                            
+                            <div class="img-container border mx-4" style="height: 4rem; width: 4rem;">
+                                <img src="<%=chat.productID.images%>" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <span class="text-uppercase">
+                                <% if (chat.sellerID._id.toString() === userID.toString()) { %>
+                                    <%= chat.buyerID.firstName %>
+                                        <% } else { %>
+                                            <%= chat?.sellerID?.firstName || '' %>
+                                                <% }%>
+                            </span>
+                        </div>
+                    </button>
+                    <% }) %>
+
+            </div>
+
+            <div class="col-8 d-flex flex-column p-4 bg-light shadow  justify-content-between">
+               
+                <div class="text-start border content chat-container h-100" userID="<%= userID %>">
+
+                </div>
+                <div class="input-group mb-4">
+
+                    <input type="text" class="form-control message-input">
+                    <button class="btn btn-light border send-btn"
+                        style="border-radius: 0px; background-color: #ADFF45;">SEND</button>
+                </div>
+            </div>
+
+            <div class="col-2" style="height:calc(100vh - 56px) ">
+
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+        <script src="/js/chats.js"></script>
+
+        <%- include('partials/closingHead.ejs') %>

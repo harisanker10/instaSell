@@ -49,6 +49,7 @@ const userSchema = new mongoose.Schema({
   },
   wishlist: {
     type: [mongoose.Schema.Types.ObjectId],
+    ref:'Product'
   },
   receivingAccount: {
     type: mongoose.Schema.Types.ObjectId,
@@ -57,6 +58,10 @@ const userSchema = new mongoose.Schema({
   {
     type: Boolean,
     default: false
+  },
+  walletBalance:{
+   type: Number,
+   default: 0
   }
 
 }, { timestamps: true });
@@ -88,7 +93,7 @@ userSchema.statics.checkUserExist = async function (username, email, phone) {
   if (email) conditions.push({ email: email });
   if (phone) conditions.push({ phone: phone });
 
-
+  console.log('conditions',conditions)
   const count = await this.countDocuments({ $or: conditions });
   console.log('count:::',count)
   return count;

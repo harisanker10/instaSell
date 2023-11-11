@@ -23,98 +23,94 @@
                     </div>
 
 
-                    <div class="form-floating my-1">
-                        <input name="username" type=" text" class="form-control" id="username" placeholder="Username"
-                            required>
-                        <label for="username class=" form-label">Username</label>
+                    <div class="form-floating my-1 w-100">
+                        <input name="username" type=" text" class="form-control w-100" id="username"
+                            placeholder="Username" required>
+                        <label for="username" class=" form-label">Username</label>
                     </div>
-                    <div class="form-floating my-1">
-                        <input name="password" type="password" class="form-control" placeholder="Password" id="password"
-                            required>
+                
+                    <div class="form-floating my-1 w-100">
+                        <input name="password" type="password" class="form-control w-100" placeholder="Password"
+                            id="password" required>
                         <label for="password" class="form-label">Password</label>
                     </div>
 
-                    
-                    
+
+
                     <p class="text-muted verify-para">
-                        
+
                         By clicking Sign Up, you agree to our Terms, Privacy
                         Policy and
                         Cookies Policy. You may receive SMS notifications from us and can opt out at any time.
                     </p>
-                    
-                    
-                    <button class="sign-up-btn" type="submit">Sign Up</button>
+
+
+                    <button class="sign-up-btn" type="button">Sign Up</button>
                 </form>
-                    
-                    <hr>
-                    
-                    <div class="d-flex align-items-center justify-content-center mt-2">
-                        <div>
 
-                            <button id="google-validate-btn"
-                                class="btn btn-outline-secondary google-check-btn w-100 mt-3" type="button"
-                                id="button-addon2"><svg fill="#ffffff" xmlns="http://www.w3.org/2000/svg" height="1em"
-                                    viewBox="0 0 488 512">
-                                    <path
-                                        d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" />
-                                </svg>&nbsp;Sign Up with google</button>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center mb-2">
-                        <div>
+                <hr>
 
-                            <button id="login-phone-validate-btn"
-                                class="btn btn-outline-secondary phone-check-btn w-100 mt-3" type="button"
-                                id="button-addon2">
-                                <svg fill="#ffffff" xmlns="http://www.w3.org/2000/svg" height="1em"
-                                    viewBox="0 0 512 512">
-                                    <path
-                                        d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z" />
-                                </svg>
-                                &nbsp;Sign Up with Phone</button>
-                        </div>
-                    </div>
+                <div class="d-flex align-items-center justify-content-center mt-2">
+                    <div>
 
-
-                    <div id="phone-validation-input-div" class="input-group mt-2 hide">
-                        <span class="input-group-text" id="addon-wrapping">+91</span>
-
-                        <input name="phone" id="phone-input" type="text" class="form-control" placeholder="Phone"
-                            aria-label="Phone">
-                        <input id="otp-input" type="text" class="form-control " placeholder="OTP" aria-label="otp"
-                            disabled>
-                        <button class="btn btn-outline-secondary phone-check-btn" type="button"
-                            id="phone-verify-btn">Send
-                            OTP
-                        </button>
-                        <button class="btn btn-outline-secondary phone-check-btn hide" type="button"
-                            id="otp-verify-btn">Confirm OTP&nbsp;<span
-                                class="spinner-border spinner-border-sm otp-spinner hide" role="status"
-                                aria-hidden="true"></span>
-                            <svg class="otp-confirmed hide" style="fill: #ADFF45" xmlns="http://www.w3.org/2000/svg"
-                                height="1em"
-                                viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                        <button id="google-validate-btn" class="btn btn-outline-secondary google-check-btn w-100 mt-3"
+                            type="button" id="button-addon2"><svg fill="#ffffff" xmlns="http://www.w3.org/2000/svg"
+                                height="1em" viewBox="0 0 488 512">
                                 <path
-                                    d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
-                            </svg>
-                            <svg class="otp-declined hide" xmlns="http://www.w3.org/2000/svg" height="2em"
-                                viewBox="0 0 384 512"
-                                style="fill:#ff0000"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                                <path
-                                    d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-                            </svg>
-
-                        </button>
+                                    d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" />
+                            </svg>&nbsp;Sign Up with google</button>
                     </div>
-            
+                </div>
+                <div class="d-flex align-items-center justify-content-center mb-2">
+                    <div>
+
+                        <button id="login-phone-validate-btn"
+                            class="btn btn-outline-secondary phone-check-btn w-100 mt-3" type="button"
+                            id="button-addon2">
+                            <svg fill="#ffffff" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                                <path
+                                    d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z" />
+                            </svg>
+                            &nbsp;Sign Up with Phone</button>
+                    </div>
+                </div>
+
+
+                <div id="phone-validation-input-div" class="input-group mt-4 hide">
+                    <span class="input-group-text" id="addon-wrapping" style="border-radius: 0px;">+91</span>
+
+                    <input name="phone" id="phone-input" type="text" class="form-control" placeholder="Phone"
+                        aria-label="Phone">
+                    <input id="otp-input" type="text" class="form-control " placeholder="OTP" aria-label="otp" disabled>
+                    <button class="btn btn-outline-secondary phone-check-btn" type="button" id="phone-verify-btn">Send
+                        OTP
+                    </button>
+                    <button class="btn btn-outline-secondary phone-check-btn hide" type="button"
+                        id="otp-verify-btn">Confirm OTP&nbsp;<span
+                            class="spinner-border spinner-border-sm otp-spinner hide" role="status"
+                            aria-hidden="true"></span>
+                        <svg class="otp-confirmed hide" style="fill: #ADFF45" xmlns="http://www.w3.org/2000/svg"
+                            height="1em" viewBox="0 0 448 512">
+                            <path
+                                d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
+                        </svg>
+                        <svg class="otp-declined hide" xmlns="http://www.w3.org/2000/svg" height="2em"
+                            viewBox="0 0 384 512" style="fill:#ff0000">
+                            <path
+                                d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                        </svg>
+
+                    </button>
+                </div>
+
             </div>
 
-            
+
         </div>
-        
-        
-        
-    </div>
-        <script defer type="module" src="/dist/signup.js"></script>
-        <%- include('partials/closingHead.ejs') %>
+
+
+
+        </div>
+        <%-include('partials/footer.ejs')%>
+            <script defer type="module" src="/dist/signup.js"></script>
+            <%- include('partials/closingHead.ejs') %>

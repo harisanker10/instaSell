@@ -23,7 +23,6 @@ const orderSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['placed', 'inTransit', 'delivered'],
         default: 'placed'
     },
     address: {

@@ -3,6 +3,10 @@
     --colour-primary: #ADFF45
 }
 
+body{
+    max-width: 100vw !important;
+}
+
 @font-face {
     font-family: 'Poppins';
     src: url('../fonts/poppins/poppins-regular-webfont.woff') format('woff2'); /* Adjust the path and font format as needed */
@@ -40,13 +44,14 @@ body {
 .form-control, .form-select{
     border: 1px solid rgba(0, 0, 0, 0.172);
     border-radius: 0px;
+    box-sizing: border-box;
     
 }
 
 .form-control:focus, .form-select:focus{
-    border: 2px solid #ADFF45;
-    box-shadow: 1px 1px 20px #aeff459f;
-
+    box-shadow: 1px 1px 5px #aeff459f;
+    outline: #ADFF45;
+    border: 1px solid #ADFF45;
 }
 
 #tospara{
@@ -62,7 +67,9 @@ body {
     border-radius: 0px;
     border-style: none;
     box-sizing: border-box;
-    box-shadow: 1px 1px 5px #6b6b6b9f;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
+    -moz-box-shadow: rgba(0,0,0,0.3) 0 1px 3px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0 1px 3px;
     padding: 0.5rem 1rem;
     width: 20%;
     
@@ -172,18 +179,18 @@ body {
 } */
 
 .outline-black-btn{
-    color:#000000 ;
+    color:#000000be ;
     background-color: #ffffff;
     outline: none;
-    border: 2px solid #000000;
+    border: 1px solid #000000;
     border-radius: 0px;
 
 }
 
 .outline-black-btn:hover{
     transition: 100ms;
-    background-color: #ADFF45;
-    color: #000000;
+    background-color: #000000;
+    color: #ffffff;
 }
 
 .show{
@@ -196,7 +203,7 @@ body {
 .notification {
     z-index: 9999;
     display: inline; 
-    position: absolute;
+    position: fixed;
     height: auto;
     width: auto;
 
@@ -210,7 +217,7 @@ body {
 
     display: flex;
     padding-left:1% ;
-    box-shadow: 0.5px 0.5px 10px rgb(211, 211, 211);
+    box-shadow: 0.75px 0.75px 5px rgba(0, 0, 0, 0.424);
     opacity: 0%;
     transition: 300ms;
     
@@ -268,3 +275,49 @@ a{
     transform: rotateZ(90deg);
 }
 
+.d-45{
+    transform: rotateZ(45deg);
+}
+
+/* Style the overall scrollbar */
+::-webkit-scrollbar {
+    width: 4px; /* Change the width of the scrollbar */
+  }
+  
+  /* Style the scrollbar thumb (draggable part) */
+  ::-webkit-scrollbar-thumb {
+    background: gray; /* Change the color of the thumb */
+  }
+  
+  /* Style the scrollbar track (non-draggable part) */
+  ::-webkit-scrollbar-track {
+    background: #ffffff00; /* Change the color of the track */
+  }
+  
+  /* Hide the scrollbar buttons (up and down arrows) */
+  ::-webkit-scrollbar-button {
+    display: none;
+  }
+  
+  .unread::after{
+    position: absolute;
+    content: '\2022';
+    font-size: 2rem;
+    color: red;
+    font-weight: 900;
+    top: 20%;
+    right: 10%;
+}
+
+  
+
+#loading-overlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7); /* Semi-transparent white background */
+    z-index: 9000; /* Make sure it's on top of other elements */
+    pointer-events: all; 
+}

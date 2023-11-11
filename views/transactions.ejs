@@ -1,0 +1,109 @@
+<%- include('partials/head.ejs') %>
+    <%- include('partials/navbar.ejs') %>
+
+        <div class="container my-4" ">
+
+            <h2 class="text-decoration-underline " style="margin-left: 11.3rem;">Ongoing Transactions</h2>
+
+
+            <div class="content p-4 d-flex flex-column align-items-center">
+
+                <% orders.forEach(item=> { %>
+
+                    <% if (item.buyerID._id.toString()===userID.toString()) { %>
+
+                        <div class="w-75  p-2 d-flex my-2"
+                            style="height: 8rem;background-color: hsl(46, 100%, 78%); border:1px solid #FFC300">
+
+                            <button class="on-click-btn" navLink="/product?id=<%= item.productID._id %>">
+
+                                <div class="h-100" style="width: 8rem;">
+                                    <img src="<%= item.productID.images %>" alt="" class="h-100 w-100"
+                                        style="object-fit: cover;">
+                                </div>
+                            </button>
+                            <button class="on-click-btn text-start" style="width:25rem;" navLink="/product?id=<%= item.productID._id %>">
+                                <div class="ms-3 pe-4 h-100 " style="border-right:1px solid #FFC300; height: 100%;">
+                                    <h5 class="ms-2">
+                                        <%= item.productID.title %>
+                                    </h5>
+                                    <h5 class="m-2 fw-bold">₹<%= item.productID.price %>
+                                    </h5>
+                                    <h6 class=" ms-2 d-inline">Bought for </h6>
+                                    <h5 class="m-2 fw-bold d-inline"> ₹<%= item.price.totalPrice %>
+                                    </h5>
+                                </div>
+                            </button>
+                            <button class="on-click-btn" navLink="/viewProfile?id=<%= item.sellerID._id %>">
+
+                                <div class="ms-4 p-2  text-center " style="width: 15rem; ">
+                                    <h5 class="text-decoration-underline">Seller</h5>
+
+                                    <%= item.sellerID.firstName %>
+                                        <%= item.sellerID.secondName %>
+
+                                </div>
+                            </button>
+                            <button class="on-click-btn" navLink="product/buyStatus?id=<%=item.productID._id  %>">
+
+                                <div class=" p-2 ms-4 d-flex flex-column align-items-center"
+                                    style="width: 15rem;border-left:1px solid #FFC300">
+                                    <h5 class="text-decoration-underline">Status</h5>
+                                    <span>
+                                        <%= item.status %>
+                                    </span>
+                                </div>
+                            </button>
+
+                        </div>
+
+                        <% } else{%>
+
+                            <div class="w-75  p-2 d-flex"
+                                style="height: 8rem;background-color: #83c885; border:1px solid #4CAF50">
+
+                                <button class="on-click-btn" navLink="/product?id=<%= item.productID._id %>">
+
+                                    <div class=" h-100" style="width: 8rem;">
+                                        <img src="<%= item.productID.images %>" alt="" class="h-100 w-100"
+                                            style="object-fit: cover;">
+                                    </div>
+                                </button>
+                                <button class="on-click-btn" style="width:25rem;" navLink="/product?id=<%= item.productID._id %>">
+                                    <div class="ms-3 pe-4 text-start" style="border-right:1px solid #4CAF50">
+                                        <h5 class="m-2 mt-0">
+                                            <%= item.productID.title %>
+                                        </h5>
+                                        <h5 class="m-2 fw-bold">₹<%= item.productID.price %>
+                                        </h5>
+                                        <h6 class=" ms-2 d-inline">Bought for </h6>
+                                        <h5 class="m-2 fw-bold d-inline"> ₹<%= item.price.totalPrice %>
+                                        </h5>
+                                    </div>
+                                </button>
+                                <button class="on-click-btn" navLink="/viewProfile?id=<%= item.sellerID._id %>">
+                                    <div class="ms-4 p-2  text-center " style="width: 15rem; ">
+                                        <h5 class="text-decoration-underline">Buyer</h5>
+                                        <%= item.buyerID.firstName %>
+                                            <%= item.buyerID.secondName %>
+                                    </div>
+                                </button>
+                                <button class="on-click-btn"
+                                    navLink="product/status?productID=<%=item.productID._id  %>">
+
+                                    <div class=" p-2 ms-4 d-flex flex-column align-items-center"
+                                        style="width: 15rem;border-left:1px solid #4CAF50">
+                                        <h5 class="text-decoration-underline">Status</h5>
+                                        <span>
+                                            <%= item.status %>
+                                        </span>
+                                    </div>
+                                </button>
+                            </div>
+
+                            <% } %>
+                                <% }) %>
+            </div>
+        </div>
+      
+        <%- include('partials/closingHead.ejs') %>

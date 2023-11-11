@@ -130,9 +130,9 @@
                   <br>
                   <span class="fs-6"><i> Ratings Goes here</i></span>
                 </div>
-
+             
                 <div class="my-2">
-                  <span href="" class="mt-3 btn-green-default text-decoration-none shadow-sm">Chat With Seller</span>
+                  <span href="" class="mt-3 btn-green-default text-decoration-none shadow-sm"><button navLink="/chats?productID=<%= product._id %>&sellerID=<%= product.userID %>" class="on-click-btn" >Chat With Seller</button></span>
                 </div>
               </div>
 
@@ -180,9 +180,9 @@
           </p>
         </div>
         <div class=" border" style="width :23.35rem;">
-          <div class="btn-green-default ongoing-req w-100 text-center fw-bold" style="box-shadow: 0px;">Ongoing Requests</div>
+          <div class="btn-green-default ongoing-req w-100 text-center fw-bold" style="box-shadow: 0px;">Requests for this product</div>
           <div>
-            <table class="table ">
+            <table class="table table-hover">
               <thead>
                 <tr>
                   <th scope="col">Name</th>
@@ -193,9 +193,9 @@
               <tbody>
                 <% requests.forEach(req => { %>
                  
-                  <tr class="">
-                    <td><%= req.requesterID.firstName %> <%= req.requesterID.secondName %></td>
-                    <td><%=req.amount  %></td>
+                  <tr class="on-click-btn "  navLink="/viewProfile?id=<%= req.requesterID._id %>" style="cursor: pointer;border:0px;">
+                    <td class="border border-end-0"><%= req.requesterID.firstName %> <%= req.requesterID.secondName %></td>
+                    <td class="border border-start-0"><%=req.amount  %></td>
                   </tr>
                   <% }) %>
                

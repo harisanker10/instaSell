@@ -1,28 +1,29 @@
-.logo{
+.logo {
     width: 2.5rem;
     height: 2.5rem;
     padding: 2px;
     margin-right: 0.5rem;
 }
 
-.log-in, .sign-up{
+.log-in,
+.sign-up {
     border-radius: 0px;
     box-sizing: border-box;
 
 
 }
 
-.primary-btn{
+.primary-btn {
     background-color: #ADFF45;
     border: none;
 }
 
-.primary-btn:hover{
+.primary-btn:hover {
     background-color: #93dd31;
 }
 
-.log-in{
-    
+.log-in {
+
     border: 1px solid #aeff455e;
     color: #ADFF45;
     margin-right: 10px;
@@ -31,45 +32,46 @@
     background-color: #000000;
 }
 
-.log-in:hover{
+.log-in:hover {
     border: 1px solid #aeff45d3;
     background-color: #000000;
     color: #ADFF45;
 }
 
-.sign-up{
+.sign-up {
     background-color: #ADFF45;
     border: none;
 }
 
-.sign-up:hover{
+.sign-up:hover {
     background-color: #93dd31;
 }
 
-.dropdown-menu{
+.dropdown-menu {
     background-color: #ffffff;
     border-radius: 0px;
     box-shadow: 1px 1px 20px rgb(43, 49, 41);
-    
-    
+
+
 }
 
-.profile-item:hover{
+.profile-item:hover {
     background-color: #ADFF45;
 }
 
-.profile-btn:focus{
+.profile-btn:focus {
     background-color: #93dd31;
 }
 
-.profile-btn:active{
+.profile-btn:active {
     background-color: #93dd31;
 }
-.log-out-href:hover{
-    background-color: #ff0000;
+
+.log-out-href:hover {
+    background-color: #dc3545;
 }
 
-.search-input{
+.search-input {
     box-sizing: border-box;
     border: none;
     margin-right: 0px;
@@ -77,61 +79,112 @@
     width: 20rem;
 }
 
-.search-input:focus{
+.search-input:focus {
     border: 0px;
     border-style: none;
     outline: none;
-    
+
 }
 
-.search-btn{
+.search-btn {
     border-radius: 0px;
     margin-left: 0px;
-    
+
 }
 
-.search-input::placeholder{
+.search-input::placeholder {
 
     margin-left: 10%;
 }
- .location-btn{
+
+.location-btn {
     margin-left: 1rem;
     color: #ffffff;
     border: 1px solid #ADFF45;
     width: 8rem;
     border-right: 0px;
- }
- .location-btn:hover{
+}
+
+.location-btn:hover {
     background-color: #ADFF45;
     color: #000000;
     outline: #000000;
     border: 0px;
 
- }
+}
 
- .location-btn:focus{
+.location-btn:focus {
     background-color: #ADFF45;
     outline: none;
- }
+}
 
- .profile-dropdown{
+.profile-dropdown {
     /* margin-right: 5rem; */
     margin-left: -1rem;
- }
+}
 
- #sell-link{
+#sell-link {
     text-decoration: none;
     color: #ADFF45
+}
 
- }
-
- #sell-link:hover{
+#sell-link:hover {
     color: #93dd31;
- }
+}
 
- #navbar{
+#navbar {
     position: sticky;
     top: 0px;
     z-index: 94000;
- }
+}
 
+#chat-btn-svg {
+
+    transition: fill 1s ease-in;
+}
+
+#chat-btn-svg:hover {
+    stroke: #000000;
+    fill: #ADFF45
+}
+
+.loading-thumb{
+    z-index: 9999;
+    background-color: #ADFF45;
+    width: 15rem;
+    position: absolute;
+    animation: slideFast 1s linear infinite;
+}
+
+.loading-track{
+    z-index: 9999;
+    position: fixed;
+    background-color: #000000;
+}
+
+@keyframes slideFast {
+    0%{
+        left:0;
+        width: 5rem;
+    }
+    50%{
+        width: 15rem;
+        
+    }
+    100%{
+        width: 5rem;
+        left:100%;
+    }
+}
+
+@keyframes worm {
+    0%{
+    }
+
+    50%{
+    }
+
+    100%{
+        width: 5rem;
+    }
+}

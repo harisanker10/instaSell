@@ -76,7 +76,7 @@
             <% }) %>
         </div>
     </div>
-    <div class="checkout-container border border-2 " productId="<%=product._id%>" price="<%=request.amount%>" userId="<%=product.userId%>">
+    <div class="checkout-container border border-2" productId="<%=product._id%>" price="<%=request.amount%>" userId="<%=product.userId%>">
             <div class="img-container">
                 <img class="list-card-img" src="data:image/;base64,<%=product.images[0].toString('base64') || ''%>"
                 alt="Title">                
@@ -111,7 +111,11 @@
                       </tr>
                     </tbody>
                   </table>
-                  <button class="px-4 py-1 my-2 mb-4 on-click-btn default-black-btn" navLink style="width: 15rem; height: 3rem; margin-left: 28%;" id="order-btn">Place Order</button>
+                  <button class="px-4 py-1 my-2 mb-4 on-click-btn default-black-btn d-flex align-items-center justify-content-center" navLink style="width: 15rem; height: 3rem; margin-left: 28%;" id="order-btn">Place Order
+                    <div class="spinner-border text-light p-2 ms-4 hide" style="height: 1.5rem; width: 1.5rem;" role="status">
+                        <span class="sr-only"></span>
+                      </div>
+                </button>
             </div>
     </div>
 
