@@ -9,9 +9,12 @@ const courierSchema = new mongoose.Schema({
         type:String,
     },
     productID:{
-        type:String,
+        type:mongoose.mongo.ObjectId,
         required:true,
         ref:'Product'
+    },
+    trackerID:{
+        type:String
     },
     status:{
         type:String

@@ -1,23 +1,23 @@
-<nav class="navbar navbar-expand-sm navbar-dark bg-black d-flex justify-content-between" id="navbar">
+<nav class="navbar navbar-expand-sm navbar-dark bg-black d-flex justify-content-between" id="navbar" style="max-width: 100vw;" userID="<%= userID %>">
     <div class="container d-flex justify-content-between">
         <svg fill="#ffffff" class="logo pb-2" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 496 512">
 
             <path
                 d="M88 216c81.7 10.2 273.7 102.3 304 232H0c99.5-8.1 184.5-137 88-232zm32-152c32.3 35.6 47.7 83.9 46.4 133.6C249.3 231.3 373.7 321.3 400 448h96C455.3 231.9 222.8 79.5 120 64z" />
         </svg>
-        <a class="navbar-brand fw-bold" href="/">instaSell</a>
+        <a class="navbar-brand fw-bold" href="/" onclick="window.loadingOn()">instaSell</a>
         <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse"
             data-bs-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false"
             aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse d-flex justify-content-between ml-4" id="collapsibleNavId">
-            <div class="d-flex ">
+            <div class="d-flex">
 
                 <input class="btn btn-light btn-black-default location-btn" id="location-btn" placeholder="location">
-                <form class="d-flex" action="/search">
+                <form class="d-flex" action="/search" ">
                     <input class="search-input" type="search" placeholder="Search" name="search" aria-label="Search">
-                    <button class="btn btn-outline-success primary-btn search-btn " type="submit"><svg
+                    <button class="btn btn-outline-success primary-btn search-btn " type="submit" onclick="window.loadingOn()" ><svg
                             xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512" fill="black">
                             <path
                                 d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
@@ -30,44 +30,131 @@
             </div>
 
             <% if(username){%>
-                <div class="btn-group profile-dropdown me--4">
-                    <button type="button" class="btn btn-secondary dropdown-toggle btn-green-default profile-btn"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        <%=username%>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <% if (isAdmin) { %>
+                <% if (isAdmin) { %>
+                    
+                    <div class="" style="margin-right: -18rem;">
 
-                            <li><a class="dropdown-item profile-item" href="/adminPanel?nav=users">Admin Panel</a></li>
-                            <% }else{ %>
+                        <a href="/logout" class="on-click-btn btn btn-success log-in fs-6" onclick="window.loadingSliderOn()">Log Out</a>
+                        <a type="button" class="btn btn-success mx-1 sign-up text-black" href="/adminpanel" onclick="window.loadingSliderOn()">Admin Panel<a/>
+                        </div>
+                    <% }else{ %>
+                        <button class="on-click-btn chat-nav" navLink="/chats">
 
-                                <li><a class="dropdown-item profile-item" href="/profile?nav=listings">Profile</a>
+                            <svg style="width: 2rem; height:2rem; margin-left:300%" id="chat-btn-svg" class="mt-1"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="white" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 011.037-.443 48.282 48.282 0 005.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+                            </svg>
+
+
+                        </button>
+                        <div class="btn-group profile-dropdown me-4">
+                            <button style="z-index: 9999;" type="button"
+                                class="btn btn-secondary dropdown-toggle btn-green-default profile-btn"
+                                data-bs-toggle="dropdown" aria-expanded="false" >
+                                Profile
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end p-0" style="width: 15rem; z-index: 9000;" onclick="window.loadingSliderOn()">
+                                <li>
+                                    <div class="d-flex align-items-center justify-content-center fw-bold"
+                                        style="width: 100%; height: 4rem;">
+                                        <h5 class="m-0 p-0">
+                                            <%= username %>
+                                        </h5>
+                                    </div>
+                                </li>
+                                <hr class="p-0 m-0">
+                                <li style="height: 3rem;" ><a
+                                        class="h-100 dropdown-item profile-item d-flex align-items-center  fs-5 fw-bold"
+                                        href=" /profile?nav=listings">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" style="width: 2rem; height:2rem;">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+
+                                        <h6 class="m-0 ms-4 me-4 fw-bold p-0">Profile</h6>
+                                    </a>
+                                </li>
+                                <li style="height: 3rem;"><a
+                                        class="h-100 dropdown-item profile-item d-flex align-items-center  fs-5 fw-bold"
+                                        href=" /wallet">
+                                        <svg style="width: 2rem; height:2rem;" xmlns="http://www.w3.org/2000/svg"
+                                            fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                            class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
+                                        </svg>
+
+
+                                        <h6 class="m-0 ms-4 me-4 fw-bold p-0">Wallet</h6>
+                                    </a>
+                                </li>
+                                <li style="height: 3rem;"><a
+                                        class="h-100 dropdown-item profile-item d-flex align-items-center  fs-5 fw-bold"
+                                        href=" /transactions">
+                                        <svg style="width: 2rem; height:2rem;" height="24" viewBox="0 0 24 24"
+                                            width="24" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="m17.0020048 13c.5522847 0 1 .4477153 1 1 0 .5128358-.3860402.9355072-.8833789.9932723l-.1166211.0067277h-11.58500005l3.29210679 3.2928932c.36048396.360484.38821349.927715.0831886 1.3200062l-.0831886.0942074c-.36048397.3604839-.92771502.3882135-1.32000623.0831886l-.09420734-.0831886-5-5c-.60257508-.6025751-.2205609-1.6142876.59347584-1.7011235l.11363094-.0059833zm-.3891054-8.79029539.0942074.08318861 5 5c.6025751.60257508.2205609 1.61428758-.5934759 1.70112348l-.1136309.0059833h-14c-.55228475 0-1-.4477153-1-1 0-.51283584.38604019-.93550716.88337887-.99327227l.11662113-.00672773h11.585l-3.2921068-3.29289322c-.3604839-.36048396-.3882135-.92771502-.0831886-1.32000622l.0831886-.09420734c.360484-.36048396.927715-.3882135 1.3200062-.08318861z" />
+                                        </svg>
+
+                                        <h6 class="m-0 ms-4 me-4 fw-bold p-0">Transactions</h6>
+                                    </a>
+                                </li>
+                                <!-- <li style="height: 3rem;"><a
+                                        class="h-100 dropdown-item profile-item d-flex align-items-center  fs-5 fw-bold"
+                                        href=" #">
+                                        <svg style="width: 2rem; height:2rem;" xmlns="http://www.w3.org/2000/svg"
+                                            fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                            class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
+                                        </svg>
+
+                                        <h6 class="m-0 ms-4 me-4 fw-bold p-0">Wishlist</h6>
+                                    </a></li> -->
+
+                                <hr class="m-0 p-0">
+                                <li style="height: 3.5rem;"><a
+                                        class="h-100 dropdown-item profile-item log-out-href d-flex align-items-center  fs-5 fw-bold"
+                                        href=" /logout">
+                                        <svg style="width: 2rem; height:2rem; margin-left:1px"
+                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                                        </svg>
+
+                                        <h6 class="m-0 ms-4 me-4 fw-bold p-0">Logout</h6>
+                                    </a>
                                 </li>
                                 <% } %>
-                                    <% if (!isAdmin) { %>
+                            </ul>
+                        </div>
+                        <% } else { %>
+                            <div class="d-flex justify-content-end justify-self-end "
+                                style="width: 15rem; margin-right: -25rem;">
 
-                                        <li><a class="dropdown-item profile-item" href="#">Wishlist</a></li>
-                                        <% } %>
-                                            <hr>
-                                            <li><a class="dropdown-item profile-item log-out-href"
-                                                    href="/logout">Logout</a>
-                                            </li>
-                    </ul>
-                </div>
-                <% } else { %>
-                    <div class="d-flex justify-content-end justify-self-end "
-                        style="width: 15rem; margin-right: -25rem;">
-
-                        <a type="button" class="btn btn-outline-success log-in fs-6" href="/login">LOG IN</a>
-                        <a type="button" class="btn btn-success mx-1 sign-up text-black" href="/signup">SIGN
-                            UP<a />
-                    </div>
+                                <a type="button" class="btn btn-outline-success log-in fs-6" href="/login" onclick="window.loadingSliderOn()">LOG IN</a>
+                                <a type="button" class="btn btn-success mx-1 sign-up text-black" href="/signup" onclick="window.loadingSliderOn()">SIGN
+                                    UP<a />
+                            </div>
 
 
-                    <% } %>
+                            <% } %>
 
 
 
         </div>
     </div>
 </nav>
+
+
+<div class="loading-track w-100 hide" id="loading-slider" style="height: 0.25rem;">
+<div class="loading-thumb h-75 "></div>
+</div>
+
+<div id="loading-overlay" class="hide"></div>
+

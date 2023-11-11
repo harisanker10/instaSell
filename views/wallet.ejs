@@ -1,0 +1,116 @@
+<%- include('partials/head.ejs') %>
+    <%- include('partials/navbar.ejs') %>
+
+
+        <div class="container d-flex  align-items-center">
+
+
+            <div x-data="{isOpen : false, toggle(){this.isOpen = !this.isOpen}}" class="col-3 bg-light shadow-sm p-1 border-end" style="height: calc(100vh - 56px)">
+
+                <div class="d-flex align-items-center py-4 justify-content-center  border-bottom">
+                    <span class="fs-4">Wallet</span>
+                </div>
+              
+                <div class=" d-flex justify-content-between p-2">
+                    <div class="fs-6 text-muted ">Balance</div> 
+                    <button @click="toggle"  class="on-click-btn" id="topup"><svg 
+                        :class=" isOpen ? 'd-45' : ''"
+                            style="width:1.5rem; height:1.5rem;transition: transform 150ms ease-in-out;" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="fs-4 px-2">
+                    ₹<%= user.walletBalance %>
+                </div>
+
+
+                <div  class="bg-light border-bottom p-1 mb-5 d-flex align-items-center" >
+                    <div x-show="isOpen" x-collapse.duration.150ms class="input-group mb-3  topup-container">
+                        <input name="amount" type="number" class="form-control topup-input">
+                        <button class="btn btn-outline-secondary d-flex align-items-center outline-black-btn"
+                            type="button" id="button-addon2"
+                            style="border:1px solid rgb(193, 191, 191);border-radius: 0px;">Add
+
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-9 m-0" style="height: calc( 100vh - 56px)">
+
+                <div class="row border-bottom px-4 py-4 mx-2 mt-1">
+                    <span class="fs-4">Previous Transactions</span>
+                </div>
+                <div class="w-100 p-4 d-flex flex-column  align-items-center overflow-scroll" style="height: 86%;">
+
+
+                    <% transactions.forEach(trans=> { %>
+                        <div class="row bg-success text-center text-white p-2 d-felx align-items-center w-75 my-1">
+                            <% if (trans.type==='user_wallet_top_up' ) { %>
+                                <div class="fs-5 w-25 ">Topup</div>
+                                <% } else if(trans.type==='admin_to_user_refund' ){%>
+                                    <div class="fs-5 w-25 ">Refund</div>
+                                    <% } else if (trans.type==='user_to_admin_wallet' ){%>
+                                        <div class="fs-5 w-25 ">Paid</div>
+                                        <% } %>
+                                            <div class="fs-5 w-25  text-center">
+                                                <%= trans.amount %>
+                                            </div>
+                                            <div class="fs-5 w-50 overflow-hidden text-center">
+                                                <%= trans.createdAt %>
+                                            </div>
+                        </div>
+                        <% }) %>
+
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const topupBtn = document.querySelector('#topup');
+            const topupDiv = document.querySelector('.topup-container')
+            const container = document.querySelector('.container')
+
+            const topupInput = document.querySelector('.topup-input');
+            const addMoneyBtn = document.querySelector('#button-addon2');
+
+
+
+            // topupBtn.addEventListener('click', () => {
+            //     topupDiv.classList.toggle('hide');
+
+            // })
+
+            addMoneyBtn.addEventListener('click', (event) => {
+                event.preventDefault();
+                const body = { amount: topupInput.value }
+                console.log(body.amount)
+                if (['0', '', ' ', 0].includes(body.amount) || isNaN(body.amount) || body.amount > 10000) {
+                    window.notify("Enter a number below ₹10000", 5000, 'err');
+                    topupInput.value = ''
+                    return;
+                }
+                addMoneyBtn.style.backgroundColor = 'gray';
+                addMoneyBtn.innerHTML = ` <div class="spinner-border text-dark spinner " style="width: 1.5rem; height: 1.5rem;" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                          </div>`
+                fetch('/wallet', {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(body)
+                }).then(res => res.json())
+                    .then(({ url }) => {
+                        window.location.href = url;
+                    })
+            })
+
+
+
+        </script>
+<%-include('partials/footer.ejs')%>
+        <%- include('partials/closingHead.ejs') %>

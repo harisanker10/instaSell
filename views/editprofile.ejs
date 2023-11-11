@@ -2,21 +2,13 @@
     <%- include('partials/navbar.ejs') %>
         <div class="d-flex">
 
-            <div class="nav-section col-2 bg-light d-flex-col">
-                <div class="nav-item active">
-                    <h4>Basic Information</h4>
-                </div>
-
-                <div class="nav-item">
-                    <h4>Financial Details</h4>
-                </div>
-            </div>
 
 
 
 
-            <div class="col-10 bg-light d-flex-col" style="height: auto;">
-                <div class="header">
+
+            <div class="container  d-flex-col" style="height: auto;">
+                <div class="header shadow-sm">
                     <h2>Edit Details</h2>
                 </div>
 
@@ -24,30 +16,30 @@
 
                     <div class="basic-info-section">
                         <div class="col-10" id="form-container">
-                           
-                           
-                            <form id="edit-form" action="/editprofile" method="post" class="form-group " enctype="multipart/form-data">
-                            <div id="profilePicture" class="border">
-                                <img id="profile-picture"
-                                    src=<%= user?.imgSrc %>
+
+
+                            <form id="edit-form" action="/editprofile" method="post" class="form-group "
+                                enctype="multipart/form-data">
+                                <div id="profilePicture" class="border">
+                                    <img id="profile-picture" src=<%=user?.imgSrc %>
                                     alt="">
 
-                                <label for="image-input" class="mb-2 fs-4 fw-lighter bg-light">
+                                    <label for="image-input" class="mb-2 fs-4 fw-lighter bg-light">
 
 
-                                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
-                                        <path
-                                            d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z" />
-                                    </svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                                            <path
+                                                d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z" />
+                                        </svg>
 
-                                </label>
-                                <input class="form-control hide" name="profilePicture" type="file" id="image-input">
+                                    </label>
+                                    <input class="form-control hide" name="profilePicture" type="file" id="image-input">
 
-                            </div>
-                            
-                            <h4 class="mb-3 w-50">Basic Information</h4>
-                            <div class="col-7 ">
-                                <div >
+                                </div>
+
+                                <h4 class="mb-3 w-50">Basic Information</h4>
+                                <div class="col-7 ">
+                                    <div>
 
 
                                         <div class="input-group my-2">
@@ -99,8 +91,9 @@
                                         </div>
 
                                         <div class="form-floating my-2">
-                                            <textarea name="bio" class="form-control " placeholder="Leave a comment here"
-                                                id="floatingTextarea2" style="height: 100px"><%= user.bio %></textarea>
+                                            <textarea name="bio" class="form-control "
+                                                placeholder="Leave a comment here" id="floatingTextarea2"
+                                                style="height: 100px"><%= user.bio %></textarea>
                                             <label for="floatingTextarea2">Bio</label>
                                         </div>
 
@@ -110,11 +103,11 @@
 
                                         <button class="sign-up-btn" type="submit">Update</button>
 
-                                    </form>
-                                </div>
-                                <hr>
+                            </form>
+                        </div>
+                        <hr>
 
-                                <h4 class="my-2 mt-5 mb-3">Contact Information</h4>
+                        <h4 class="my-2 mt-5 mb-3">Contact Information</h4>
 
                                 <form action="/" method="post">
 
@@ -127,13 +120,13 @@
                                                 height="1em" viewBox="0 0 488 512">
                                                 <path
                                                     d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" />
-                                            </svg>&nbsp;Validate with google</button>
+                                            </svg>&nbsp;Update with google</button>
                                         <input name="email" id="email-input" type="text" class="form-control"
                                             placeholder="<%= user.email %>" aria-label="E-mail" disabled>
 
                                     </div>
                                     <div class="input-group mt-2">
-                                        <span class="input-group-text" id="addon-wrapping">+91</span>
+                                        <span class="input-group-text rounded-0" id="addon-wrapping">+91</span>
 
                                         <input id="phone-input" type="text" class="form-control" placeholder="Phone"
                                             aria-label="Phone" value="<%= user.phone  %>">
@@ -149,114 +142,130 @@
                                                 aria-hidden="true"></span>
                                             <svg class="otp-confirmed hide" style="fill: #ADFF45"
                                                 xmlns="http://www.w3.org/2000/svg" height="1em"
-                                                viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                                                viewBox="0 0 448 512">
                                                 <path
                                                     d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
                                             </svg>
                                             <svg class="otp-declined hide" xmlns="http://www.w3.org/2000/svg"
                                                 height="2em" viewBox="0 0 384 512"
-                                                style="fill:#ff0000"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                                                <path
+                                                style="fill:#ff0000"><path
                                                     d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
                                             </svg>
 
                                         </button>
                                     </div>
-                                    <button class="sign-up-btn my-4" type="submit">Update</button>
+                                    <p class="fw-light text-secondary my-1" style="font-size: 0.7rem;" >Please note that only Google email addresses are supported for registration. We regret any inconvenience this may cause and appreciate your understanding.</p>
+
+                                    <button class="sign-up-btn mb-4 mt-3" type="submit">Update</button>
                                 </form>
-                                <hr class="my-4">
-                                <h4 class="my-3 mt-4">Addresses</h4>
+                        <hr class="my-4">
+                        <h4 class="my-3 mt-4">Addresses</h4>
 
-                                <div  id="current-addresses" class=" shadow border p-2 d-flex-col" >
+                        <div id="current-addresses" class=" shadow-sm border p-2 d-flex-col">
 
-                                    <% addresses.forEach(elt => { %>
-                                     
-                                        <div class="address-card p-2 ps-3 shadow-sm bg-white m-2">
-                                            <h5><%= elt.fullname %></h5>
-                                            <h6><%= elt.addressLine %></h6>
-                                            <h6><%= elt.city %></h6>
-                                            <h6><%= elt.state %></h6>
-                                            <h6><%= elt.postalCode %></h6>
-                                            <h6><%= elt.phone %></h6>
-                                        <a href="/address/delete?id=<%=elt._id%>" class="p-1 outline-black-btn shadow-sm">
-                                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg>
-                                        </a>
-                                        </div>
+                            <% addresses.forEach(elt=> { %>
 
-                                    <% }) %>
-
+                                <div class="address-card p-2 ps-3 shadow-sm bg-white m-2">
+                                    <h5>
+                                        <%= elt.fullname %>
+                                    </h5>
+                                    <h6>
+                                        <%= elt.addressLine %>
+                                    </h6>
+                                    <h6>
+                                        <%= elt.city %>
+                                    </h6>
+                                    <h6>
+                                        <%= elt.state %>
+                                    </h6>
+                                    <h6>
+                                        <%= elt.postalCode %>
+                                    </h6>
+                                    <h6>
+                                        <%= elt.phone %>
+                                    </h6>
+                                    <a href="/address/delete?id=<%=elt._id%>" class="p-1 outline-black-btn shadow-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="1em"
+                                            viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                                            <path
+                                                d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
+                                        </svg>
+                                    </a>
                                 </div>
 
-                                <form id="edit-form" action="/address" method="post" class="form-group ">
+                                <% }) %>
 
-                                    <div class="form-floating my-2">
-                                        <input name="addressLine" type=" text" class="form-control w-100"
-                                            id="addressLine" placeholder="Username">
-                                        <label for="addressLine" class=" form-label">Address Line</label>
-                                    </div>
-                                    <div class="form-floating my-2">
-                                        <input name="fullname" type=" text" class="form-control w-100" id="fullname"
-                                            placeholder="Username">
-                                        <label for="fullname" class=" form-label">Full Name</label>
-                                    </div>
-                                    <div class="input-group my-2">
+                        </div>
 
-                                        <div class="form-floating">
-                                            <input name="city" type="text" class="form-control" placeholder="City"
-                                                id="city" ">
+                        <form id="edit-form" action="/address" method="post" class="form-group ">
+
+                            <div class="form-floating my-2">
+                                <input name="addressLine" type=" text" class="form-control w-100" id="addressLine"
+                                    placeholder="Username">
+                                <label for="addressLine" class=" form-label">Address Line</label>
+                            </div>
+                            <div class="form-floating my-2">
+                                <input name="fullname" type=" text" class="form-control w-100" id="fullname"
+                                    placeholder="Username">
+                                <label for="fullname" class=" form-label">Full Name</label>
+                            </div>
+                            <div class="input-group my-2">
+
+                                <div class="form-floating">
+                                    <input name="city" type="text" class="form-control" placeholder="City" id="city" ">
                                             <label for=" city" class="form-label">City</label>
-                                        </div>
-                                        <div class="form-floating">
-                                            <input name="state" type="text" class="form-control" placeholder="Surname"
-                                                id="state">
-                                            <label for="state" class="form-label">State</label>
-                                        </div>
-                                    </div>
+                                </div>
+                                <div class="form-floating">
+                                    <input name="state" type="text" class="form-control" placeholder="Surname"
+                                        id="state">
+                                    <label for="state" class="form-label">State</label>
+                                </div>
+                            </div>
 
 
 
-                                    <div class="input-group my-2 ">
+                            <div class="input-group my-2 ">
 
-                                        <div class="form-floating">
-                                            <input name="phone" type="number" class="form-control w-100"
-                                                placeholder="Phone" id="phone">
-                                            <label for="phone" class="form-label">Phone</label>
-                                        </div>
-
-
-                                        <div class="form-floating mb-3">
-                                            <input name="postalCode" type="number" class="form-control w-100"
-                                                placeholder="Postal Code" id="postalCode">
-                                            <label for="postalCode" class="form-label">Postal Code</label>
-                                        </div>
+                                <div class="form-floating">
+                                    <input name="phone" type="number" class="form-control w-100" placeholder="Phone"
+                                        id="phone">
+                                    <label for="phone" class="form-label">Phone</label>
+                                </div>
 
 
-                                    </div>
-
-
-
-
-
-
-
-                                    <button class="sign-up-btn" type="submit">Update</button>
-
-                                </form>
-
-
-
-
+                                <div class="form-floating mb-3">
+                                    <input name="postalCode" type="number" class="form-control w-100"
+                                        placeholder="Postal Code" id="postalCode">
+                                    <label for="postalCode" class="form-label">Postal Code</label>
+                                </div>
 
 
                             </div>
-                        </div>
+
+
+
+
+
+
+
+                            <button class="sign-up-btn" type="submit" style="width: 10rem;">Add Address</button>
+
+                        </form>
+
+
+
+
+
 
                     </div>
-
                 </div>
 
-
             </div>
+
+        </div>
+
+
+        </div>
         </div>
 
 
@@ -277,5 +286,6 @@
             })
 
         </script>
+        <script src="/dist/editProfile.js"></script>
 
         <%- include('partials/closingHead.ejs') %>

@@ -13,13 +13,9 @@ const adminSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    walletBalance:Number
 
-    creationDate:{
-        type: Date,
-        default: Date.now()
-    }
-
-})
+},{timeStamps:true})
 
 
 const admin = mongoose.model('Admin', adminSchema);

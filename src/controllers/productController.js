@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
+const axios = require('axios')
 const geolib = require("geolib");
+require('dotenv').config();
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY)
 const asyncHandler = require("express-async-handler");
 
@@ -11,16 +13,11 @@ const Request = require("../models/request");
 const Order = require('../models/order')
 const Configuration = require('../models/configuration');
 const Courier = require('../models/courier')
-
+const Transaction = require('../models/transactions');
+const Admin = require('../models/admin')
 const convertISODate = require("../utils/formatDate");
 
 
-
-let db, bucket;
-mongoose.connection.on("connected", () => {
-  db = mongoose.connection.db;
-  bucket = new mongoose.mongo.GridFSBucket(db, { bucketName: "images" });
-});
 
 const isInRadius = (cord1, cord2, distance) => {
   console.log(cord1, cord2, distance);
@@ -28,6 +25,12 @@ const isInRadius = (cord1, cord2, distance) => {
   if (geolib.getDistance(cord1, cord2) > distance * 1000) return false;
   return true;
 };
+
+let db, bucket;
+mongoose.connection.on("connected", () => {
+  db = mongoose.connection.db;
+  bucket = new mongoose.mongo.GridFSBucket(db, { bucketName: "images" });
+});
 
 
 
@@ -54,6 +57,28 @@ const saveProduct = asyncHandler(async (item, images) => {
 
   const data = await product.save();
 });
+
+const addProduct = asyncHandler(async (req, res) => {
+
+  console.log('request::::', JSON.parse(req.body.location))
+  try {
+    const product = req.body;
+    product.userID = req.session.userID;
+    const data = await saveProduct(product, req.files);
+    res.cookie("notify", "Posted successfully.")
+    res.status(200).json({ message: 'Added successfully' })
+  }
+  catch (err) {
+    console.log(err);
+    err.redirect('/product/post');
+    res.cookie("notify", "Something went wrong.")
+    res.status(400).json({ message: 'Error adding product' });
+    return err;
+  }
+
+})
+
+
 
 const saveImgs = asyncHandler(async (files) => {
 
@@ -138,8 +163,8 @@ const renderProduct = asyncHandler(async (req, res, next) => {
       });
     console.log(requests)
 
-    if(user?.profilePicture) 
-    user.imgSrc = `data:${user.profilePicture.contentType};base64,${user.profilePicture.data.toString('base64')}`
+    if (user?.profilePicture)
+      user.imgSrc = `data:${user.profilePicture.contentType};base64,${user.profilePicture.data.toString('base64')}`
 
     res.render("product", {
       title: "Product",
@@ -215,6 +240,7 @@ const renderSearch = asyncHandler(async (req, res) => {
     distance,
     minPrice,
     maxPrice,
+    page
   } = req.query;
 
   if (!searchQuery) {
@@ -271,8 +297,13 @@ const renderSearch = asyncHandler(async (req, res) => {
     });
   }
   console.log(matchConditions);
+  
+  if(!page)page=0
 
-  let products = await getQueryStateProduct(matchConditions, sortConditions, searchQuery);
+  const skipCount = parseInt(page)*9
+  console.log('skipCount:::::::::::;',skipCount)
+
+  let products = await getQueryStateProduct(matchConditions, sortConditions, searchQuery,skipCount );
   console.log(products[0])
 
 
@@ -318,7 +349,7 @@ const renderSearch = asyncHandler(async (req, res) => {
         { _id: req.session.userID },
         { wishlist: 1 }
       );
-      userWishlist = userWishlist.wishlist;
+      userWishlist = userWishlist?.wishlist;
     }
     const categories = await Category.aggregate([
       {
@@ -342,7 +373,7 @@ const renderSearch = asyncHandler(async (req, res) => {
       products: formatedProducts,
       categories: categories,
       wishlist: userWishlist,
-      searchParam: req.query.search,
+      searchParam: searchQuery,
     });
   }
 });
@@ -536,7 +567,7 @@ const renderBuyStatus = asyncHandler(async (req, res) => {
       sellerID: product.userID,
       productID: req.query.id,
       price: {
-        transactionPercent: (await Configuration.findOne({ name: 'transactionFeePercent' })).value,
+        transactionPercent: (stripeSession.amount_total / 100 - requestedAmont) * 100 / requestedAmont,
         totalPrice: stripeSession.amount_total / 100,
         listPrice: requestedAmont
       },
@@ -545,9 +576,23 @@ const renderBuyStatus = asyncHandler(async (req, res) => {
     })
     const data = await order.save();
     if (!data) throw new Error(`Couldn't save order details`);
+    const transaction = new Transaction({
+      type: 'user_to_admin_stripe',
+      senderID: req.session.userID,
+      toAdmin: true,
+      status: stripeSession.payment_status,
+      amount: stripeSession.amount_total / 100,
+      order: data._id
+    });
+    await transaction.save()
+    await Admin.findOneAndUpdate({ role: 'admin' }, { $inc: { walletBalance: stripeSession.amount_total / 100 } });
     res.cookie("notify", "Order placed successfully");
     req.session.order = null;
   }
+
+
+
+
 
   order = await Order.findOne({ productID: req.query.id }).populate({
     path: 'buyerID',
@@ -583,17 +628,108 @@ const renderBuyStatus = asyncHandler(async (req, res) => {
 const addCourier = asyncHandler(async (req, res) => {
 
   console.log(req.body)
+  const response = await axios.post('https://api.ship24.com/public/v1/trackers/track', {
+    trackingNumber: req.body.courierID,
+  }, {
+    headers: {
+      Authorization: 'Bearer apik_ziSjYIP3ZNKLxUXWABTzPgmjoZbYid',
+      'Content-Type': 'application/json; charset=utf-8',
+    },
+  });
+
+  console.log(response.data)
+  const trackerID = response.data.data.trackings[0].tracker.trackerId;
+  const status = response.data.data.trackings[0].shipment.statusMilestone
+  console.log('trackerID', trackerID)
+
+  console.log(response);
+
   const courier = new Courier({
     carrier: req.body.carrier,
     courierID: req.body.courierID,
     productID: req.body.productID,
-
-  })
+    trackerID,
+    status
+  });
   const data = await courier.save();
   if (!data) throw new Error("couldn't add courier details");
+
+
+
+
   res.redirect(`/product/status?productID=${req.body.productID}`);
 
 })
+
+const getOrders = asyncHandler(async (req, res) => {
+  let orders = await Order.find()
+    .populate({
+      path: 'productID buyerID sellerID',
+    })
+    .sort({ createdAt: -1 }).lean();
+
+  orders = await Promise.all(orders.map(async (order) => {
+    const buffer = await getImages(order.productID.images);
+    const base64Image = buffer[0].toString("base64");
+    order.productID.images = `data:image/jpeg;base64,${base64Image}`;
+    return order;
+  }))
+  console.log(orders[0]);
+  res.json(orders);
+})
+
+const getOrderStatus = asyncHandler(async (req, res) => {
+  console.log(req.query.trackerID)
+  const trackerID = req.query.trackerID;
+
+  const response = await axios.get(`https://api.ship24.com/public/v1/trackers/${trackerID}/results`, {
+    headers: {
+      Authorization: 'Bearer apik_ziSjYIP3ZNKLxUXWABTzPgmjoZbYid'
+    },
+  });
+  const status = response.data.data.trackings[0].shipment.statusMilestone;
+  console.log(status)
+  const courier = await Courier.findOne({ trackerID });
+  courier.status = status;
+  await courier.save();
+  const order = await Order.findOneAndUpdate({ productID: courier.productID }, { $set: { status } });
+
+  res.json(status)
+})
+
+const getWishlist = asyncHandler(async (req, res) => {
+
+
+  let wishlist = await User.findOne({ _id: req.session.userID }, { wishlist: 1 }).lean();
+  wishlist = wishlist.wishlist;
+  console.log(wishlist);
+  wishlist = await Promise.all(wishlist.map(productID => {
+    return Product.getFullProduct(productID)
+  }))
+
+  console.log(wishlist)
+
+  res.json(wishlist);
+
+
+})
+
+const webhook = asyncHandler(async (req, res) => {
+  console.log(req.body);
+  console.log(req.body.trackings[0].shipment);
+
+
+  const trackerID = req.body.trackings[0].tracker.trackerID
+  const status = req.body.trackings[0].shipment.statusMilestone;
+
+  const courier = await Courier.findOne({ trackerID });
+  courier.status = status;
+  await courier.save();
+  const order = await Order.findOneAndUpdate({ productID: courier.productID }, { $set: { status } });
+  res.status(200).json({ message: 'Success' });
+})
+
+
 
 
 module.exports = {
@@ -615,12 +751,18 @@ module.exports = {
   renderCheckout,
   placeOrder,
   renderBuyStatus,
-  addCourier
+  addCourier,
+  addProduct,
+  getOrders,
+  getOrderStatus,
+  webhook,
+  getWishlist
 };
 
 
 
-const getQueryStateProduct = async (matchConditions, sortConditions, searchQuery) => {
+const getQueryStateProduct = async (matchConditions, sortConditions, searchQuery, skipCount) => {
+  console.log(skipCount)
   matchConditions.push({ orders: { $size: 0 } });
   const products = await Product.aggregate([
     {
@@ -704,16 +846,14 @@ const getQueryStateProduct = async (matchConditions, sortConditions, searchQuery
         specificity: 1
       },
     },
+    {
+      $skip:skipCount
+    },
+    {
+      $limit: 9
+    }
   ]);
 
   return products;
 };
-
-const func = async () => {
-
-
- 
-
-
-}
 

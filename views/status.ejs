@@ -1,275 +1,317 @@
 <%- include('partials/head.ejs') %>
     <%- include('partials/navbar.ejs') %>
-    <% let progPercent = "0%" %>
-        <div class="container d-flex flex-column align-items-center justify-content-center" style="margin: 5rem auto; ">
-            <div class="text-muted fw-bold my-2" style="font-size: 0.8rem;">
+        <% let progPercent="0%" %>
+            <div class="container d-flex flex-column align-items-center justify-content-center"
+                style="margin: 5rem auto; ">
+                <div class="text-muted fw-bold my-2" style="font-size: 0.8rem;">
 
-                <% if (!order) { %>
-
-
-                    <% let accepted=false; %>
-                        <% requests.forEach(req=> { %>
-                            <% if (req.isAccepted) { %>
-                                <% accepted=true %>
-                                    <% } %>
-                                        <% }) %>
-                                            <% if (!accepted) { %>
-                                                &#9432;Accept a request to let buyers to order your product.
-
-                                                <% } else{ progPercent="10%" %>
-                                                    &#9432;Awaiting Order placement by buyer.
-                                                    <% } %>
-                <% }else{ %>
-                    <% if (!courier) {progPercent="40%"%>
-                        &#9432;Ship the package to the address provided in Order details.
-                    <% } else{ progPercent = "75%"%>
-                        &#9432;Awaiting delivery of the package.
-                    <% } %>
-                <% } %>
-                
+                    <% if (!order) { %>
 
 
+                        <% let accepted=false; %>
+                            <% requests.forEach(req=> { %>
+                                <% if (req.isAccepted) { %>
+                                    <% accepted=true %>
+                                        <% } %>
+                                            <% }) %>
+                                                <% if (!accepted) { %>
+                                                    &#9432;Accept a request to let buyers to order your product.
+
+                                                    <% } else{ progPercent="10%" %>
+                                                        &#9432;Awaiting Order placement by buyer.
+                                                        <% } %>
+                                                            <% }else{ %>
+                                                                <% if (!courier) {progPercent="40%" %>
+                                                                    &#9432;Ship the package to the address provided in
+                                                                    Order details.
+                                                                    <% } else if (courier?.status === 'delivered') {progPercent="100%" %>
+                                                                        
+                                                                        &#9432;Package Delivered.
+                                                                        
+                                                                    <% } else { progPercent="75%" %>
+                                                                        &#9432;Awaiting delivery of the package.
+                                                                        <% } %>
+                                                                            <% } %>
+
+
+
+                </div>
+                <div class="progress" style="width: 75%; border-radius: 0px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated " role="progressbar"
+                        aria-valuenow="0%" aria-valuemin="0" aria-valuemax="100"
+                        style="width: <%= progPercent%>; background-color: #ADFF45; border-radius: 0px;"></div>
+                </div>
+                <div class="d-flex justify-content-around w-100 ">
+                    <div class="">Request Accepted</div>
+                    <div class="">Order Placed</div>
+                    <div class="">Shipped</div>
+                    <div class="">Delivered</div>
+                </div>
             </div>
-            <div class="progress" style="width: 75%; border-radius: 0px;">
-                <div class="progress-bar progress-bar-striped progress-bar-animated " role="progressbar"
-                    aria-valuenow="0%" aria-valuemin="0" aria-valuemax="100"
-                    style="width: <%= progPercent%>; background-color: #ADFF45; border-radius: 0px;"></div>
-            </div>
-            <div class="d-flex justify-content-around w-100 ">
-                <div class="">Request Accepted</div>
-                <div class="">Order Placed</div>
-                <div class="">Shipped</div>
-                <div class="">Received</div>
-            </div>
-        </div>
 
-        <div class="container main-container mt-4">
+            <div class="container main-container mt-4">
 
-            <% if (order) { %>
+                <% if (order) { %>
 
 
-                <% if (!courier) { %>
-                    <div class="courier-container w-75 mb-4" style="">
-                        <div class="header" style="background-color: red;">Courier Details</div>
-                        <form action="/product/courier" method="post">
-                            <div class="content p-4 d-flex  d-flex flex-column align-items-center">
-                                <div class="row g-3 align-items-center">
-                                    <div class="col-auto me-4">
-                                        <label for="inputCarrier" class="col-form-label">Carrier</label>
-                                    </div>
-                                    <div class="col-auto">
-                                        <input name="carrier" type="text" id="inputCarrier" class="form-control"
-                                            aria-describedby="passwordHelpInline">
-                                    </div>
-                                </div>
-                                <div class="row g-3 mt-1 align-items-center">
-                                    <div class="col-auto ">
-                                        <label for="inputCourier" class="col-form-label">Courier Id</label>
-                                    </div>
-                                    <div class="col-auto">
-                                        <input name="courierID" type="text" id="inputCourier" class="form-control"
-                                            aria-describedby="passwordHelpInline">
-                                    </div>
-                                </div>
-
-                                <input type="text" class="hide" value="<%= order.productID._id %>" name="productID">
-                                <button class="btn-green-default mt-3"
-                                    style="width:6rem; height:2.5rem; box-shadow: none;">Submit</button>
-
-                            </div>
-                        </form>
-                    </div>
-                    <% }else{ %>
+                    <% if (!courier) { %>
                         <div class="courier-container w-75 mb-4" style="">
-                            <div class="header" style="background-color: black;">Courier Details</div>
-                            <div class="content p-4 d-flex  d-flex flex-column align-items-center">
-                                <table class="table table-borderless p-4 text-center w-50">
-
-
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row">Courier</th>
-                                            <td>
-                                                <%=courier.carrier%>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">courier ID</th>
-                                            <td>
-                                                <%=courier.courierID%>
-                                            </td>
-                                        </tr>
-                                        <tr class="my-2">
-                                            <th scope="row" class="fs-4">Status</th>
-                                            <td class="">
-                                                <%=courier?.status%>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                        </div>
-                        <% } %>
-
-
-                            <div class="address-container mt-4 w-75" style="height: 40rem;">
-                                <div class="header">Order Details</div>
-                                <div class="content p-4 d-flex">
-
-                                    <div class="col-7 d-flex-col border border-end-0 border-top-0" style="height:100%;">
-
-                                        <div class="d-flex align-items-center justify-content-around"
-                                            style="width: 100%; height:30%;">
-                                            <div class="border border-start-0 p-2 text-center" style="width: 50%;">
-                                                <div style="height:10%; width: 100%;" class="fs-5 fw-bold">Seller</div>
-                                                <div style="height: 90%; width: 100%;">
-                                                    <%=order.sellerID.firstName%>
-                                                        <%=order.sellerID.secondName%>
-                                                </div>
-                                            </div>
-                                            <div class="border border-end-0 p-2 text-center" style="width: 50%;">
-                                                <div style="height:10%; width: 100%;" class="fs-5 fw-bold">Buyer</div>
-                                                <div style="height: 90%; width: 100%;">
-                                                    <%=order.buyerID.firstName%>
-                                                        <%=order.buyerID.secondName%>
-                                                </div>
-                                            </div>
-
+                            <div class="header" style="background-color: red;">Courier Details</div>
+                            <form action="/product/courier" method="post">
+                                <div class="content p-4 d-flex  d-flex flex-column align-items-center">
+                                    <div class="row g-3 align-items-center">
+                                        <div class="col-auto me-4">
+                                            <label for="inputCarrier" class="col-form-label">Carrier</label>
                                         </div>
-
-                                        <div class="d-flex align-items-center justify-content-center"
-                                            style="height: 70%; width: 100%;">
-                                            <div
-                                                class=" text-center fw-bold px-4 address-card p-2 ps-3  my-2  existing-address">
-                                                <h4 class="p-2 text-decoration-underline">Address</h4>
-                                                <h5 class="text-uppercase">
-                                                    <%=order.address.fullname %>
-                                                </h5>
-                                                <h6 class="text-uppercase">
-                                                    <%=order.address.addressLine %>
-                                                </h6>
-                                                <h6 class="text-uppercase">
-                                                    <%=order.address.city %>
-                                                </h6>
-                                                <h6 class="text-uppercase">
-                                                    <%=order.address.state %>
-                                                </h6>
-                                                <h6 class="text-uppercase">
-                                                    <%=order.address.postalCode %>
-                                                </h6>
-                                                <h6 class="text-uppercase">
-                                                    <%=order.address.phone %>
-                                                </h6>
-
-                                            </div>
+                                        <div class="col-auto">
+                                            <input name="carrier" type="text" id="inputCarrier" class="form-control"
+                                                aria-describedby="passwordHelpInline">
                                         </div>
-
                                     </div>
-
-
-
-                                    <div class="col-5 d-flex flex-column align-items-center border"
-                                        style="height: 100%;">
-                                        <div class= "" style="width: 10rem; height: 10rem; object-fit: cover;">
-                                            <img src="<%=order.productID.images%>" alt="" class="w-100 h-100" style="object-fit: cover;">
+                                    <div class="row g-3 mt-1 align-items-center">
+                                        <div class="col-auto ">
+                                            <label for="inputCourier" class="col-form-label">Courier Id</label>
                                         </div>
-                                        <div class="details d-flex-col ps-4 pt-4  w-100 h-25">
-                                            <h4 class="mb-0">₹<%= order.price.listPrice%>
-                                            </h4>
-                                            <h5 class="p-2 ps-0 pb-0"><b>
-                                                    <%= order.productID.title%>
-                                                </b></h5>
-
-
-                                            <h6 class="">
-                                                <%= order.productID.location.name%>
-                                            </h6>
-
-
-                                        </div>
-                                        <div class="h-50">
-                                            <table class="table table-borderless my-3">
-
-
-                                                <tbody>
-                                                    <tr>
-                                                        <th scope="row">Amount</th>
-                                                        <td>₹<%=order.price.listPrice%>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row">Transaction Fee (1%)</th>
-                                                        <td>₹<%=order.price.listPrice*0.01%>
-                                                        </td>
-                                                    </tr>
-                                                    <tr class="my-2">
-                                                        <th scope="row" class="fs-4  border-top">Total</th>
-                                                        <td class="fs-4 border-top">
-                                                            <%=order.price.listPrice+ (order.price.listPrice*0.01)%>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                        <div class="col-auto">
+                                            <input name="courierID" type="text" id="inputCourier" class="form-control"
+                                                aria-describedby="passwordHelpInline">
                                         </div>
                                     </div>
 
-
+                                    <input type="text" class="hide" value="<%= order.productID._id %>" name="productID">
+                                    <button class="btn-green-default mt-3"
+                                        style="width:6rem; height:2.5rem; box-shadow: none;">Submit</button>
 
                                 </div>
-                            </div>
+                            </form>
+                        </div>
+                        <% }else{ %>
+                            <div class="courier-container w-75 mb-4" style="">
+                                <div class="header" style="background-color: black;">Courier Details</div>
+                                <div class="content p-4 d-flex  d-flex flex-column align-items-center">
+                                    <table class="table table-borderless p-4 text-center w-50">
 
+
+                                        <tbody>
+                                            <tr>
+                                                <th scope="row">Courier</th>
+                                                <td>
+                                                    <%=courier.carrier%>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">courier ID</th>
+                                                <td>
+                                                    <%=courier.courierID%>
+                                                </td>
+                                            </tr>
+                                            <tr class="my-2">
+                                                <th scope="row" class="fs-4">Status</th>
+                                                <td
+                                                    class="d-flex align-items-center justify-content-center status-field">
+                                                    <%=courier?.status%>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <button class="on-click-btn default-black-btn p-1 px-3" id="check-status-btn"
+                                        trackerID="<%= courier.trackerID %>">Check
+                                        status</button>
+                                    <div class="spinner-border text-dark spinner hide"
+                                        style="width: 1.5rem; height: 1.5rem;" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+
+                            </div>
                             <% } %>
 
 
-                                <div class="request-container w-75 mb-4 ">
-                                    <div class="header">Requests</div>
-                                    <div class="content p-4 h-100 w-100">
+                                <div class="address-container mt-4 w-75" style="height: 40rem;">
+                                    <div class="header">Order Details</div>
+                                    <div class="content p-4 d-flex">
 
-                                        <div class="req-table w-100 p-4">
-                                            <% requests.forEach(request=> { %>
-                                                <div class="request w-100 p-2">
-                                                    <h4>
-                                                        <%= request.requesterID.firstName%>
-                                                            <%= request.requesterID.secondName%>
-                                                    </h4>
-                                                    <h4>
-                                                        ₹<%= request.amount%>
-                                                    </h4>
-                                                    <% if (!order) { %>
+                                        <div class="col-7 d-flex-col border border-end-0 border-top-0"
+                                            style="height:100%;">
 
-                                                        <% if (request.isAccepted) { %>
-                                                            <button
-                                                                class="on-click-btn outline-black-btn accept-req-btn"
-                                                                navLink="/product/acceptRequest?requestID=<%= request._id %>&productID=<%=request.productID%>&to=false">
-                                                                Cancel request
-                                                            </button>
-                                                            <% }else{ %>
-                                                                <button
-                                                                    class="on-click-btn outline-black-btn accept-req-btn"
-                                                                    navLink="/product/acceptRequest?requestID=<%= request._id %>&productID=<%=request.productID%>&to=true">
-                                                                    Accept Request
-                                                                </button>
-                                                                <% } %>
-
-                                                                    <% }else{ %>
-                                                                        <% if (request.isAccepted) { %>
-                                                                            <span>Accepted Request</span>
-                                                                            <% }else{ %>
-                                                                                <span>Requested</span>
-                                                                                <% } %>
-                                                                                    <% } %>
+                                            <div class="d-flex align-items-center justify-content-around"
+                                                style="width: 100%; height:30%;">
+                                                <div class="border border-start-0 p-2 text-center" style="width: 50%;">
+                                                    <div style="height:10%; width: 100%;" class="fs-5 fw-bold">Seller
+                                                    </div>
+                                                    <div style="height: 90%; width: 100%;">
+                                                        <%=order.sellerID.firstName%>
+                                                            <%=order.sellerID.secondName%>
+                                                    </div>
                                                 </div>
-                                                <% }) %>
+                                                <div class="border border-end-0 p-2 text-center" style="width: 50%;">
+                                                    <div style="height:10%; width: 100%;" class="fs-5 fw-bold">Buyer
+                                                    </div>
+                                                    <div style="height: 90%; width: 100%;">
+                                                        <%=order.buyerID.firstName%>
+                                                            <%=order.buyerID.secondName%>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="d-flex align-items-center justify-content-center"
+                                                style="height: 70%; width: 100%;">
+                                                <div
+                                                    class=" text-center fw-bold px-4 address-card p-2 ps-3  my-2  existing-address">
+                                                    <h4 class="p-2 text-decoration-underline">Address</h4>
+                                                    <h5 class="text-uppercase">
+                                                        <%=order.address.fullname %>
+                                                    </h5>
+                                                    <h6 class="text-uppercase">
+                                                        <%=order.address.addressLine %>
+                                                    </h6>
+                                                    <h6 class="text-uppercase">
+                                                        <%=order.address.city %>
+                                                    </h6>
+                                                    <h6 class="text-uppercase">
+                                                        <%=order.address.state %>
+                                                    </h6>
+                                                    <h6 class="text-uppercase">
+                                                        <%=order.address.postalCode %>
+                                                    </h6>
+                                                    <h6 class="text-uppercase">
+                                                        <%=order.address.phone %>
+                                                    </h6>
+
+                                                </div>
+                                            </div>
 
                                         </div>
+
+
+
+                                        <div class="col-5 d-flex flex-column align-items-center border"
+                                            style="height: 100%;">
+                                            <div class="" style="width: 10rem; height: 10rem; object-fit: cover;">
+                                                <img src="<%=order.productID.images%>" alt="" class="w-100 h-100"
+                                                    style="object-fit: cover;">
+                                            </div>
+                                            <div class="details d-flex-col ps-4 pt-4  w-100 h-25">
+                                                <h4 class="mb-0">₹<%= order.price.listPrice%>
+                                                </h4>
+                                                <h5 class="p-2 ps-0 pb-0"><b>
+                                                        <%= order.productID.title%>
+                                                    </b></h5>
+
+
+                                                <h6 class="">
+                                                    <%= order.productID.location.name%>
+                                                </h6>
+
+
+                                            </div>
+                                            <div class="h-50">
+                                                <table class="table table-borderless my-3">
+
+
+                                                    <tbody>
+                                                        <tr>
+                                                            <th scope="row">Amount</th>
+                                                            <td>₹<%=order.price.listPrice%>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">Transaction Fee (1%)</th>
+                                                            <td>₹<%=order.price.listPrice*0.01%>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="my-2">
+                                                            <th scope="row" class="fs-4  border-top">Total</th>
+                                                            <td class="fs-4 border-top">
+                                                                <%=order.price.listPrice+ (order.price.listPrice*0.01)%>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
 
 
                                     </div>
                                 </div>
 
-        </div>
+                                <% } %>
 
 
-        <script src="/js/landing.js"></script>
-        <%- include('partials/closingHead.ejs') %>
+                                    <div class="request-container w-75 mb-4 ">
+                                        <div class="header">Requests</div>
+                                        <div class="content p-4 h-100 w-100">
+
+                                            <div class="req-table w-100 p-4">
+                                                <% requests.forEach(request=> { %>
+                                                    <div class="request w-100 p-2 my-2">
+                                                        <div class="text-center" style="width:15rem">
+
+                                                            <h4>
+                                                                <%= request.requesterID.firstName%>
+                                                                    <%= request.requesterID.secondName%>
+                                                            </h4>
+                                                        </div>
+                                                        <h4>
+                                                            ₹<%= request.amount%>
+                                                        </h4>
+                                                        <% if (!order) { %>
+
+                                                            <% if (request.isAccepted) { %>
+                                                                <button
+                                                                    class="on-click-btn outline-black-btn accept-req-btn"
+                                                                    navLink="/product/acceptRequest?requestID=<%= request._id %>&productID=<%=request.productID%>&to=false">
+                                                                    Cancel request
+                                                                </button>
+                                                                <% }else{ %>
+                                                                    <button
+                                                                        class="on-click-btn outline-black-btn accept-req-btn"
+                                                                        navLink="/product/acceptRequest?requestID=<%= request._id %>&productID=<%=request.productID%>&to=true">
+                                                                        Accept Request
+                                                                    </button>
+                                                                    <% } %>
+
+                                                                        <% }else{ %>
+                                                                            <% if (request.isAccepted) { %>
+                                                                                <span>Accepted Request</span>
+                                                                                <% }else{ %>
+                                                                                    <span>Requested</span>
+                                                                                    <% } %>
+                                                                                        <% } %>
+                                                    </div>
+                                                    <% }) %>
+
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+
+            </div>
+
+            <script>
+                const statusCheckBtn = document.querySelector('#check-status-btn');
+                const statusField = document.querySelector('.status-field');
+                const trackerID = statusCheckBtn.getAttribute('trackerID');
+                const spinner = document.querySelector('.spinner');
+                statusCheckBtn.addEventListener('click', () => {
+                    statusCheckBtn.classList.add('hide')
+                    spinner.classList.remove('hide')
+
+                    fetch(`/product/getCourierStatus?trackerID=${trackerID}`, {
+                        method: 'get'
+                    })
+                        .then(res => res.json())
+                        .then(res => {
+                            console.log(res)
+                            statusField.innerHTML = res;
+                            statusCheckBtn.classList.remove('hide')
+                            spinner.classList.add('hide')
+                        })
+                })
+            </script>
+
+            <script src="/js/landing.js"></script>
+            <%- include('partials/closingHead.ejs') %>

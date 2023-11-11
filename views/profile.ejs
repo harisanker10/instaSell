@@ -1,17 +1,17 @@
 <%- include('partials/head.ejs') %>
     <%- include('partials/navbar.ejs') %>
 
-        <div class="d-flex ms-4 ">
+        <div class="d-flex ms-4 main-container">
 
-            <div class="col-3 mt-5 me-4 d-flex-col">
-                <div class="card text-center profile-card col-3 " style="width: 85%; margin-left: 15%;">
+            <div class="col-3  me-4 d-flex-col " style="height: 100vh;">
+                <div class="card text-center profile-card mt-4" style="width: 85%; margin-left: 15%;border: 0px;">
                     <div class="card-body">
                         <% if (user && user.profilePicture) { %>
                             <div class="mb-3" id="image-container">
-                                <img src="<%= user.imgSrc %>" alt="">                                
+                                <img src="<%= user.imgSrc %>" alt="">
                             </div>
                             <% } %>
-                                <h5 class=" card-title fs-4">
+                                <h5 class=" card-title fs-4 m-0">
 
                                     <%= user?.firstName.toUpperCase() || '' %>
                                         <%= user?.secondName.toUpperCase() || '' %>
@@ -25,9 +25,34 @@
                                 </p>
                                 <p class="card-text m-1 mt-0">Joined <%= user?.joinedDate || "N/A" %>
                                 </p>
-                                <p class="card-text m-1 mt-3 fw-light" style="font-size: 0.8rem;">
+                                <p class="card-text m-1 mt-2 fw-light text-muted" style="font-size: 0.9rem;">
                                     <%= user?.bio || '' %>
                                 </p>
+                                <p class="card-text m-1 mt-2 fw-bold text-muted" style="font-size: 0.9rem;">
+                                    User verified with
+                                </p>
+                                <div>
+
+                                    <% if (user?.email) { %>
+                                        <svg class="border rounded-circle p-1 border-secondary"
+                                            style="width:1.5rem; height:1.5rem" xmlns="http://www.w3.org/2000/svg"
+                                            height="1em" viewBox="0 0 488 512">
+                                            <path
+                                                d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" />
+                                        </svg>
+
+                                        <% } %>
+                                            <% if (user?.phone) { %>
+                                                <svg class="border rounded-circle p-1 border-secondary"
+                                                    style="width:1.5rem; height:1.5rem;"
+                                                    xmlns="http://www.w3.org/2000/svg" height="1em"
+                                                    viewBox="0 0 512 512">
+                                                    <path
+                                                        d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z" />
+                                                </svg>
+                                                <% } %>
+                                </div>
+
 
                                 <a href="/editprofile" class="btn btn-primary btn-black-default m-2 ">Edit
                                     Profile</a>
@@ -49,7 +74,7 @@
                     </a>
                     <a href="" class="text-decoration-none">
 
-                        <div class="profile-nav-item text-center fs-5 ">Wishlist</div>
+                        <div class="profile-nav-item text-center fs-5 wishlist-nav">Wishlist</div>
                     </a>
 
                 </div>
@@ -58,7 +83,7 @@
 
 
 
-            <div class="col-8 mt-5 profile-main-container d-flex-col me-3">
+            <div class="col-8 profile-main-container d-flex-col me-3">
                 <% if (data?.listings) { %>
                     <%- include('partials/profile/listings.ejs') %>
                         <% }else if(data?.purchases){ %>
@@ -71,7 +96,7 @@
 
 
 
+        <%-include('partials/footer.ejs')%>
+            <script src="/js/profile.js"></script>
 
-        <script src="/js/profile.js"></script>
-
-        <%- include('partials/closingHead.ejs') %>
+            <%- include('partials/closingHead.ejs') %>

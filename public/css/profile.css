@@ -1,22 +1,28 @@
+.main-container{
+    height: calc(100vh - 56px);
+    overflow: hidden;
+}
+.card-body{
+    border:0px;
+    border-bottom: 1px solid #ADFF45 ;
+}
 .profile-card {
-    border: 2px solid #ADFF45;
+ 
     border-radius: 0px;
-    box-shadow: 0.5px 0.5px 20px #00000022;
+    /* box-shadow: 0.5px 0.5px 20px #00000022; */
 
     /* border-right: 0px; */
 }
 
 .profile-main-container {
-    border: 2px solid #ADFF45;
-    height: 38vw;
-    overflow: scroll;
-    box-shadow: 0.5px 0.5px 20px #00000022;
+    height: calc(100vh - 56px);
+    overflow-y: scroll;
 
 }
 
 .profile-nav-item {
-    border: 1px solid #ADFF45;
-    border-top: 0px;
+    margin: 0px;
+    border-bottom: 1px solid #ADFF45;
     height: 4rem;
     display: flex;
     align-items: center;
@@ -24,9 +30,9 @@
     padding-right: 1rem;
 }
 
-.profile-nav-item:first-child {
+/* .profile-nav-item:first-child {
     border-top: 1px solid #ADFF45;
-}
+} */
 
 
 .profile-nav-item:hover {
@@ -48,9 +54,11 @@
     align-self: flex-end;
     width: 85%;
     margin-left: 15%;
-    margin-top: 2rem;
+    border-bottom: 0px;
+    /* margin-top: 2rem; */
     color: black;
-    box-shadow: 0.5px 0.5px 20px #00000022;
+    
+    /* box-shadow: 0.5px 0.5px 20px #00000022; */
 
 
 
@@ -113,8 +121,8 @@ a {
 
 
 #image-container {
-    height: 10rem;
-    width: 10rem;
+    height: 7rem;
+    width: 7rem;
     object-fit: contain;
     overflow: hidden;
     border-radius: 50%;
@@ -181,9 +189,9 @@ a {
     width: 20%;
 }
 
-.vertical-rule {
+/* .vertical-rule {
     border: 0.5px solid rgba(127, 127, 127, 0.293);
-}
+} */
 
 
 
@@ -191,4 +199,10 @@ a {
     display: flex;
     justify-content: space-between;
     font-size: 14px;
+}
+
+.col-3{
+    border-right: 1.5px solid #ADFF45;
+    height: calc( 100vh - 56px );
+    padding: 0px;
 }

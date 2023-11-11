@@ -11,6 +11,9 @@ const productId = checkoutContainer.getAttribute('productId');
 const price = checkoutContainer.getAttribute('price');
 const userId = checkoutContainer.getAttribute('userId');
 
+const spinner = document.querySelector('.spinner-border');
+
+
 
 const orderBtn = document.querySelector('#order-btn');
 
@@ -81,7 +84,7 @@ orderBtn.addEventListener('click', (event) => {
     event.preventDefault();
     const formData = new FormData();
     if (!address) {
-        window.notify("Add address");
+        window.notify("Add address",10000,'err');
         return;
     }
     formData.append('address', address)
@@ -89,9 +92,11 @@ orderBtn.addEventListener('click', (event) => {
     formData.append('price', price);
     formData.append('sellerID', userId);
     formData.append('productTitle', productTitle);
-
+    
     console.log(formData);
-
+    spinner.classList.remove('hide');
+    orderBtn.style.backgroundColor = 'gray'
+    
     fetch('/product/order', {
         method: 'POST',
         body: formData

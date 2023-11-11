@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
+const express = require('express')
 
 const { isAuth } = require('../middleware/isAuth')
 const { registerUser,
@@ -15,12 +16,16 @@ const { registerUser,
     renderEditProfile,
     deleteAddress,
     renderProfileView,
-    getUsers
-
+    getUsers,
+    renderTransactions,
+    renderAdminPanel,
+    renderWallet,
+    walletTopup
 } = require('../controllers/userController');
 
 
-const { getProductCards, renderSearch, renderLanding } = require('../controllers/productController')
+
+const {renderSearch, renderLanding, getWishlist } = require('../controllers/productController')
 
 
 router.get('/', renderLanding)
@@ -51,10 +56,11 @@ router.get('/logout', async (req, res) => {
 })
 
 
+router.get('/wallet',isAuth,renderWallet)
 
 router.get('/profile', isAuth, renderProfile)
 
-router.get('/adminpanel', renderProfile);
+router.get('/adminpanel', renderAdminPanel);
 
 router.get('/viewProfile', renderProfileView);
 
@@ -84,6 +90,12 @@ router.post('/address', isAuth, addAddress)
 router.get('/address/delete', isAuth, deleteAddress)
 
 router.get('/getUsers', isAuth, getUsers)
+
+router.get('/transactions',isAuth,renderTransactions);
+
+router.post('/wallet',isAuth,walletTopup)
+
+router.get('/wishlist',getWishlist)
 
 
 

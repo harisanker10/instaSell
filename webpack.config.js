@@ -1,9 +1,11 @@
 const path = require('path');
 
 module.exports = {
-    mode: 'none', // Set mode to "none" for minimal configuration
-
-    // Output directory
+     output: {
+        path: path.resolve(__dirname, 'elonma'),
+        filename: 'elonma.js'
+    },
+    mode: 'none'
 }
-// Add other configuration options as needed
+
 

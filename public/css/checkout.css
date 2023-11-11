@@ -46,12 +46,13 @@ h4{
 }
 
 .checkout-container{
-    width:35rem ;
+    width:30rem ;
+    height: calc(100vh - 56px - 3rem);
 
 }
 .img-container{
     width: 100%;
-    height: 20rem;
+    height: 15rem;
     overflow: hidden;
 }
 

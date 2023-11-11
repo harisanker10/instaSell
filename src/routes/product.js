@@ -16,7 +16,10 @@ const { saveProduct,
     placeOrder,
     getCards,
     renderBuyStatus,
-    addCourier
+    addCourier,
+    addProduct,
+    getOrders,
+    getOrderStatus
 } = require('../controllers/productController');
 
 
@@ -39,28 +42,9 @@ router.get('/post', async (req, res) => {
 })
 
 
-router.post('/post', upload.array('images'), async (req, res) => {
-
-    console.log('request::::', JSON.parse(req.body.location))
-    try {
-        const product = req.body;
-        product.userID = req.session.userID;
-        const data = await saveProduct(product, req.files);
-        res.cookie("notify", "Posted successfully.")
-        res.status(200).json({ message: 'Added successfully' })
-    }
-    catch (err) {
-        console.log(err);
-        err.redirect('/product/post');
-        res.cookie("notify", "Something went wrong.")
-        res.status(400).json({ message: 'Error adding product' });
-        return err;
-    }
-
-})
+router.post('/post', upload.array('images'), addProduct)
 
 router.post('/update', upload.array('images'), updateProduct)
-
 
 router.get('/edit', renderEdit)
 
@@ -84,6 +68,9 @@ router.get('/buyStatus',renderBuyStatus);
 
 router.post('/courier',upload.any(),addCourier)
 
+router.get('/getOrders',getOrders)
+
+router.get('/getCourierStatus',getOrderStatus)
 
 
 

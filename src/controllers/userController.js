@@ -1,16 +1,20 @@
-const User = require("../models/user");
-const getImageAsBuffer = require("../utils/getImageAsBuffer");
+require('dotenv').config();
+const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY)
 const convertISODate = require("../utils/formatDate");
-const Admin = require("../models/admin");
-const { getCategories } = require("../controllers/categoryController");
-const { getProductCards } = require("../controllers/productController");
 const asyncHandler = require("express-async-handler");
-const bcrypt = require("bcrypt");
-const user = require("../models/user");
-const saltRounds = 10;
+const getImageAsBuffer = require("../utils/getImageAsBuffer");
+
+const { getCategories } = require("../controllers/categoryController");
+const { getProductCards, getImages } = require("../controllers/productController");
+
+const Admin = require("../models/admin");
+const User = require("../models/user");
 const Address = require("../models/address");
 const Product = require("../models/product");
 const Request = require("../models/request");
+const Order = require("../models/order");
+const Transaction = require('../models/transactions')
+
 
 const getUser = async (id) => {
   if (!id) {
@@ -31,14 +35,16 @@ const getUser = async (id) => {
   }
 };
 
+
 const registerUser = asyncHandler(async (req, res, next) => {
+
   console.log(req.body);
 
   let data = { ...req.body };
   if (data.profilePicture)
     data.profilePicture = await getImageAsBuffer(data.profilePicture);
 
-  if (!data.username) data.username = data.email.split("@")[0];
+  if (!data.username && data?.email) data.username = data.email.split("@")[0];
   console.log(data);
 
   if (
@@ -52,7 +58,10 @@ const registerUser = asyncHandler(async (req, res, next) => {
       `notify=User exist. Try logging in or change credentials.&redirect=/signup`
     );
   }
-
+  if (Object.keys(data).length === 1 && Object.keys(data)[0] === 'phone') {
+    data.username = data.phone;
+    data.firstName = 'user';
+  }
   const user = await User.create(data);
 
   req.session.username = user.username;
@@ -76,12 +85,13 @@ const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne(conditions, { profilePicture: 0 });
   console.log(user);
 
+
   if (!user) throw new Error("notify=User doesn't exist&redirect=/login");
   if (user.isBlocked)
     throw new Error("notify=Account is blocked&redirect=/login");
   if (
     (await user.checkPassword(req.body.password)) ||
-    req.body?.guid === user?.guid
+    (req.body?.guid === user?.guid) || user.phone
   ) {
     console.log("username:::", user.username);
     req.session.userID = user._id;
@@ -102,16 +112,25 @@ const renderProfile = asyncHandler(async (req, res) => {
   }
 
   data = await getProfileNavData(req.query.nav, req.session.userID);
-  if (req.session.isAdmin)
-    res.render("adminpanel", {
-      title: "Administration",
-      user: user,
-      data: data,
-    });
+
 
   console.log(data);
   res.render("profile", { title: "Profile", user: user, data: data });
 });
+
+
+const renderAdminPanel = asyncHandler(async (req, res) => {
+
+  if (req.query.nav) {
+    console.log(req.query.nav);
+    const data = await getProfileNavData(req.query.nav);
+    console.log(data);
+    res.status(200).json(data);
+    return;
+  }
+
+  res.render("adminpanel", { title: "Administration" });
+})
 
 const blockUser = async (id) => {
   try {
@@ -138,8 +157,11 @@ const unBlockUser = async (id) => {
 };
 
 const updateUser = asyncHandler(async (req, res) => {
+  
   console.log("incoming", req.body, req.file);
-
+debugger;
+  if (!req.body.password) req.body.password = '';
+  
   let user = await User.findOne(
     { _id: req.session.userID },
     { profilePicture: 0 }
@@ -147,10 +169,10 @@ const updateUser = asyncHandler(async (req, res) => {
 
   //check for username availability
   if (
-    (await User.checkUserExist(req.body.username)) &&
+    (await User.checkUserExist(req.body?.username, req.body?.email, req.body?.phone)) &&
     req.body.username !== user.username
   )
-    throw new Error(`notify=Username is taken&redirect=/editprofile`);
+    throw new Error(`notify=Username or Phone is taken&redirect=/editprofile`);
 
   //checks password validity
   if (req.body.oldPassword === req.body.password && req.body.password !== "")
@@ -197,6 +219,15 @@ const updateUser = asyncHandler(async (req, res) => {
         console.log("setting pass");
       }
 
+
+
+  if (req.body.phone) user.phone = req.body.phone;
+  if (req.body.email) {
+    console.log('ivde ninn ayirikkum error:::::::::::::::::::::')
+    if (await User.checkUserExist(null, req.body.email, null)) throw new Error(`notify=E-mail exist. Try again&redirect=/editprofile`)
+    console.log('alla:::::::::::::::')
+    user.email = req.body.email
+  };
   const updatedUser = await user.save();
   console.log(updatedUser);
 
@@ -248,8 +279,8 @@ const getProfileNavData = async (nav, userID) => {
     }
 
     case "users": {
-      const users = await User.find({},{username:1,email:1,phone:1,createdAt:1, isBlocked:1}).limit(10).lean();
-      users.forEach(user=>{
+      const users = await User.find({}, { username: 1, email: 1, phone: 1, createdAt: 1, isBlocked: 1 }).limit(10).lean();
+      users.forEach(user => {
         user.createdAt = convertISODate(user.createdAt);
       })
       data = { users: users };
@@ -274,6 +305,22 @@ const getProfileNavData = async (nav, userID) => {
         isPurchases: "active",
       };
       return data;
+    }
+    case "orders": {
+      let orders = await Order.find()
+        .populate({
+          path: 'productID buyerID sellerID',
+        })
+        .sort({ createdAt: -1 }).lean();
+
+      orders = await Promise.all(orders.map(async (order) => {
+        const buffer = await getImages(order.productID.images);
+        const base64Image = buffer[0].toString("base64");
+        order.productID.images = `data:image/jpeg;base64,${base64Image}`;
+        return order;
+      }))
+      return orders;
+
     }
 
     default:
@@ -301,14 +348,117 @@ const renderProfileView = asyncHandler(async (req, res) => {
   });
 });
 
-const getUsers = asyncHandler(async(req,res)=>{
-  const users = await User.find({},{username:1,email:1,phone:1,createdAt:1, isBlocked:1}).skip(req.query.skip).limit(10).lean();
-  users.forEach(user=>{
+const getUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({}, { username: 1, email: 1, phone: 1, createdAt: 1, isBlocked: 1 }).skip(req.query.skip).limit(10).lean();
+  users.forEach(user => {
     user.createdAt = convertISODate(user.createdAt);
   })
   console.log(users)
-  
+
   res.json(users);
+})
+
+
+const renderTransactions = asyncHandler(async (req, res) => {
+
+
+  let orders = await Order.find({ $or: [{ buyerID: req.session.userID }, { sellerID: req.session.userID }] })
+    .populate({
+      path: 'productID',
+      select: 'images title price'
+
+    })
+    .populate({
+      path: 'buyerID sellerID',
+      select: 'firstName secondName _id'
+    })
+    .lean();
+
+  orders = await Promise.all(orders.map(async (order) => {
+    const buffer = await getImages([order.productID.images[0]]);
+    const base64Image = buffer[0].toString("base64");
+    order.productID.images = `data:image/jpeg;base64,${base64Image}`;
+    return order;
+
+  }))
+
+  console.log(orders)
+  const requests = await Order.find({ requesterID: req.query.userID }).lean()
+  res.render('transactions', { title: "transactions", requests, orders });
+})
+
+
+
+const renderWallet = asyncHandler(async (req, res) => {
+
+
+  const user = await getUser(req.session.userID);
+
+  if (req.session.stripeSession) {
+    const stripeSession = await stripe.checkout.sessions.retrieve(req.session.stripeSession);
+    if (stripeSession.payment_status !== 'paid') {
+      req.session.stripeSession = null;
+      throw new Error(`notify=Payment failed&redirect=/wallet`)
+
+    }
+    const transaction = new Transaction({
+      type: 'user_wallet_top_up',
+      senderID: req.session.userID,
+      transactionID: stripeSession.id,
+      amount: stripeSession.amount_total / 100,
+      status: stripeSession.payment_status,
+    })
+    await transaction.save();
+    user.walletBalance += transaction.amount;
+    await user.save();
+    res.cookie("notify", "Added successfully")
+    req.session.stripeSession = null;
+  }
+
+  const transactions = await Transaction.find({
+    $or: [
+      { senderID: req.session.userID },
+      { receiverID: req.session.userID }
+    ],
+    type: { $in: ['admin_to_user_refund', 'user_wallet_top_up', 'user_to_admin_wallet'] }
+  }).lean();
+
+  transactions.forEach(trans => {
+    trans.createdAt = convertISODate(trans.createdAt);
+  })
+
+  console.log(transactions)
+  res.render('wallet', { title: 'Wallet', user, transactions })
+
+
+})
+
+const walletTopup = asyncHandler(async (req, res) => {
+  console.log(req.body)
+
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    mode: 'payment',
+    line_items: [{
+
+      price_data: {
+        currency: 'inr',
+        product_data: {
+          name: 'Top-up',
+        },
+        unit_amount: req.body.amount * 100
+      },
+      quantity: 1
+
+
+    }],
+    success_url: `${process.env.SERVER_URL}/wallet`,
+    cancel_url: `${process.env.SERVER_URL}/wallet`
+  });
+
+
+  req.session.stripeSession = session.id;
+  res.json({ url: session.url })
 })
 
 module.exports = {
@@ -324,5 +474,9 @@ module.exports = {
   renderEditProfile,
   deleteAddress,
   renderProfileView,
-  getUsers
+  getUsers,
+  renderTransactions,
+  renderAdminPanel,
+  renderWallet,
+  walletTopup
 };
