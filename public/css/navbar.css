@@ -48,10 +48,13 @@
 }
 
 .dropdown-menu {
+  
     background-color: #ffffff;
     border-radius: 0px;
     box-shadow: 1px 1px 20px rgb(43, 49, 41);
+    animation: opac 200ms ease normal;
 
+    /* ////////////////// */
 
 }
 
@@ -162,29 +165,13 @@
     background-color: #000000;
 }
 
-@keyframes slideFast {
+
+
+@keyframes opac{
     0%{
-        left:0;
-        width: 5rem;
-    }
-    50%{
-        width: 15rem;
-        
+        opacity: 0%;
     }
     100%{
-        width: 5rem;
-        left:100%;
-    }
-}
-
-@keyframes worm {
-    0%{
-    }
-
-    50%{
-    }
-
-    100%{
-        width: 5rem;
+        opacity: 100%;
     }
 }

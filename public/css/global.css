@@ -25,10 +25,15 @@ body {
     border: 0px;
     background-color: #00000000;
     outline: none;
+    
 }
 
 .on-click-btn:focus{
     outline: none;
+}
+
+.on-click-btn:focus .on-click-btn>svg{
+fill:white;
 }
 
 
@@ -179,7 +184,7 @@ body {
 } */
 
 .outline-black-btn{
-    color:#000000be ;
+    color:#000000 ;
     background-color: #ffffff;
     outline: none;
     border: 1px solid #000000;
@@ -277,6 +282,11 @@ a{
 
 .d-45{
     transform: rotateZ(45deg);
+}
+
+.d-180{
+    transform: rotateZ(180deg);
+    
 }
 
 /* Style the overall scrollbar */

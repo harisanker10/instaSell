@@ -1,63 +1,78 @@
-.main-container{
+.main-container {
     display: flex;
     justify-content: space-between;
 
 }
 
-.address-container{
+.address-container {
     width: 50%;
 }
-.header{
+
+.header {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1.5rem 0rem;
+    padding: 1.2rem 0rem;
     color: #ADFF45;
     background-color: black;
-    height: 1.8rem;
+    height: 1.5rem;
     font-size: 1.2rem;
-}
-.content{
-    border: 2px solid rgb(163, 163, 163);
-    border-top:0px;
+    position: relative;
 }
 
-.request{
+.content {
+    border: 1px solid #a3a3a3;
+    border-top: 0px;
+}
+
+.request {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
     background-color: #d0ff92;
 }
-h4{
+
+h4 {
     padding: 0%;
     margin: 0%;
 }
 
-.deselected{
+.deselected {
     background-color: rgb(177, 177, 177);
 }
 
-.sign-up-btn{
+.sign-up-btn {
     width: auto
 }
 
-.address-card:hover{
-    background-color: #ADFF45;
+.address-card:hover {
+    background-color: rgb(192, 192, 192);
 }
 
-.checkout-container{
-    width:30rem ;
+.checkout-container {
+    width: 30rem;
     height: calc(100vh - 56px - 3rem);
 
 }
-.img-container{
+
+.img-container {
     width: 100%;
     height: 15rem;
     overflow: hidden;
 }
 
-.img-container img{
+.img-container img {
     width: 100%;
     height: 100%;
     object-fit: contain;
+}
+
+.address-card ,.payment-card {
+    transition: background-color 50ms ease-in;
+    box-sizing: border-box;
+}
+
+.payment-card:hover {
+    background-color: rgb(192, 192, 192);
+    border: 2px solid #000000;
 }

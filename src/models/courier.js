@@ -18,7 +18,8 @@ const courierSchema = new mongoose.Schema({
     },
     status:{
         type:String
-    }
+    },
+  
 });
 
 const Courier = mongoose.model('Courier',courierSchema);

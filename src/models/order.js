@@ -14,6 +14,7 @@ const orderSchema = new mongoose.Schema({
     productID:{
         type:mongoose.Types.ObjectId,
         required:true,
+        unique:true,
         ref:'Product'
     },
     price: {
@@ -37,7 +38,12 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true
 
-    }}, { timestamps: true });
+    },
+    paidToSeller:{
+        type:Boolean,
+        default:false
+    }
+}, { timestamps: true });
 
 const Order = mongoose.model('Order', orderSchema);
 

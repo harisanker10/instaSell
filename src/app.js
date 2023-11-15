@@ -38,13 +38,13 @@ const categoryRouter = require('../src/routes/category');
 const addressRouter = require('../src/routes/address');
 const chatRouter = require('../src/routes/chats');
 
+app.post('/webhook',webhook)
 app.use('/', indexRouter);
 app.use('/product', productRouter);
 app.use('/category', categoryRouter);
 app.use('/address', addressRouter);
 app.use('/chats', chatRouter);
 
-app.post('/webhook',webhook)
 
 app.use(errorHandler);
 

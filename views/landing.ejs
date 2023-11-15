@@ -12,42 +12,42 @@
       </div>
     </div>
 
-    <!-- <div class="p-4 bg-light" style="width: 100vw; height:140vh">
-      <h1 class="ms-4 mt-4 ps-4">Trending Products</h1>
+    <div class="p-4 bg-light" style="width: 100vw; height:140vh">
+      <h1 class="ms-4 mt-4 ps-4 trending-products-heading">Trending Products</h1>
       <div class="card-container">
 
 
 
-        <%//products.forEach(elt=> { %>
+        <%products.forEach(elt=> { %>
 
-          <button class="on-click-btn"  navLink="/product?id=<%=//elt._id%>">
+          <button class="on-click-btn product-card"  navLink="/product?id=<%=elt._id%>">
 
-            <div class="card text-center " id="<%=//elt._id%>">
-
-
+            <div class="card text-center " id="<%=elt._id%>">
 
 
-              <div class="img-continer">
 
 
-                <img class="list-card-img" src="data:image/;base64,<%=//elt.images[0].toString('base64') || ''%>"
+              <div class="img-continer" style="width:100%; height:10rem;">
+
+
+                <img class="list-card-img" src="data:image/;base64,<%=elt.images[0].toString('base64') || ''%>"
                   alt="Title">
 
               </div>
 
               <span class="card-price mt-2">
-                ₹<%=//elt.price%>
+                ₹<%=elt.price%>
               </span>
-              <span class="card-title fs-4">
-                <%=//elt.title%>
+              <span class="card-title fs-5">
+                <%=elt.title%>
               </span>
-              <div class="location-date mt-3 text-muted">
+              <div class="location-date mt-1 text-muted">
 
                 <p class="card-location ">
-                  <%=//elt.location%>
+                  <%=elt.location.name%>
                 </p>
                 <p class="card-datams-4">
-                  <%=//elt.createdAt.split(',')[0]%>
+                  <%=elt.createdAt.split(',')[0]%>
                 </p>
               </div>
 
@@ -56,12 +56,12 @@
 
           </button>
 
-          <% //}) %>
+          <% }) %>
 
 
       </div>
 
-    </div> -->
+    </div>
 
     <div class="info-card">
       <img src="static/info.png" alt="">

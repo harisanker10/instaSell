@@ -80,12 +80,15 @@
                 <form action="/product/request" class="mt-3">
 
 
+                  <div class="w-100 d-flex justify-content-center">
+                    <button class="on-click-btn default-black-btn p-1 px-4 mb-2" style="font-size: 1.1rem;" type="button" navLink="/product/checkout?productID=<%= product._id %>">Buy Now</button>
+                  </div>
 
                   <div class="input-group mt-2">
                     <input class="form-control border-secondary " type="number" placeholder="₹" name="amount">
                     <input class="form-control border-secondary hide" placeholder="₹" name="productID"
                       value="<%= product._id %>">
-                    <button class="btn btn-outline-secondary default-black-btn" type="submit" id="button-addon2">Request
+                    <button class="btn btn-outline-secondary outline-black-btn " style="background-color: rgb(189, 189, 189);" type="submit" id="button-addon2">Request
                       to
                       buy</button>
                   </div>
@@ -130,9 +133,11 @@
                   <br>
                   <span class="fs-6"><i> Ratings Goes here</i></span>
                 </div>
-             
+
                 <div class="my-2">
-                  <span href="" class="mt-3 btn-green-default text-decoration-none shadow-sm"><button navLink="/chats?productID=<%= product._id %>&sellerID=<%= product.userID %>" class="on-click-btn" >Chat With Seller</button></span>
+                  <span href="" class="mt-3 btn-green-default text-decoration-none shadow-sm"><button
+                      navLink="/chats?productID=<%= product._id %>&sellerID=<%= product.userID %>"
+                      class="on-click-btn">Chat With Seller</button></span>
                 </div>
               </div>
 
@@ -180,25 +185,32 @@
           </p>
         </div>
         <div class=" border" style="width :23.35rem;">
-          <div class="btn-green-default ongoing-req w-100 text-center fw-bold" style="box-shadow: 0px;">Requests for this product</div>
+          <div class="btn-green-default ongoing-req w-100 text-center fw-bold" style="box-shadow: 0px;">Requests for
+            this product</div>
           <div>
             <table class="table table-hover">
               <thead>
                 <tr>
                   <th scope="col">Name</th>
                   <th scope="col">Price</th>
-                 
+
                 </tr>
               </thead>
               <tbody>
-                <% requests.forEach(req => { %>
-                 
-                  <tr class="on-click-btn "  navLink="/viewProfile?id=<%= req.requesterID._id %>" style="cursor: pointer;border:0px;">
-                    <td class="border border-end-0"><%= req.requesterID.firstName %> <%= req.requesterID.secondName %></td>
-                    <td class="border border-start-0"><%=req.amount  %></td>
+                <% requests.forEach(req=> { %>
+
+                  <tr class="on-click-btn " navLink="/viewProfile?id=<%= req.requesterID._id %>"
+                    style="cursor: pointer;border:0px;">
+                    <td class="border border-end-0">
+                      <%= req.requesterID.firstName %>
+                        <%= req.requesterID.secondName %>
+                    </td>
+                    <td class="border border-start-0">
+                      <%=req.amount %>
+                    </td>
                   </tr>
                   <% }) %>
-               
+
               </tbody>
             </table>
           </div>

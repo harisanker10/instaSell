@@ -74,7 +74,7 @@ router.get('/blockuser', async (req, res) => {
     }
 
 
-    res.redirect('/profile?nav=users')
+    res.redirect('/adminpanel')
 
 
 })

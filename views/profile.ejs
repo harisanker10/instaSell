@@ -4,8 +4,21 @@
         <div class="d-flex ms-4 main-container">
 
             <div class="col-3  me-4 d-flex-col " style="height: 100vh;">
-                <div class="card text-center profile-card mt-4" style="width: 85%; margin-left: 15%;border: 0px;">
-                    <div class="card-body">
+                <div x-data="{isOpen : false, toggle(){this.isOpen = !this.isOpen}}"
+                    class="card text-center profile-card mt-4"
+                    style="width: 85%; margin-left: 15%;border: 0px;cursor: pointer;">
+
+                    <div @click="toggle" class="d-flex justify-content-between profile-nav-item text-center fs-5">
+                        <svg :class=" isOpen ? 'd-180' : ''"
+                            style="margin-left:15%; width: 1.75rem; height:1.75rem;transition: transform 150ms ease-in-out;"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                        </svg>
+                        Edit Profile
+                    </div>
+
+                    <div x-show="isOpen" x-collapse.duration.150ms class="card-body">
                         <% if (user && user.profilePicture) { %>
                             <div class="mb-3" id="image-container">
                                 <img src="<%= user.imgSrc %>" alt="">
@@ -54,27 +67,24 @@
                                 </div>
 
 
-                                <a href="/editprofile" class="btn btn-primary btn-black-default m-2 ">Edit
+                                <a href="/editprofile" class="btn btn-primary btn-black-default m-2 mt-3">Edit
                                     Profile</a>
                     </div>
                 </div>
-                <div class="d-flex-col profile-nav-container align-items-center
-                ">
+                <div class="d-flex-col profile-nav-container align-items-center">
                     <a href="/profile?nav=listings" class="text-decoration-none">
+                        <div class="profile-nav-item text-center fs-5 <%= data?.isListings %>">Listings</div>
 
-                        <div class="profile-nav-item text-center fs-5 
-                <%= data?.isListings %>
-                ">Listings</div>
                     </a>
                     <a href="/profile?nav=purchases" class="text-decoration-none">
-
-                        <div class="profile-nav-item text-center fs-5 
-                <%= data?.isPurchases %>
-                        ">Purchases</div>
+                        <div class="profile-nav-item text-center fs-5 <%= data?.isPurchases %>">Purchases</div>
                     </a>
                     <a href="" class="text-decoration-none">
-
                         <div class="profile-nav-item text-center fs-5 wishlist-nav">Wishlist</div>
+                    </a>
+                    <a href="/profile?nav=req" class="text-decoration-none">
+                        <div class="profile-nav-item text-center fs-5 <%= data?.isRequests %>">Requested</div>
+
                     </a>
 
                 </div>
@@ -88,15 +98,17 @@
                     <%- include('partials/profile/listings.ejs') %>
                         <% }else if(data?.purchases){ %>
                             <%- include('partials/profile/purchases.ejs') %>
+                                <% }else if(data?.requests){ %>
+                                    <%- include('partials/profile/requests.ejs') %>
 
 
-                                <% } %>
+                                        <% } %>
             </div>
         </div>
 
 
 
-        <%-include('partials/footer.ejs')%>
+        <%- include('partials/footer.ejs') %>
             <script src="/js/profile.js"></script>
 
             <%- include('partials/closingHead.ejs') %>

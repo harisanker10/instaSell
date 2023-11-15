@@ -19,13 +19,10 @@ const gridTemplate = `<div class="grid-container p-4">
             </div>
 
 
-            <div class="img-continer">
-                <% if (elt?.images) { %>
-
-                    <img class="list-card-img"<%= elt.images %>"
-                        alt="Title">
-                    <% } %>
-            </div>
+            <div class="img-container">
+            <img class="list-card-img" src="data:image/;base64,<%=elt.images[0].toString('base64') || ''%>"
+                alt="Title">
+        </div>
 
             <span class="card-price">
                 ₹<%=elt.price%>

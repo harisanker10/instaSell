@@ -15,33 +15,91 @@ profileNavItem.forEach(item => {
         const nav = item.getAttribute('nav');
         profileNavItem.forEach(item => item.classList.remove('active'));
         item.classList.add('active');
+        console.log(nav)
         fetch(`/adminpanel?nav=${nav}`)
             .then(res => res.json())
             .then(res => {
 
-                switch(nav){
-                    case 'users':{
+                switch (nav) {
+                    case 'users': {
                         renderUsers(res)
                         break;
                     }
-                    case 'add':{
+                    case 'add': {
                         renderAdd(res);
                         break;
                     }
-                    case 'orders':{
+                    case 'orders': {
                         renderOrders(res);
+                        const downloadBtns = document.querySelectorAll('.download-invoice');
+                        downloadBtns.forEach(item => {
+                            item.addEventListener('click', () => {
+                                console.log('elon ma')
+                                window.location.href = item.getAttribute('navLink')
+                            })
+                        })
+                        break;
                     }
-                    default:{
-                        console.log('cant get data',nav);
+                    case 'wallet': {
+
+                        renderWallet(res);
+                        break;
+                    }
+                    default: {
+                        console.log('cant get data', nav);
                         break
                     }
-                    
+
                 }
 
             })
     })
 })
 
+
+const renderWallet = (data) => {
+
+    const walletTemplate = `<div class="container mt-5">
+    <h2>Transaction Details</h2>
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Transaction ID</th>
+            <th>Type</th>
+            <th>Received ID</th>
+            <th>To Admin</th>
+            <th>From Admin</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Order ID</th>
+            <th>Created At</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% transactions.forEach(transaction => { %>
+            <tr class="">
+              <td><%= transaction._id %></td>
+              <td><%= transaction.type %></td>
+              <td><%= transaction.receivedID %></td>
+              <td><%= transaction.toAdmin %></td>
+              <td ><%= transaction.fromAdmin %></td>
+              <td><%= transaction.amount %></td>
+              <td><%= transaction.status %></td>
+              <td><%= transaction.order %></td>
+              <td><%= transaction.createdAt %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>`
+    console.log(data)
+    const html = ejs.render(walletTemplate, { transactions: data});
+    container.innerHTML = html;
+
+
+}
 
 const renderUsers = (data) => {
 
@@ -187,13 +245,13 @@ const renderAdd = (data) => {
 
 </div>`
 
-const html = ejs.render(addTemplate, { data })
-container.innerHTML = html;
-categoryJS();
+    const html = ejs.render(addTemplate, { data })
+    container.innerHTML = html;
+    categoryJS();
 
 }
 
-const renderOrders = (data)=>{
+const renderOrders = (data) => {
     const orderTemplate = `
     <table class="table table-hover">
       <thead>
@@ -205,6 +263,7 @@ const renderOrders = (data)=>{
           <th scope="col">Transaction Amount</th>
           <th scope="col">Profit</th>
           <th scope="col">Status</th>
+          <th scope="col">invoice</th>
         </tr>
       </thead>
       <tbody>
@@ -218,14 +277,16 @@ const renderOrders = (data)=>{
           <td><%=order.price.totalPrice%></td>
           <td><%=order.price.totalPrice - order.price.listPrice %></td>
           <td><%=order.status %></td>
+          <td><button class="on-click-btn p-1 px-2 download-invoice" navLink="/product/order/download?productID=<%=order.productID._id%>&type=seller"><svg style="width:1rem;height:1rem;" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32V274.7l-73.4-73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l128-128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L288 274.7V32zM64 352c-35.3 0-64 28.7-64 64v32c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V416c0-35.3-28.7-64-64-64H346.5l-45.3 45.3c-25 25-65.5 25-90.5 0L165.5 352H64zm368 56a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"/></svg></button>
+          </td>
           </tr>
         <%})%>
         
       </tbody>
     </table>
     `
-    const html = ejs.render(orderTemplate,{orders:data})
-    container.innerHTML = html; 
+    const html = ejs.render(orderTemplate, { orders: data })
+    container.innerHTML = html;
 }
 
 // const addNav = document.querySelector('#add-nav')

@@ -24,14 +24,15 @@
                                                                 <% if (!courier) {progPercent="40%" %>
                                                                     &#9432;Ship the package to the address provided in
                                                                     Order details.
-                                                                    <% } else if (courier?.status === 'delivered') {progPercent="100%" %>
-                                                                        
+                                                                    <% } else if (courier?.status==='delivered' )
+                                                                        {progPercent="100%" %>
+
                                                                         &#9432;Package Delivered.
-                                                                        
-                                                                    <% } else { progPercent="75%" %>
-                                                                        &#9432;Awaiting delivery of the package.
-                                                                        <% } %>
+
+                                                                        <% } else { progPercent="75%" %>
+                                                                            &#9432;Awaiting delivery of the package.
                                                                             <% } %>
+                                                                                <% } %>
 
 
 
@@ -49,11 +50,13 @@
                 </div>
             </div>
 
-            <div class="container main-container mt-4">
+            <div class="container main-container my-4">
 
                 <% if (order) { %>
 
-
+                    <button class="on-click-btn p-1 px-2 m-3 outline-black-btn"
+                        navLink="/product/order/download?productID=<%=order.productID._id%>&type=seller">Download Order
+                        Invoice</button>
                     <% if (!courier) { %>
                         <div class="courier-container w-75 mb-4" style="">
                             <div class="header" style="background-color: red;">Courier Details</div>
@@ -87,47 +90,62 @@
                         </div>
                         <% }else{ %>
                             <div class="courier-container w-75 mb-4" style="">
-                                <div class="header" style="background-color: black;">Courier Details</div>
-                                <div class="content p-4 d-flex  d-flex flex-column align-items-center">
-                                    <table class="table table-borderless p-4 text-center w-50">
+
+                                <% if (courier.status.toString()==='delivered' ) { %>
+
+                                    <h4 class="text-center w-100 mb-5 text-decoration-underline"
+                                        style="text-shadow: 1px 1px 0.1px #ADFF45">
+                                        <svg xmlns="http://www.w3.org/2000/svg" style="width:1.5rem; height:1.5rem;"
+                                            fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                            class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        ₹ <%= order.price.listPrice %> credited to your wallet
+                                    </h4>
+                                    <% } %>
+
+                                        <div class="header" style="background-color: black;">Courier Details</div>
+                                        <div class="content p-4 d-flex  d-flex flex-column align-items-center">
+                                            <table class="table table-borderless p-4 text-center w-50">
 
 
-                                        <tbody>
-                                            <tr>
-                                                <th scope="row">Courier</th>
-                                                <td>
-                                                    <%=courier.carrier%>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">courier ID</th>
-                                                <td>
-                                                    <%=courier.courierID%>
-                                                </td>
-                                            </tr>
-                                            <tr class="my-2">
-                                                <th scope="row" class="fs-4">Status</th>
-                                                <td
-                                                    class="d-flex align-items-center justify-content-center status-field">
-                                                    <%=courier?.status%>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <button class="on-click-btn default-black-btn p-1 px-3" id="check-status-btn"
-                                        trackerID="<%= courier.trackerID %>">Check
-                                        status</button>
-                                    <div class="spinner-border text-dark spinner hide"
-                                        style="width: 1.5rem; height: 1.5rem;" role="status">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
-                                </div>
+                                                <tbody>
+                                                    <tr>
+                                                        <th scope="row">Courier</th>
+                                                        <td>
+                                                            <%=courier.carrier%>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">courier ID</th>
+                                                        <td>
+                                                            <%=courier.courierID%>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="my-2">
+                                                        <th scope="row" class="fs-4">Status</th>
+                                                        <td
+                                                            class="d-flex align-items-center justify-content-center status-field">
+                                                            <%=courier?.status%>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <button class="on-click-btn default-black-btn p-1 px-3"
+                                                id="check-status-btn" trackerID="<%= courier.trackerID %>">Check
+                                                status</button>
+                                            <div class="spinner-border text-dark spinner hide"
+                                                style="width: 1.5rem; height: 1.5rem;" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                        </div>
 
                             </div>
                             <% } %>
 
 
-                                <div class="address-container mt-4 w-75" style="height: 40rem;">
+                                <div class="address-container my-4 w-75" style="height: auto;">
                                     <div class="header">Order Details</div>
                                     <div class="content p-4 d-flex">
 
@@ -240,48 +258,75 @@
                                 <% } %>
 
 
-                                    <div class="request-container w-75 mb-4 ">
-                                        <div class="header">Requests</div>
+                                    <div class="request-container w-75 mb-5 ">
+                                        <div class="header">Requests
+
+
+                                        </div>
                                         <div class="content p-4 h-100 w-100">
 
+
                                             <div class="req-table w-100 p-4">
-                                                <% requests.forEach(request=> { %>
-                                                    <div class="request w-100 p-2 my-2">
+
+                                                <% if (order) { %>
+                                                    <div class="request w-100 p-2 my-2 "
+                                                        style="background-color: #ADFF45;">
                                                         <div class="text-center" style="width:15rem">
 
                                                             <h4>
-                                                                <%= request.requesterID.firstName%>
-                                                                    <%= request.requesterID.secondName%>
+                                                                <%=order.buyerID.firstName%>
+                                                                    <%= order.buyerID.secondName%>
                                                             </h4>
                                                         </div>
                                                         <h4>
-                                                            ₹<%= request.amount%>
+                                                            ₹<%= order.price.listPrice%>
                                                         </h4>
-                                                        <% if (!order) { %>
+                                                        <h5 class="fs-5">
+                                                            Placed Order
+                                                        </h5>
 
-                                                            <% if (request.isAccepted) { %>
-                                                                <button
-                                                                    class="on-click-btn outline-black-btn accept-req-btn"
-                                                                    navLink="/product/acceptRequest?requestID=<%= request._id %>&productID=<%=request.productID%>&to=false">
-                                                                    Cancel request
-                                                                </button>
-                                                                <% }else{ %>
-                                                                    <button
-                                                                        class="on-click-btn outline-black-btn accept-req-btn"
-                                                                        navLink="/product/acceptRequest?requestID=<%= request._id %>&productID=<%=request.productID%>&to=true">
-                                                                        Accept Request
-                                                                    </button>
-                                                                    <% } %>
-
-                                                                        <% }else{ %>
-                                                                            <% if (request.isAccepted) { %>
-                                                                                <span>Accepted Request</span>
-                                                                                <% }else{ %>
-                                                                                    <span>Requested</span>
-                                                                                    <% } %>
-                                                                                        <% } %>
                                                     </div>
-                                                    <% }) %>
+                                                    <% } %>
+
+
+
+                                                        <% requests.forEach(request=> { %>
+                                                            <div class="request w-100 p-2 my-2">
+                                                                <div class="text-center" style="width:15rem">
+
+                                                                    <h4>
+                                                                        <%= request.requesterID.firstName%>
+                                                                            <%= request.requesterID.secondName%>
+                                                                    </h4>
+                                                                </div>
+                                                                <h4>
+                                                                    ₹<%= request.amount%>
+                                                                </h4>
+                                                                <% if (!order) { %>
+
+                                                                    <% if (request.isAccepted) { %>
+                                                                        <button
+                                                                            class="on-click-btn outline-black-btn accept-req-btn fs-5"
+                                                                            navLink="/product/acceptRequest?requestID=<%= request._id %>&productID=<%=request.productID%>&to=false">
+                                                                            Cancel request
+                                                                        </button>
+                                                                        <% }else{ %>
+                                                                            <button
+                                                                                class="on-click-btn outline-black-btn accept-req-btn fs-5"
+                                                                                navLink="/product/acceptRequest?requestID=<%= request._id %>&productID=<%=request.productID%>&to=true">
+                                                                                Accept Request
+                                                                            </button>
+                                                                            <% } %>
+
+                                                                                <% }else{ %>
+                                                                                    <% if (request.isAccepted) { %>
+                                                                                        <span>Accepted Request</span>
+                                                                                        <% }else{ %>
+                                                                                            <span>Requested</span>
+                                                                                            <% } %>
+                                                                                                <% } %>
+                                                            </div>
+                                                            <% }) %>
 
                                             </div>
 
@@ -291,10 +336,16 @@
 
             </div>
 
+            <script src="https://unpkg.com/easyinvoice/dist/easyinvoice.min.js"></script>
+
             <script>
                 const statusCheckBtn = document.querySelector('#check-status-btn');
                 const statusField = document.querySelector('.status-field');
-                const trackerID = statusCheckBtn.getAttribute('trackerID');
+                let trackerID;
+                if (trackerID) {
+                    trackerID = statusCheckBtn.getAttribute('trackerID');
+                }
+
                 const spinner = document.querySelector('.spinner');
                 statusCheckBtn.addEventListener('click', () => {
                     statusCheckBtn.classList.add('hide')
@@ -311,7 +362,19 @@
                             spinner.classList.add('hide')
                         })
                 })
+
+                var data = { hello: 'hello' };
+                console.log(easyinvoice)
+                easyinvoice.createInvoice(data, function (result) {
+                    // The response will contain a base64 encoded PDF file
+                    console.log('PDF base64 string: ', result.pdf);
+
+                    // Now this result can be used to save, download or render your invoice
+                    // Please review the documentation below on how to do this
+                });
+
             </script>
 
-            <script src="/js/landing.js"></script>
-            <%- include('partials/closingHead.ejs') %>
+
+            <%- include('partials/footer.ejs') %>
+                <%- include('partials/closingHead.ejs') %>

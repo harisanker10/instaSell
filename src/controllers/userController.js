@@ -157,11 +157,11 @@ const unBlockUser = async (id) => {
 };
 
 const updateUser = asyncHandler(async (req, res) => {
-  
+
   console.log("incoming", req.body, req.file);
-debugger;
+
   if (!req.body.password) req.body.password = '';
-  
+
   let user = await User.findOne(
     { _id: req.session.userID },
     { profilePicture: 0 }
@@ -271,6 +271,16 @@ const addAddress = asyncHandler(async (req, res) => {
 
 const getProfileNavData = async (nav, userID) => {
   switch (nav) {
+
+    case "wallet":{
+      const transactions = await Transaction.find().lean();
+      const length = transactions.length;
+      for(let i=0; i<length; i++){
+        transactions[i].createdAt = convertISODate(transactions[i].createdAt);
+      }
+      return transactions;
+    }
+
     case "add": {
       const categories = await getCategories();
       data = { categories: categories };
@@ -294,12 +304,14 @@ const getProfileNavData = async (nav, userID) => {
       return data;
     }
     case "purchases": {
-      const requests = await Request.find({ requesterID: userID });
-      const purchases = await Promise.all(
-        requests.map(async (request) => {
-          return await Product.getFullProduct(request.productID);
-        })
-      );
+      const orders = await Order.find({ buyerID: userID });
+      console.log(orders)
+      const purchases =
+
+        await Promise.all(orders.map(async (order) => {
+          return await Product.getFullProduct(order.productID)
+        }))
+
       const data = {
         purchases: purchases,
         isPurchases: "active",
@@ -322,6 +334,41 @@ const getProfileNavData = async (nav, userID) => {
       return orders;
 
     }
+    case "req": {
+      let requests = await Request.aggregate([
+        {
+          $lookup: {
+            from: 'orders',
+            localField: 'productID',
+            foreignField: 'productID',
+            as: 'orders'
+          }
+        },
+        {
+          $lookup: {
+            from: 'products',
+            localField: 'productID',
+            foreignField: '_id',
+            as: 'productID'
+          }
+        }, { $match: { orders: { $size: 0 } } }, { $project: { productID: 1 } }])
+
+
+      requests = await Promise.all(requests.map(async (req) => {
+        const buffer = await getImages(req.productID[0].images);
+        const base64Image = buffer[0].toString("base64");
+        req.productID[0].images = `data:image/jpeg;base64,${base64Image}`;
+        return req;
+      }))
+
+      const data = {
+        requests,
+        isRequests: "active",
+      };
+      return data;
+    }
+
+
 
     default:
       break;
@@ -418,10 +465,10 @@ const renderWallet = asyncHandler(async (req, res) => {
   const transactions = await Transaction.find({
     $or: [
       { senderID: req.session.userID },
-      { receiverID: req.session.userID }
+      { receivedID: req.session.userID }
     ],
-    type: { $in: ['admin_to_user_refund', 'user_wallet_top_up', 'user_to_admin_wallet'] }
-  }).lean();
+    type: { $in: ['admin_to_user_payment', 'user_wallet_top_up', 'user_to_admin_wallet'] }
+  }).sort({createdAt:-1}).lean();
 
   transactions.forEach(trans => {
     trans.createdAt = convertISODate(trans.createdAt);
