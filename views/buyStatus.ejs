@@ -6,32 +6,17 @@
                 style="margin: 5rem auto; ">
                 <div class="text-muted fw-bold my-2" style="font-size: 0.8rem;">
 
-                    <% if (!order) { %>
 
+                    <% if (!courier) {progPercent="40%" %>
+                        &#9432;Awaiting product shipment by the seller.
 
-                        <% let accepted=false; %>
-                            <% requests.forEach(req=> { %>
-                                <% if (req.isAccepted) { %>
-                                    <% accepted=true %>
-                                        <% } %>
-                                            <% }) %>
-                                                <% if (!accepted) { %>
-                                                    &#9432;Accept a request to let buyers to order your product.
+                        <% } else if (courier?.status==='delivered' ) {progPercent="100%" %>
 
-                                                    <% } else{ progPercent="10%" %>
-                                                        &#9432;Awaiting Order placement by buyer.
-                                                        <% } %>
-                                                            <% }else{ %>
-                                                                <% if (!courier) {progPercent="40%" %>
-                                                                    &#9432;Awaiting product shipment by the seller.
-                                                                    
-                                                                    <% } else if (courier?.status === 'delivered') {progPercent="100%" %>
-                                                                        
-                                                                    &#9432;Package Delivered.
-                                                                    <% } else{ progPercent="75%" %>
-                                                                        &#9432;Awaiting delivery of the package.
-                                                                        <% } %>
-                                                                            <% } %>
+                            &#9432;Package Delivered.
+                            <% } else{ progPercent="75%" %>
+                                &#9432;Awaiting delivery of the package.
+                                <% } %>
+                               
 
                 </div>
                 <div class="progress" style="width: 75%; border-radius: 0px;">
@@ -49,7 +34,11 @@
 
             <div class="container main-container mt-4">
 
+                <button class="on-click-btn p-1 px-2 m-3 outline-black-btn" navLink="/product/order/download?productID=<%=order.productID._id%>&type=buyer">Download Order Invoice</button>
+
+                
                 <% if (courier) { %>
+                   
                     <div class="courier-container w-75 mb-4" style="">
                         <div class="header" style="background-color: black;">Courier Details</div>
                         <div class="content p-4 d-flex  d-flex flex-column align-items-center">
@@ -71,7 +60,7 @@
                                     </tr>
                                     <tr class="my-2">
                                         <th scope="row" class="fs-4">Status</th>
-                                        <td class="status-field" >
+                                        <td class="status-field">
                                             <%=courier?.status%>
                                         </td>
                                     </tr>

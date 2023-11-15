@@ -3,13 +3,13 @@ const mongoose = require('mongoose');
 const transactionSchema = new mongoose.Schema({
     type:{
         type:String,
-        enum: ['user_to_admin_stripe', 'admin_to_user_refund', 'user_wallet_top_up', 'user_to_admin_wallet']
+        enum: ['user_to_admin_stripe', 'admin_to_user_payment', 'user_wallet_top_up', 'user_to_admin_wallet']
     },
     senderID:{
         type:mongoose.mongo.ObjectId,
         ref:'User'
     },
-    recieverID:{
+    receivedID:{
         type:mongoose.mongo.ObjectId,
         ref:'User'
     },

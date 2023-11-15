@@ -2,7 +2,7 @@
   <%- include('partials/navbar.ejs') %>
 
 
-    <div class="screen-container" userId=<%=userID %> wishlist=<%= wishlist %> searchParam=<%= searchParam %> >
+    <div class="screen-container " userId=<%=userID %> wishlist=<%= wishlist %> searchParam=<%= searchParam %> >
 
 
           <div class="side-nav border-end">
@@ -76,7 +76,7 @@
 
 
 
-          <div class="main-container d-flex flex-column ">
+          <div class="main-container d-flex flex-column border-end">
 
             <div class="w-100 bg-white top-controls border-bottom justify-content-end">
               <div class="fw-bolder fs-4">Showing results for <span class="m-0 p-0  fw-normal">
@@ -84,7 +84,9 @@
                 </span></div>
               <div class="w-100 d-flex mt-1 justify-content-end">
                 <!-- <p class="fw-bold p-0 m-0">Sort by </p> -->
-                <button class="sort-buttons on-click-btn mx-2 fs-6 sort-selected" sort="date"
+                <button class="sort-buttons on-click-btn mx-2 fs-6 sort-selected" sort="rel"
+                  link="/search?search=<%= searchParam %>&sort=rel">Relevance</button>
+                <button class="sort-buttons on-click-btn mx-2 fs-6 " sort="date"
                   link="/search?search=<%= searchParam %>&sort=date">Latest</button>
                 <button class="sort-buttons on-click-btn mx-2 fs-6" sort="plth"
                   link="/search?search=<%= searchParam %>&sort=plth">Price: low to high</button>
@@ -92,7 +94,7 @@
                   link="/search?search=<%= searchParam %>&sort=phtl">Price: high to low</button>
               </div>
             </div>
-            <div class="grid-container p-4">
+            <div class="grid-container p-4 ">
 
 
               <% products.forEach(elt=> { %>

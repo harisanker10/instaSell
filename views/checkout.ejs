@@ -1,56 +1,129 @@
 <%- include('partials/head.ejs') %>
-<%- include('partials/navbar.ejs') %>
+    <%- include('partials/navbar.ejs') %>
 
-<div class="container main-container py-4">
-    <div class="address-container">
+        <div class="container main-container py-4 mb-5">
+            <div class="address-container">
 
-        <div class="header">Delivery Address</div>
-        <div class="content p-4 border border-2" productName="<%=product.title%>">
-            <form id="edit-form " action="" method="post" class="form-group new-address-form">
+                <div class="header ">Payment Method
+                    <svg xmlns="http://www.w3.org/2000/svg" class="hide" id="payment-verify-icon"
+                        style="position:absolute;width:1.5rem; height:1.5rem; right:1rem;" fill="none"
+                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
 
-                <div class="form-floating my-2">
-                    <input name="addressLine" type=" text" class="form-control w-100"
-                        id="addressLine" placeholder="Username" required>
-                    <label for="addressLine" class=" form-label">Address Line</label>
                 </div>
-                <div class="form-floating my-2">
-                    <input name="fullname" type=" text" class="form-control w-100" id="fullname"
-                        placeholder="Username" required>
-                    <label for="fullname" class=" form-label">Full Name</label>
+                <div class="content mb-4 border shadow-sm d-flex flex-column align-items-center py-4"
+                    style="height: auto;">
+
+                    <div id="debit-card" class="payment-card  d-flex w-75 px-4 align-items-center  border py-2">
+                        <svg style="width:2rem;height:2rem;" class="me-2" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
+                        </svg>
+                        <h5 class="m-0 mx-2">Cards</h5>
+                    </div>
+
+                    <div id="wallet" class="payment-card d-flex w-75 px-4 align-items-center mt-2 border py-2">
+                        <svg style="width: 2rem; height:2rem;" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
+                        </svg>
+                        <h5 class="m-0 mx-2">Wallet</h5>
+                        <h6 class="m-0 mx-2 ">Balance: ₹<%= user.walletBalance %>
+                        </h6>
+                    </div>
                 </div>
-                <div class="input-group my-2">
 
-                    <div class="form-floating">
-                        <input name="city" type="text" class="form-control" placeholder="City"
-                            id="city" required>
-                        <label for=" city" class="form-label">City</label>
-                    </div>
-                    <div class="form-floating">
-                        <input name="state" type="text" class="form-control" placeholder="Surname"
-                            id="state" required>
-                        <label for="state" class="form-label">State</label>
-                    </div>
-                </div>
+                <div class="header">Delivery Address
 
-
-
-                <div class="input-group my-2 ">
-
-                    <div class="form-floating">
-                        <input name="phone" type="number" class="form-control w-100"
-                            placeholder="Phone" id="phone" required>
-                        <label for="phone" class="form-label">Phone</label>
-                    </div>
-
-
-                    <div class="form-floating mb-3">
-                        <input name="postalCode" type="number" class="form-control w-100"
-                            placeholder="Postal Code" id="postalCode" required>
-                        <label for="postalCode" class="form-label">Postal Code</label>
-                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="hide" id="address-verify-icon"
+                        style="position:absolute;width:1.5rem; height:1.5rem; right:1rem;" fill="none"
+                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
 
 
                 </div>
+                <div x-data="{isOpen : false, toggle(){this.isOpen = !this.isOpen}}"
+                    class="content address-content p-4 border shadow-sm " productName="<%=product.title%>">
+
+                    <h5 class=" ">Add Existing</h5>
+                    <% addresses.forEach(elt=> { %>
+
+                        <div class="address-card p-2 ps-3 shadow-sm my-2 border existing-address"
+                            addressId="<%= elt._id %>">
+                            <h5>
+                                <%= elt.fullname %>
+                            </h5>
+                            <h6>
+                                <%= elt.addressLine %>
+                            </h6>
+                            <h6>
+                                <%= elt.city %>
+                            </h6>
+                            <h6>
+                                <%= elt.state %>
+                            </h6>
+                            <h6>
+                                <%= elt.postalCode %>
+                            </h6>
+                            <h6>
+                                <%= elt.phone %>
+                            </h6>
+
+                        </div>
+                        <% }) %>
+                            <button @click="toggle" class="outline-black-btn p-1 px-2 mt-3">Add new address</button>
+                            <form x-show="isOpen" x-collapse.duration.150ms id="edit-form " action="" method="post"
+                                class="form-group new-address-form ">
+
+                                <div class="form-floating my-2">
+                                    <input name="addressLine" type=" text" class="form-control w-100" id="addressLine"
+                                        placeholder="Username" required>
+                                    <label for="addressLine" class=" form-label">Address Line</label>
+                                </div>
+                                <div class="form-floating my-2">
+                                    <input name="fullname" type=" text" class="form-control w-100" id="fullname"
+                                        placeholder="Username" required>
+                                    <label for="fullname" class=" form-label">Full Name</label>
+                                </div>
+                                <div class="input-group my-2">
+
+                                    <div class="form-floating">
+                                        <input name="city" type="text" class="form-control" placeholder="City" id="city"
+                                            required>
+                                        <label for=" city" class="form-label">City</label>
+                                    </div>
+                                    <div class="form-floating">
+                                        <input name="state" type="text" class="form-control" placeholder="Surname"
+                                            id="state" required>
+                                        <label for="state" class="form-label">State</label>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="input-group my-2 ">
+
+                                    <div class="form-floating">
+                                        <input name="phone" type="number" class="form-control w-100" placeholder="Phone"
+                                            id="phone" required>
+                                        <label for="phone" class="form-label">Phone</label>
+                                    </div>
+
+
+                                    <div class="form-floating mb-3">
+                                        <input name="postalCode" type="number" class="form-control w-100"
+                                            placeholder="Postal Code" id="postalCode" required>
+                                        <label for="postalCode" class="form-label">Postal Code</label>
+                                    </div>
+
+
+                                </div>
 
 
 
@@ -58,70 +131,118 @@
 
 
 
-                <button class="sign-up-btn shadow-sm new-address-btn" type="submit">Add and Use</button>
+                                <button class="sign-up-btn shadow-sm new-address-btn" type="submit">Add and Use</button>
 
-            </form>
-           <h5 class="mt-4 pt-4 ">Add Existing</h5>
-           <% addresses.forEach(elt => { %>
-            
-            <div class="address-card p-2 ps-3 shadow-sm my-2 border existing-address" addressId="<%= elt._id %>" >
-                <h5><%= elt.fullname %></h5>
-                <h6><%= elt.addressLine %></h6>
-                <h6><%= elt.city %></h6>
-                <h6><%= elt.state %></h6>
-                <h6><%= elt.postalCode %></h6>
-                <h6><%= elt.phone %></h6>
-                
+                            </form>
+
+                </div>
+
+
+
             </div>
-            <% }) %>
+            <div class="checkout-container border shadow-sm" productId="<%=product._id%>" <% if (request) { %>
+
+                price="<%= request.amount + (request.amount * 0.01 * transactionFeePercentage)%>"
+                    <% } else{%>
+                        price="<%=product.price + (product.price * 0.01 * transactionFeePercentage)%>"
+                            <% } %>
+                                userId="<%=product.userId%>">
+                                    <div class="img-container py-4">
+                                        <img class="list-card-img"
+                                            src="data:image/;base64,<%=product.images[0].toString('base64') || ''%>"
+                                            alt="Title">
+                                    </div>
+
+                                    <div class="details d-flex-col ps-4 pt-4 border border-start-0 border-end-0">
+                                        <% if (request) { %>
+
+                                            <h4 class="mb-0">₹<%= request.amount%>
+                                                    <% } else{ %>
+                                                        <h4 class="mb-0">₹<%= product.price%>
+                                                                <% } %>
+
+                                                        </h4>
+                                                        <h5 class="p-2 ps-0 mb-0"><b>
+                                                                <%= product.title%>
+                                                            </b></h5>
+                                                        <div class="d-flex justify-content-between px-4 ps-0">
+
+                                                            <h6 class="">
+                                                                <%= product.location%>
+                                                            </h6>
+                                                            <h6>
+                                                                <%= product.createdAt%>
+                                                            </h6>
+                                                        </div>
+
+                                    </div>
+                                    <div class="px-2 mt-4 ">
+                                        <table class="table">
+
+
+                                            <tbody>
+                                                <% if (request) { %>
+                                                    <tr>
+                                                        <th scope="row">Amount</th>
+
+                                                        <td>₹<%=request.amount%>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Transaction Fee (1%)</th>
+                                                        <td>₹<%=request.amount*0.01%>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="my-2">
+                                                        <th scope="row">Total</th>
+                                                        <td>
+                                                            <%=request.amount + (request.amount*transactionFeePercentage*0.01)%>
+                                                        </td>
+                                                    </tr>
+                                                    <% }else{ %>
+                                                        <tr>
+                                                            <th scope="row">Amount</th>
+
+                                                            <td>₹<%=product.price%>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">Transaction Fee (<%= transactionFeePercentage %>%)</th>
+                                                            <td>₹<%=product.price*0.01*transactionFeePercentage%>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="my-2">
+                                                            <th scope="row">Total</th>
+                                                            <td>
+                                                                <%=product.price + (product.price*0.01*transactionFeePercentage)%>
+                                                            </td>
+                                                        </tr>
+                                                        <% } %>
+                                            </tbody>
+                                        </table>
+                                        <button
+                                            class="px-4 py-1 my-2 mb-4 on-click-btn default-black-btn d-flex align-items-center justify-content-center"
+                                            navLink style="width: 13rem; height: 2.5rem; margin-left: 30%;"
+                                            id="order-btn">Place Order
+                                            <div class="spinner-border text-light p-2 ms-4 hide"
+                                                style="height: 1.5rem; width: 1.5rem;" role="status">
+                                                <span class="sr-only"></span>
+                                            </div>
+                                        </button>
+                                    </div>
+            </div>
+
+
         </div>
-    </div>
-    <div class="checkout-container border border-2" productId="<%=product._id%>" price="<%=request.amount%>" userId="<%=product.userId%>">
-            <div class="img-container">
-                <img class="list-card-img" src="data:image/;base64,<%=product.images[0].toString('base64') || ''%>"
-                alt="Title">                
-            </div>
 
-            <div class="details d-flex-col ps-4 pt-4 border border-bottom">
-                <h3 class="mb-0">₹<%= request.amount%></h3>
-                <h4 class="p-2 ps-0"><b><%= product.title%></b></h4>
-                <div class="d-flex mt-2 justify-content-between px-4 ps-0">
+        <script>
+           
+  
+            const balance = <%= user.walletBalance %>
+      
 
-                    <h5 class=""><%= product.location%></h5>
-                    <h5><%= product.createdAt%></h5>
-                </div>
+        </script>
 
-            </div>
-            <div class="px-2 mt-4 ">
-                <table class="table">
-                    
-                    
-                    <tbody >
-                      <tr >
-                        <th scope="row">Amount</th>
-                        <td>₹<%=request.amount%></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Transaction Fee (1%)</th>
-                        <td>₹<%=request.amount*0.01%></td>
-                      </tr>
-                      <tr class="my-2">
-                        <th scope="row">Total</th>
-                        <td><%=request.amount + (request.amount*0.01)%></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <button class="px-4 py-1 my-2 mb-4 on-click-btn default-black-btn d-flex align-items-center justify-content-center" navLink style="width: 15rem; height: 3rem; margin-left: 28%;" id="order-btn">Place Order
-                    <div class="spinner-border text-light p-2 ms-4 hide" style="height: 1.5rem; width: 1.5rem;" role="status">
-                        <span class="sr-only"></span>
-                      </div>
-                </button>
-            </div>
-    </div>
-
-
-</div>
-
-<script src="/js/checkout.js"></script>
-<script src="/js/landing.js"></script>
-<%- include('partials/closingHead.ejs') %>
+        <script src="/js/checkout.js"></script>
+        <%- include('partials/footer.ejs') %>
+            <%- include('partials/closingHead.ejs') %>

@@ -24,12 +24,12 @@
 }
 
 .request{
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 1rem;
     background-color: #d0ff92;
 }
-h4{
+h4,h5,h3{
     padding: 0%;
     margin: 0%;
 }

@@ -1,0 +1,88 @@
+<div class="grid-container p-4">
+
+    <% data.requests.forEach(elt=> { %>
+
+
+        <a href="/product?id=<%=elt.productID[0]._id%>">
+
+            <div class="card text-center list-card product-card">
+                
+
+
+                <div class="img-continer">
+                    <% if (elt.productID[0].images) { %>
+
+                        <img class="list-card-img" src="data:image/;base64,<%=elt.productID[0].images.toString('base64') || ''%>"
+                            alt="Title">
+                        <% } %>
+                </div>
+
+                <span class="card-price">
+                    ₹<%=elt.productID[0].price%>
+                </span>
+                <span class="card-title">
+                    <%=elt.productID[0].title%>
+                </span>
+                <div class="location-container w-100 mt-3 text-muted">
+
+                    <span class="card-location">
+                        <%=elt.productID[0].location%>
+                    </span>
+                    <span class="card-data">
+                        <%=elt.productID[0].createdAt%>
+                    </span>
+                </div>
+
+
+            </div>
+        </a>
+        <% }) %>
+
+
+
+
+</div>
+
+<!-- <script defer>
+
+
+    const listBtns = document.querySelectorAll(".list-status-btn")
+    listBtns.forEach(listBtn => {
+        const productID = listBtn.getAttribute("productID");
+        const unlistedOverlay = listBtn.closest(".product-card").querySelector(".unlisted-overlay");
+        listBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            fetch(`/product/toggleListed?id=${productID}`)
+                .then(res => res.json())
+                .then(res => {
+                    console.log(res)
+                    if (res.message) {
+                        listBtn.innerHTML = 'Unlist'
+                        unlistedOverlay.classList.add('hide')
+                    }
+                    else {
+                        listBtn.innerHTML = 'List'
+                        unlistedOverlay.classList.remove('hide')
+                    }
+                })
+                .catch(err => {
+                    console.log(err)
+                    window.notify("Something went wrong, Please try later", 5000)
+                });
+
+        })
+    })
+
+
+    const editBtns = document.querySelectorAll(".edit-btn");
+
+    editBtns.forEach((btn) => {
+
+        btn.addEventListener('click', (event) => {
+            event.preventDefault();
+            const id = btn.getAttribute('id');
+            window.location.href = `/product/edit?id=${id}`
+        })
+    })
+
+</script> -->

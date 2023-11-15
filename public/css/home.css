@@ -1,55 +1,57 @@
-.hero{
+.hero {
     height: calc(100vh - 56px);
     position: relative;
 }
-.hero>img{
-    height:100%;
+
+.hero>img {
+    height: 100%;
     width: 100%;
     object-fit: cover;
 }
 
-.gradient{
+.gradient {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: 
-    linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    background:
+        linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
     /* background-color: rgba(0, 0, 0, 0.397); */
     z-index: 1100;
 }
 
-.hero-text{
+.hero-text {
     z-index: 1200;
     color: #ffffff;
     position: absolute;
     bottom: 20%;
-    padding: 0rem 10rem ;
+    padding: 0rem 10rem;
     padding-right: 20rem;
 }
-.hero-text h1{
+
+.hero-text h1 {
     font-size: 4rem;
     font-weight: 900;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.hero-text h3{
+.hero-text h3 {
     color: #ADFF45;
     font-weight: 900;
     text-shadow: 2px 2px 4px rgb(0, 0, 0);
 }
 
-.card-container{
+.card-container {
     display: grid;
     gap: 1rem;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     padding: 10rem;
     padding-top: 3rem;
-    
+
     width: 100%;
     height: 100%;
 }
 
-.card{
+.card {
     width: 100%;
     height: 20rem;
     display: flex;
@@ -61,32 +63,56 @@
     border-radius: 0px;
 }
 
-.img-continer{
+.img-continer {
     width: 100%;
     height: 60%;
     overflow: hidden;
 }
 
-.img-continer img{
+.img-continer img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.location-date{
+.location-date {
     width: 100%;
     display: flex;
     justify-content: space-between;
 }
 
-.info-card{
+.info-card {
     margin-top: 2rem;
     width: 100vw;
     height: 100vh;
 }
 
-.info-card img{
+.info-card img {
     width: 100%;
     height: 100%;
     object-fit: contain;
+}
+
+.product-card {
+    position: relative;
+}
+
+.animate{
+    animation: slideIn 800ms linear normal;
+    
+}
+
+@keyframes slideIn {
+
+    0% {
+        left: 1rem;
+        opacity: 0%;
+    }
+
+    100% {
+        left: 0rem;
+        opacity: 100%;
+
+    }
+
 }

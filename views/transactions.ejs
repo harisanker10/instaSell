@@ -12,7 +12,7 @@
 
                     <% if (item.buyerID._id.toString()===userID.toString()) { %>
 
-                        <div class="w-75  p-2 d-flex my-2"
+                        <div class="w-75  p-2 d-flex mt-2"
                             style="height: 8rem;background-color: hsl(46, 100%, 78%); border:1px solid #FFC300">
 
                             <button class="on-click-btn" navLink="/product?id=<%= item.productID._id %>">
@@ -76,12 +76,12 @@
                                         </h5>
                                         <h5 class="m-2 fw-bold">₹<%= item.productID.price %>
                                         </h5>
-                                        <h6 class=" ms-2 d-inline">Bought for </h6>
+                                        <h6 class=" ms-2 d-inline">Sold for </h6>
                                         <h5 class="m-2 fw-bold d-inline"> ₹<%= item.price.totalPrice %>
                                         </h5>
                                     </div>
                                 </button>
-                                <button class="on-click-btn" navLink="/viewProfile?id=<%= item.sellerID._id %>">
+                                <button class="on-click-btn" navLink="/viewProfile?id=<%= item.buyerID._id %>">
                                     <div class="ms-4 p-2  text-center " style="width: 15rem; ">
                                         <h5 class="text-decoration-underline">Buyer</h5>
                                         <%= item.buyerID.firstName %>

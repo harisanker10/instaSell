@@ -48,18 +48,25 @@
 
 
                     <% transactions.forEach(trans=> { %>
-                        <div class="row bg-success text-center text-white p-2 d-felx align-items-center w-75 my-1">
+                        <div class="row 
+                        <% if (trans.type === 'user_wallet_top_up' || trans.type === 'admin_to_user_refund' || trans.type === 'admin_to_user_payment') { %>
+                            bg-success
+                        <% }else{ %>
+                            bg-danger
+                            <% } %>
+                        
+                        text-center text-white p-2 d-felx align-items-center w-75 my-1">
                             <% if (trans.type==='user_wallet_top_up' ) { %>
                                 <div class="fs-5 w-25 ">Topup</div>
-                                <% } else if(trans.type==='admin_to_user_refund' ){%>
-                                    <div class="fs-5 w-25 ">Refund</div>
+                                <% } else if(trans.type==='admin_to_user_payment' ){%>
+                                    <div class="fs-5 w-25 ">Received payment</div>
                                     <% } else if (trans.type==='user_to_admin_wallet' ){%>
                                         <div class="fs-5 w-25 ">Paid</div>
                                         <% } %>
                                             <div class="fs-5 w-25  text-center">
-                                                <%= trans.amount %>
+                                                ₹ <%= trans.amount %>
                                             </div>
-                                            <div class="fs-5 w-50 overflow-hidden text-center">
+                                            <div class="fs-6 w-50 overflow-hidden text-center">
                                                 <%= trans.createdAt %>
                                             </div>
                         </div>
@@ -76,7 +83,6 @@
 
             const topupInput = document.querySelector('.topup-input');
             const addMoneyBtn = document.querySelector('#button-addon2');
-
 
 
             // topupBtn.addEventListener('click', () => {

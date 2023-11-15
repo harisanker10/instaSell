@@ -19,7 +19,8 @@ const { saveProduct,
     addCourier,
     addProduct,
     getOrders,
-    getOrderStatus
+    getOrderStatus,
+    downloadOrderDetails
 } = require('../controllers/productController');
 
 
@@ -71,6 +72,8 @@ router.post('/courier',upload.any(),addCourier)
 router.get('/getOrders',getOrders)
 
 router.get('/getCourierStatus',getOrderStatus)
+
+router.get('/order/download',downloadOrderDetails)
 
 
 

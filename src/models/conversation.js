@@ -19,7 +19,7 @@ const conversationsSchema = new mongoose.Schema({
             return new mongoose.mongo.ObjectId()
         }
     },
-    isUnread:{
+    read:{
         type:Boolean,
         default:false
     }

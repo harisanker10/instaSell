@@ -71,12 +71,34 @@
                         </button>
                     </div>
 
+                    <div class="p-3 bg-dark shadow hide" id="price-tooltip" >
+                        <p class="text-white">Allow users to purchase the item Instantly by placing order.</p><a
+                            href="">Learn more</a>
+                    </div>
 
-
-                    <div class="form-floating my-2">
-                        <input type="number" name="price" type="text" class="form-control" placeholder="price"
-                            id="sell-form-price" required value="<%=product.price %>">
+                    <div class="form-floating my-2  d-flex " style="position: relative;">
+                        <input type="number" name="price" type="text" class="form-control w-75" placeholder="price"
+                            id="sell-form-price" value="<%= product.price%>" required>
                         <label for="sell-form-price" class="form-label" required>Price</label>
+                        <div class="w-25  h-100 d-flex  py-3 border-start-0  border px-4  " style="position: relative;">
+
+                            <label class="form-check-label small text-muted mt-1" for="flexSwitchCheckDefault">Instant
+                                Buy</label>
+
+                            <div class="form-check form-switch ms-3">
+                                <input name="buyNow" class="form-check-input" type="checkbox" role="switch"
+                                    id="flexSwitchCheckDefault" 
+                                    
+                                    <% if (product.buyNow) { %>
+                                        checked
+                                        <% }  %>
+                                    >
+                            </div>
+                            <strong class="text-muted price-info"
+                                style="position: absolute;right: 0.8rem; top:0.4rem;">&#9432;</strong>
+
+
+                        </div>
                     </div>
 
 
@@ -156,7 +178,32 @@
         </div>
 
 
+        <script>
+            const infoBtn = document.querySelector('.price-info');
+            const tooltip = document.querySelector('#price-tooltip');
 
+            infoBtn.addEventListener('mouseover', () => {
+                tooltip.style.opacity = '100%';
+                tooltip.classList.remove('hide');
+            })
+            
+            infoBtn.addEventListener('mouseout', () => {
+                let isFocused = false
+                tooltip.style.opacity = '0%';
+                
+                setTimeout(() => {
+                    
+                    
+                    tooltip.classList.add('hide');
+                }, 200);
+
+    
+
+               
+            })
+
+
+        </script>
 
         <!-- <script src="/js/editProduct.js"></script> -->
         <script src="/js/updateProduct.js"></script>

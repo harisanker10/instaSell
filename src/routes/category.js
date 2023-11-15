@@ -20,7 +20,7 @@ router.post('/', async (req, res, next) => {
 
         const data = await addCategory(req.body.name);
         res.cookie("notify", "Added successfully");
-        res.redirect('/profile?nav=add');
+        res.redirect('/adminpanel');
     } catch (err) {
         next(err);
     }
@@ -33,7 +33,7 @@ router.post('/subcategory', async (req, res, next) => {
         const { category, subCategory } = req.body;
         const data = await addSubCategory(category, subCategory);
         res.cookie("notify", "Added successfully");
-        res.redirect('/profile?nav=add');
+        res.redirect('/adminpanel');
     } catch (err) {
         next(err);
     }
@@ -60,7 +60,7 @@ router.get('/delete', async (req, res, next) => {
         }
 
         res.cookie("notify", "Deleted successfully");
-        res.redirect('/profile?nav=add');
+        res.redirect('/adminpanel');
     } catch (err) {
         next(err);
     }

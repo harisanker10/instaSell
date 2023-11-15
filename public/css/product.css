@@ -1,4 +1,7 @@
 
+h2,h3,h4,h5{
+    margin: 0px;
+}
 
 .image-container{
     border: 1px solid #a7a7a7;
@@ -41,12 +44,13 @@
 .product-price{
     /* font-size: 1.5rem; */
     /* font-weight: 900; */
-    margin-top: 1rem;
+    /* margin-top: 0.2rem; */
+    margin:0;
 }
 .product-title{
     /* font-weight: 800; */
     /* font-size: 1.25rem; */
-    margin-top: 0.5rem;
+    margin-top: 0.25rem;
 }
 .product-location{
     margin-top: 1rem;

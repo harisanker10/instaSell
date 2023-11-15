@@ -4,6 +4,9 @@ const geolib = require("geolib");
 require('dotenv').config();
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY)
 const asyncHandler = require("express-async-handler");
+const fs = require('fs');
+const ejs = require('ejs')
+const puppeteer = require('puppeteer')
 
 const Product = require("../models/product");
 const Address = require("../models/address");
@@ -42,6 +45,10 @@ const saveProduct = asyncHandler(async (item, images) => {
     lat,
     lon,
   };
+
+  if (item.buyNow === "on") item.buyNow = true;
+  else item.buyNow = false;
+
   const imageIDs = await saveImgs(images);
   const product = new Product({
     title: item.title,
@@ -53,6 +60,7 @@ const saveProduct = asyncHandler(async (item, images) => {
     details: JSON.parse(item.details),
     images: imageIDs,
     userID: item.userID,
+    buyNow: item?.buyNow
   });
 
   const data = await product.save();
@@ -60,7 +68,7 @@ const saveProduct = asyncHandler(async (item, images) => {
 
 const addProduct = asyncHandler(async (req, res) => {
 
-  console.log('request::::', JSON.parse(req.body.location))
+  console.log('request::::', req.body)
   try {
     const product = req.body;
     product.userID = req.session.userID;
@@ -204,6 +212,9 @@ const updateProduct = asyncHandler(async (req, res) => {
     imgRemoveData,
   } = req.body;
 
+  let buyNow = false;
+  if (req.body.buyNow === 'on') buyNow = true;
+
   product.title = title;
   product.category = category;
   product.subCategory = subCategory;
@@ -211,6 +222,7 @@ const updateProduct = asyncHandler(async (req, res) => {
   product.price = price;
   product.description = description;
   product.details = JSON.parse(details);
+  product.buyNow = buyNow;
   console.log(product.details);
 
   const newImages = await saveImgs(req.files);
@@ -252,6 +264,11 @@ const renderSearch = asyncHandler(async (req, res) => {
   let sortConditions = { specificity: 1 };
 
   switch (sort) {
+
+    case "rel":
+      sortConditions = {};
+      sortConditions.specificity = 1;
+      break;
     case "plth":
       sortConditions = {};
       sortConditions.price = 1;
@@ -297,13 +314,13 @@ const renderSearch = asyncHandler(async (req, res) => {
     });
   }
   console.log(matchConditions);
-  
-  if(!page)page=0
 
-  const skipCount = parseInt(page)*9
-  console.log('skipCount:::::::::::;',skipCount)
+  if (!page) page = 0
 
-  let products = await getQueryStateProduct(matchConditions, sortConditions, searchQuery,skipCount );
+  const skipCount = parseInt(page) * 9
+  console.log('skipCount:::::::::::;', skipCount)
+
+  let products = await getQueryStateProduct(matchConditions, sortConditions, searchQuery, skipCount);
   console.log(products[0])
 
 
@@ -488,27 +505,44 @@ const acceptRequest = asyncHandler(async (req, res) => {
 });
 
 const renderLanding = asyncHandler(async (req, res) => {
-  // const products = await Product.find({}, { images: 1, title: 1, location: 1, createdAt: 1, price: 1 }).limit(8).lean();
-  // const productCards = await Promise.all(products.map(async (product) => {
-  //     product.images = await getImages(product.images);
-  //     product.createdAt = convertISODate(product.createdAt);
-  //     return product;
+  const products = await Product.find({ isListed: true, }, { images: 1, title: 1, location: 1, createdAt: 1, price: 1 }).limit(8).lean();
+  let orders = await Order.find({},{productID:1});
+  orders = orders.map(order=>order.productID.toString())
+  let productCards = await Promise.all(products.map(async (product) => {
+    product.images = await getImages(product.images);
+    product.createdAt = convertISODate(product.createdAt);
+    
+    if(!orders.includes(product._id.toString()))
+    return product;
+  }))
 
-  // }))
-  // res.render('landing', { title: 'Home', products: productCards });
-  res.render("landing", { title: "Home" });
+  productCards = productCards.filter(card=>{
+    if(card)return true;
+  })
+
+  
+  console.log(productCards)
+
+  res.render('landing', { title: 'Home', products: productCards });
 });
 
 const renderCheckout = asyncHandler(async (req, res) => {
-  const product = await Product.getFullProduct(req.query.productID);
-  const addresses = await Address.find({ userID: req.session.userID });
-  const request = await Request.findOne({ productID: req.query.productID, requesterID: req.session.userID });
-  console.log(request)
+  const productPromise = Product.getFullProduct(req.query.productID);
+  const addressesPromise = Address.find({ userID: req.session.userID });
+  const requestPromise = Request.findOne({ productID: req.query.productID, requesterID: req.session.userID });
+  const userPromise = User.findOne({ _id: req.session.userID }, { walletBalance: 1 });
+  const configurationPromise = Configuration.findOne({ name: 'transactionFeePercent' });
+
+  const [product, addresses, request, user, configuration] = await Promise.all([productPromise, addressesPromise, requestPromise, userPromise, configurationPromise]);
+
+
   res.render("checkout", {
     title: "Checkout",
     product,
     addresses,
-    request
+    request,
+    user,
+    transactionFeePercentage: configuration.value
   });
 });
 
@@ -517,32 +551,76 @@ const renderCheckout = asyncHandler(async (req, res) => {
 
 
 const placeOrder = asyncHandler(async (req, res) => {
+
   console.log(req.body);
 
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ['card'],
-    mode: 'payment',
-    line_items: [{
+  const product = await Product.findOne({ _id: req.body.productID });
+  const configuration = await Configuration.findOne({ name: 'transactionFeePercent' });
 
-      price_data: {
-        currency: 'inr',
-        product_data: {
-          name: req.body.productTitle,
-        },
-        unit_amount: req.body.price * 101
+  if (req.body.paymentMethod === 'wallet') {
+    const user = await User.findOneAndUpdate(
+      { _id: req.session.userID },
+      { $inc: { walletBalance: -req.body.price } },
+      { new: true }
+    ).lean();
+
+    const admin = await Admin.findOneAndUpdate({ role: 'admin' }, { $inc: { walletBalance: req.body.price } }, { new: true }).lean();
+
+    let order = new Order({
+      buyerID: req.session.userID,
+      sellerID: product.userID,
+      productID: req.body.productID,
+      price: {
+        transactionPercent: configuration.value,
+        totalPrice: req.body.price,
+        listPrice: product.price
       },
-      quantity: 1
+      address: req.body.address,
+      stripeTransactionId: 'wallet'
+    })
+    order = await order.save();
+
+    const transaction = new Transaction({
+      type: 'user_to_admin_wallet',
+      senderID: req.session.userID,
+      toAdmin: true,
+      status: 'paid',
+      amount: req.body.price,
+      order: order._id
+    });
+
+    await transaction.save()
+
+    res.redirect(`buyStatus?id=${req.body.productID}`);
+
+  } else {
 
 
-    }],
-    success_url: `${process.env.SERVER_URL}/product/buyStatus?id=${req.body.productID}`,
-    cancel_url: `${process.env.SERVER_URL}/product?id=${req.body.productID}`
-  })
 
-  req.session.order = { stripeTransactionId: session.id, address: req.body.address, requestedAmont: req.body.price };
-  console.log(session.url);
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      mode: 'payment',
+      line_items: [{
 
-  res.status(200).json({ url: session.url })
+        price_data: {
+          currency: 'inr',
+          product_data: {
+            name: req.body.productTitle,
+          },
+          unit_amount: req.body.price * 100
+        },
+        quantity: 1
+
+
+      }],
+      success_url: `${process.env.SERVER_URL}/product/buyStatus?id=${req.body.productID}`,
+      cancel_url: `${process.env.SERVER_URL}/product?id=${req.body.productID}`
+    })
+
+    req.session.order = { stripeTransactionId: session.id, address: req.body.address, requestedAmont: req.body.price };
+    console.log(session.url);
+    res.status(200).json({ url: session.url })
+  }
 
 
 
@@ -557,6 +635,10 @@ const renderBuyStatus = asyncHandler(async (req, res) => {
   let order, courier;
 
   const product = await Product.getFullProduct(req.query.id);
+  const configuration = await Configuration.findOne({ name: 'transactionFeePercent' });
+
+
+
   if (req.session.order && req.session.order.stripeTransactionId) {
 
     const { stripeTransactionId, address, requestedAmont } = req.session.order;
@@ -567,9 +649,9 @@ const renderBuyStatus = asyncHandler(async (req, res) => {
       sellerID: product.userID,
       productID: req.query.id,
       price: {
-        transactionPercent: (stripeSession.amount_total / 100 - requestedAmont) * 100 / requestedAmont,
+        transactionPercent: configuration.value,
         totalPrice: stripeSession.amount_total / 100,
-        listPrice: requestedAmont
+        listPrice: requestedAmont / (1 + (configuration.value / 100))
       },
       address,
       stripeTransactionId
@@ -642,17 +724,42 @@ const addCourier = asyncHandler(async (req, res) => {
   const status = response.data.data.trackings[0].shipment.statusMilestone
   console.log('trackerID', trackerID)
 
-  console.log(response);
+  
 
+  console.log(response);
+  const order = await Order.findOne({ productID: req.body.productID });
+  order.status = status;
   const courier = new Courier({
     carrier: req.body.carrier,
-    courierID: req.body.courierID,
+    courierID: req.body.courierID.trim(),
     productID: req.body.productID,
     trackerID,
     status
   });
   const data = await courier.save();
   if (!data) throw new Error("couldn't add courier details");
+
+  if ((status === 'delivered' || status.includes('delivered')) && !order.paidToSeller ) {
+    await User.findOneAndUpdate({ _id: order.sellerID }, { $inc: { walletBalance: order.price.listPrice } });
+    await Admin.findOneAndUpdate({ role: 'admin' }, { $inc: { walletBalance: -order.price.listPrice } });
+
+    const transaction = new Transaction({
+      type: 'admin_to_user_payment',
+      receivedID: order.sellerID,
+      fromAdmin: true,
+      amount: order.price.listPrice,
+      status: 'paid',
+      order: order._id
+    })
+
+    order.paidToSeller = true;
+    console.log(transaction)
+    await transaction.save();
+
+
+  }
+
+  await order.save();
 
 
 
@@ -692,7 +799,31 @@ const getOrderStatus = asyncHandler(async (req, res) => {
   const courier = await Courier.findOne({ trackerID });
   courier.status = status;
   await courier.save();
-  const order = await Order.findOneAndUpdate({ productID: courier.productID }, { $set: { status } });
+  console.log(courier)
+  const order = await Order.findOne({ productID: courier.productID });
+  order.status = status;
+  console.log(order);
+  
+  if ((status === 'delivered' || status.includes('delivered')) && !order.paidToSeller ) {
+    await User.findOneAndUpdate({ _id: order.sellerID }, { $inc: { walletBalance: order.price.listPrice } });
+    await Admin.findOneAndUpdate({ role: 'admin' }, { $inc: { walletBalance: -order.price.listPrice } });
+
+    const transaction = new Transaction({
+      type: 'admin_to_user_payment',
+      receivedID: order.sellerID,
+      fromAdmin: true,
+      amount: order.price.listPrice,
+      status: 'paid',
+      order: order._id
+    })
+    
+    order.paidToSeller = true;
+    console.log(transaction)
+    await transaction.save();
+
+
+  }
+  const orderRes = await order.save()
 
   res.json(status)
 })
@@ -703,13 +834,14 @@ const getWishlist = asyncHandler(async (req, res) => {
   let wishlist = await User.findOne({ _id: req.session.userID }, { wishlist: 1 }).lean();
   wishlist = wishlist.wishlist;
   console.log(wishlist);
-  wishlist = await Promise.all(wishlist.map(productID => {
-    return Product.getFullProduct(productID)
+
+  const products = await Promise.all(wishlist.map(async (id) => {
+    return Product.getFullProduct(id);
   }))
 
-  console.log(wishlist)
+  console.log(products)
 
-  res.json(wishlist);
+  res.json(products);
 
 
 })
@@ -719,16 +851,89 @@ const webhook = asyncHandler(async (req, res) => {
   console.log(req.body.trackings[0].shipment);
 
 
-  const trackerID = req.body.trackings[0].tracker.trackerID
+  const courierID = req.body.trackings[0].shipment.trackingNumbers[0].tn;
   const status = req.body.trackings[0].shipment.statusMilestone;
 
-  const courier = await Courier.findOne({ trackerID });
+  const courier = await Courier.findOne({ courierID });
   courier.status = status;
   await courier.save();
-  const order = await Order.findOneAndUpdate({ productID: courier.productID }, { $set: { status } });
+  const order = await Order.findOne({ productID: courier.productID });
+  order.status = status;
+  console.log(order)
+  if ((status === 'delivered' || status.includes('delivered')) && !order.paidToSeller ) {
+    await User.findOneAndUpdate({ _id: order.sellerID }, { $inc: { walletBalance: order.price.listPrice } });
+    await Admin.findOneAndUpdate({ role: 'admin' }, { $inc: { walletBalance: -order.price.listPrice } });
+    
+    const transaction = new Transaction({
+      type: 'admin_to_user_payment',
+      receivedID: order.sellerID,
+      fromAdmin: true,
+      amount: order.price.listPrice,
+      status: 'paid',
+      order: order._id
+    })
+
+    console.log(transaction)
+    await transaction.save();
+    order.paidToSeller = true;
+    
+  }
+
+  await order.save();
+  
   res.status(200).json({ message: 'Success' });
 })
 
+
+
+const downloadOrderDetails = asyncHandler(async (req, res) => {
+
+  const {productID,type} = req.query;
+
+  const order = await Order.findOne({productID}).populate({
+    path:'sellerID buyerID productID address'
+  }).lean()
+
+  let file;
+
+  if(type === 'buyer'){
+    file = fs.readFileSync('./views/downloads/orderDetails.ejs', 'utf-8');
+  }else{
+    file = fs.readFileSync('./views/downloads/orderDetailsSeller.ejs', 'utf-8');
+  }
+
+  const html = ejs.render(file,{order});
+
+  
+   
+    const browser = await puppeteer.launch();
+
+ 
+    const page = await browser.newPage();
+
+   
+    await page.setContent(html);
+
+  
+    const pdfBuffer = await page.pdf({
+      format: 'A4',
+      margin: { top: '0.5in', bottom: '0.5in', left: '0.5in', right: '0.5in' }
+    });
+
+    await browser.close();
+
+    res.setHeader('Content-Disposition', `attachment; filename="orderDetail.pdf"`);
+    res.setHeader('Content-Type', 'application/pdf');
+
+    res.end(pdfBuffer);
+
+
+  
+ 
+});
+
+
+// downloadOrderDetails()
 
 
 
@@ -756,7 +961,8 @@ module.exports = {
   getOrders,
   getOrderStatus,
   webhook,
-  getWishlist
+  getWishlist,
+  downloadOrderDetails
 };
 
 
@@ -847,7 +1053,7 @@ const getQueryStateProduct = async (matchConditions, sortConditions, searchQuery
       },
     },
     {
-      $skip:skipCount
+      $skip: skipCount
     },
     {
       $limit: 9

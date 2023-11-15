@@ -47,6 +47,8 @@ sortBtns.forEach((btn) => {
   });
 });
 
+sortBtns[0].click();
+
 subCats.forEach((scat) => {
   scat.addEventListener("mouseover", () => {
     scat.classList.add("text-primary");
@@ -258,17 +260,20 @@ maxPriceInput.addEventListener('blur', () => {
 homeBtn.addEventListener('click', () => {
   state.page = 0;
   fetchProducts();
+  window.scroll({top:0,behavior:'smooth'}) 
 })
 nextBtn.addEventListener('click', () => {
   state.page += 1;
   fetchProducts();
+  window.scroll({top:0,behavior:'smooth'}) 
 })
 prevBtn.addEventListener('click', () => {
   state.page -= 1;
   fetchProducts();
+  window.scroll({top:0,behavior:'smooth'}) 
 })
 
 
-console.log(state);
+console.log('state::::::::::::::::::::',state);
 console.log(locationDetails);
 console.log('search param:::', url.searchParams.get('search'));

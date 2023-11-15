@@ -1,9 +1,10 @@
+
 const addressBtn = document.querySelector('.new-address-btn')
 
 const existingAddresses = document.querySelectorAll('.existing-address');
 
 const addressForm = document.querySelector('.new-address-form');
-const container = document.querySelector('.content');
+const container = document.querySelector('.address-content');
 const productTitle = container.getAttribute('productName')
 const checkoutContainer = document.querySelector('.checkout-container');
 
@@ -13,11 +14,15 @@ const userId = checkoutContainer.getAttribute('userId');
 
 const spinner = document.querySelector('.spinner-border');
 
+const paymentVerifyIcon = document.querySelector('#payment-verify-icon')
+const addressVerifyIcon = document.querySelector('#address-verify-icon')
 
+const paymentMethods = document.querySelectorAll('.payment-card')
 
 const orderBtn = document.querySelector('#order-btn');
 
 let address;
+let paymentMethod;
 
 addressForm.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -74,29 +79,53 @@ existingAddresses.forEach(card => {
         address = card.getAttribute('addressid');
         container.innerHTML = '';
         container.append(card)
+        card.style.backgroundColor = '#a3a3a3'
+        addressVerifyIcon.classList.remove('hide');
         console.log(address)
 
 
     })
 })
 
+console.log('----------------------------', price, balance)
+
 orderBtn.addEventListener('click', (event) => {
     event.preventDefault();
-    const formData = new FormData();
     if (!address) {
-        window.notify("Add address",10000,'err');
+        window.notify("Add address", 10000, 'err');
         return;
     }
+    if (!paymentMethod) {
+        window.notify("Select payment method", 10000, 'err');
+        return;
+    }
+
+    console.log("Payment method:::::::::", paymentMethod)
+
+    if (paymentMethod === 'wallet') {
+
+        if (parseFloat(balance) < parseFloat(price)) {
+            window.notify("Not enough wallet balance", 10000, 'err')
+            return;
+        }
+
+    }
+
+
+
+
+    const formData = new FormData();
     formData.append('address', address)
     formData.append('productID', productId);
     formData.append('price', price);
     formData.append('sellerID', userId);
     formData.append('productTitle', productTitle);
-    
+    formData.append('paymentMethod', paymentMethod)
+
     console.log(formData);
     spinner.classList.remove('hide');
     orderBtn.style.backgroundColor = 'gray'
-    
+
     fetch('/product/order', {
         method: 'POST',
         body: formData
@@ -105,11 +134,24 @@ orderBtn.addEventListener('click', (event) => {
         return res.json()
 
     }).then(({ url }) => {
+        if (paymentMethod === 'wallet') {
+            window.loacation.href = `/product/buyStatus?id=${productId}`
+            return;
+        }
         console.log(url);
         window.location.href = url
     })
         .catch(err => console.log(err))
 
+})
+
+paymentMethods.forEach(card => {
+    card.addEventListener('click', () => {
+        paymentMethods.forEach(card => { card.style.backgroundColor = "#ffffff" })
+        card.style.backgroundColor = '#a3a3a3'
+        paymentVerifyIcon.classList.remove('hide')
+        paymentMethod = card.getAttribute('id');
+    })
 })
 
 

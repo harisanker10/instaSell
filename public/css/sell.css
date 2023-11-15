@@ -1,4 +1,4 @@
-.plus-btn{
+.plus-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -8,4 +8,24 @@
     margin-top: 5px;
     border: 1px solid rgba(0, 0, 0, 0.463);
 
+}
+
+
+.price-info {
+    cursor: pointer;
+}
+
+
+#price-tooltip {
+    opacity: 0%;
+    width: 15rem;
+    position: absolute;
+    z-index: 100;
+    top: 27%;
+    right: 25%;
+    transition: opacity 200ms ease-in;
+}
+
+#get-location-btn:hover{
+    background-color: rgb(189, 189, 189);
 }
