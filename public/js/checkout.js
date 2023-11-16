@@ -131,13 +131,15 @@ orderBtn.addEventListener('click', (event) => {
         body: formData
     }).then(res => {
         console.log(res);
+        if (paymentMethod === 'wallet') {
+            console.log('elonma');
+
+            window.location.href = `/product/buyStatus?id=${productId}`
+            return;
+        }
         return res.json()
 
     }).then(({ url }) => {
-        if (paymentMethod === 'wallet') {
-            window.loacation.href = `/product/buyStatus?id=${productId}`
-            return;
-        }
         console.log(url);
         window.location.href = url
     })

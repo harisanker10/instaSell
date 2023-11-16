@@ -155,7 +155,7 @@ const gridTemplate = `
 
 function fetchProducts() {
   window.loadingOn();
-  let url = `/search?`;
+    let url = `/search?`;
   console.log("state", state);
 
   for (let key in state) {

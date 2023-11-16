@@ -521,7 +521,6 @@ const renderLanding = asyncHandler(async (req, res) => {
   })
 
   
-  console.log(productCards)
 
   res.render('landing', { title: 'Home', products: productCards });
 });

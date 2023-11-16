@@ -115,7 +115,7 @@ const renderProfile = asyncHandler(async (req, res) => {
 
 
   console.log(data);
-  res.render("profile", { title: "Profile", user: user, data: data });
+  res.render("profile", { title: "Profile", user, data });
 });
 
 
@@ -272,13 +272,15 @@ const addAddress = asyncHandler(async (req, res) => {
 const getProfileNavData = async (nav, userID) => {
   switch (nav) {
 
-    case "wallet":{
+    
+    case "wallet": {
       const transactions = await Transaction.find().lean();
       const length = transactions.length;
-      for(let i=0; i<length; i++){
+      for (let i = 0; i < length; i++) {
         transactions[i].createdAt = convertISODate(transactions[i].createdAt);
       }
       return transactions;
+      break;
     }
 
     case "add": {
@@ -286,6 +288,7 @@ const getProfileNavData = async (nav, userID) => {
       data = { categories: categories };
       data.isCategories = "active";
       return data;
+      break;
     }
 
     case "users": {
@@ -296,12 +299,14 @@ const getProfileNavData = async (nav, userID) => {
       data = { users: users };
       data.isUsers = "active";
       return data;
+      break;
     }
     case "listings": {
       listings = await getProductCards(userID);
       data = { listings: listings };
       data.isListings = "active";
       return data;
+      break;
     }
     case "purchases": {
       const orders = await Order.find({ buyerID: userID });
@@ -317,7 +322,10 @@ const getProfileNavData = async (nav, userID) => {
         isPurchases: "active",
       };
       return data;
+      break;
     }
+
+
     case "orders": {
       let orders = await Order.find()
         .populate({
@@ -332,40 +340,41 @@ const getProfileNavData = async (nav, userID) => {
         return order;
       }))
       return orders;
+      break;
+    }
+
+
+    case "req": {
+      let requests = await Request.find({ requesterID: userID }, { productID: 1 }).lean();
+      requests = requests.map(req => {
+        return req.productID;
+      })
+
+      let products = await Promise.all(requests.map(async (req) => {
+        return await Product.getFullProduct(req);
+      }))
+      
+      const data = {
+        requests: products,
+        isRequests: "active"
+      }
+      return data;
+      break;
 
     }
-    case "req": {
-      let requests = await Request.aggregate([
-        {
-          $lookup: {
-            from: 'orders',
-            localField: 'productID',
-            foreignField: 'productID',
-            as: 'orders'
-          }
-        },
-        {
-          $lookup: {
-            from: 'products',
-            localField: 'productID',
-            foreignField: '_id',
-            as: 'productID'
-          }
-        }, { $match: { orders: { $size: 0 } } }, { $project: { productID: 1 } }])
 
-
-      requests = await Promise.all(requests.map(async (req) => {
-        const buffer = await getImages(req.productID[0].images);
-        const base64Image = buffer[0].toString("base64");
-        req.productID[0].images = `data:image/jpeg;base64,${base64Image}`;
-        return req;
+    case "wishlist":{
+      let wishlists = await User.findOne({_id:userID},{wishlist:1})
+      wishlists = wishlists.wishlist;
+      wishlists  = await Promise.all(wishlists.map(async (id) => {
+        return await Product.getFullProduct(id);
       }))
-
       const data = {
-        requests,
-        isRequests: "active",
-      };
+        wishlists,
+        isWishlist:"active"
+      }
       return data;
+
     }
 
 
@@ -468,7 +477,7 @@ const renderWallet = asyncHandler(async (req, res) => {
       { receivedID: req.session.userID }
     ],
     type: { $in: ['admin_to_user_payment', 'user_wallet_top_up', 'user_to_admin_wallet'] }
-  }).sort({createdAt:-1}).lean();
+  }).sort({ createdAt: -1 }).lean();
 
   transactions.forEach(trans => {
     trans.createdAt = convertISODate(trans.createdAt);
