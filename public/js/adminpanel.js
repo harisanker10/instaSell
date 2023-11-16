@@ -252,6 +252,7 @@ const renderAdd = (data) => {
 }
 
 const renderOrders = (data) => {
+    console.log(data)
     const orderTemplate = `
     <table class="table table-hover">
       <thead>

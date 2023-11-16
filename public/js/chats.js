@@ -1,7 +1,7 @@
-const userID = document.querySelector('.chat-container').getAttribute('userID');
+const userId = document.querySelector('.chat-container').getAttribute('userID');
 const socket = io('http://localhost:5555', {
     query: {
-        userID
+        userID: userId
     },
 });
 const chats = document.querySelectorAll('.room');
@@ -55,7 +55,7 @@ socket.on('message', (data) => {
                 if (chat.classList.contains('active')) {
                     const div = document.createElement('div');
                     div.innerHTML = message;
-                    if (userID.toString() === senderID.toString()) div.classList.add('sent')
+                    if (userId.toString() === senderID.toString()) div.classList.add('sent')
                     else div.classList.add('received')
                     chatContainer.append(div);
                     chatContainer.scrollTop = chatContainer.scrollHeight;
@@ -98,6 +98,8 @@ const main = () => {
 
         chat.addEventListener('click', (event) => {
             
+
+
             chat.classList.remove('unread');
             chats.forEach(chat => chat.classList.remove('active'))
 

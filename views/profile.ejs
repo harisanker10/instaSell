@@ -79,8 +79,8 @@
                     <a href="/profile?nav=purchases" class="text-decoration-none">
                         <div class="profile-nav-item text-center fs-5 <%= data?.isPurchases %>">Purchases</div>
                     </a>
-                    <a href="" class="text-decoration-none">
-                        <div class="profile-nav-item text-center fs-5 wishlist-nav">Wishlist</div>
+                    <a href="/profile?nav=wishlist" class="text-decoration-none">
+                        <div class="profile-nav-item text-center fs-5 wishlist-nav <%= data?.isWishlist %>">Wishlist</div>
                     </a>
                     <a href="/profile?nav=req" class="text-decoration-none">
                         <div class="profile-nav-item text-center fs-5 <%= data?.isRequests %>">Requested</div>
@@ -100,6 +100,8 @@
                             <%- include('partials/profile/purchases.ejs') %>
                                 <% }else if(data?.requests){ %>
                                     <%- include('partials/profile/requests.ejs') %>
+                                <% }else if(data?.wishlists){ %>
+                                    <%- include('partials/profile/wishlists.ejs') %>
 
 
                                         <% } %>
