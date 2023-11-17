@@ -50,8 +50,11 @@ const renderChatPanel = asyncHandler(async (req, res) => {
         }).populate({
             path: 'buyerID',
             select: 'firstName'
+        }).populate({
+            path: 'lastMessage'
         })
         .lean();
+
 
     conversations = await Promise.all(conversations.map(async (convo) => {
 
@@ -61,15 +64,15 @@ const renderChatPanel = asyncHandler(async (req, res) => {
         return convo;
     }))
 
-    console.log(conversations)
+    console.log('elon::::::::::::::',conversations);
     res.render('chats', { title: 'Chats', conversations })
 
 })
 
 const getMessages = asyncHandler(async (req, res) => {
 
-    console.log(req.query.roomID)
-    const messages = await Message.find({ roomID: req.query.roomID });
+    console.log(req.params.room)
+    const messages = await Message.find({ roomID: req.params.room });
     console.log(messages)
     res.json(messages);
 
@@ -92,6 +95,8 @@ const getConversations = asyncHandler(async(req,res)=>{
         }).populate({
             path: 'buyerID',
             select: 'firstName'
+        }).populate({
+            path: 'lastMessage'
         })
         .lean();
 

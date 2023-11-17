@@ -8,7 +8,7 @@ router.use(isAuth);
 
 router.get('/',renderChatPanel)
 
-router.get('/messages',getMessages)
+router.get('/messages/:room',getMessages)
 
 router.get('/getConversations',getConversations)
 

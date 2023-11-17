@@ -8,7 +8,12 @@
             <div class="col-2 bg-light conversations-container" style="height: calc(100vh - 56px);">
                 <% conversations.forEach(chat=> { %>
 
-                    <button class="on-click-btn room w-100 border-bottom " style="height: 5rem;" room="<%= chat?.room || '' %>" senderID="<%= userID %>" recipientID="
+                    <button class="on-click-btn room w-100 border-bottom 
+                    <% if (!chat.seen && chat?.lastMessage && chat.lastMessage?.recipientID.toString() === userID.toString()) { %>
+                     unread
+                    <% } %>
+                    
+                    " style="height: 5rem;" room="<%= chat?.room || '' %>" senderID="<%= userID %>" recipientID="
                         <% if (userID.toString() === chat.buyerID._id.toString()) { %>
                             <%= chat.sellerID._id %>
                         <% } else{%>
