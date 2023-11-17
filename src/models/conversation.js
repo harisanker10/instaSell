@@ -19,7 +19,12 @@ const conversationsSchema = new mongoose.Schema({
             return new mongoose.mongo.ObjectId()
         }
     },
-    read:{
+    lastMessage:{
+        type:mongoose.mongo.ObjectId,
+        ref :'Message',
+        default:null
+    },
+    seen:{
         type:Boolean,
         default:false
     }
