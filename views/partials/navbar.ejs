@@ -1,50 +1,60 @@
-<nav class="navbar navbar-expand-sm navbar-dark bg-black d-flex justify-content-between" id="navbar" style="max-width: 100vw;" userID="<%= userID %>">
-    <div class="container d-flex justify-content-between">
-        <svg fill="#ffffff" class="logo pb-2" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 496 512">
+<nav class="navbar navbar-expand-sm navbar-dark bg-black px-4 sticky-top py-1" style=" z-index: 9999;" id="navbar" userID="<%= userID %>">
 
-            <path
-                d="M88 216c81.7 10.2 273.7 102.3 304 232H0c99.5-8.1 184.5-137 88-232zm32-152c32.3 35.6 47.7 83.9 46.4 133.6C249.3 231.3 373.7 321.3 400 448h96C455.3 231.9 222.8 79.5 120 64z" />
-        </svg>
-        <a class="navbar-brand fw-bold" href="/" onclick="window.loadingOn()">instaSell</a>
-        <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse"
-            data-bs-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false"
-            aria-label="Toggle navigation">
+    <div class="container-fluid " style="display: flex;">
+        <a class="navbar-brand" onclick="window.loadingOn()" href="/">
+            <svg fill="#ffffff" class="logo pb-2 m-0" xmlns="http://www.w3.org/2000/svg" height="1em"
+                viewBox="0 0 496 512">
+                <path
+                    d="M88 216c81.7 10.2 273.7 102.3 304 232H0c99.5-8.1 184.5-137 88-232zm32-152c32.3 35.6 47.7 83.9 46.4 133.6C249.3 231.3 373.7 321.3 400 448h96C455.3 231.9 222.8 79.5 120 64z" />
+            </svg>
+            instaSell
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse d-flex justify-content-between ml-4" id="collapsibleNavId">
-            <div class="d-flex">
+        <div class="collapse navbar-collapse bg-black w-100" id="navbarNav">
+            <form class="d-flex ms-4 w-50" action="/search">
+                <div class="input-group h-100">
 
-                <input class="btn btn-light btn-black-default location-btn" id="location-btn" placeholder="location">
-                <form class="d-flex" action="/search" ">
-                    <input class="search-input" type="search" placeholder="Search" name="search" aria-label="Search">
-                    <button class="btn btn-outline-success primary-btn search-btn " type="submit" onclick="window.loadingOn()" ><svg
-                            xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512" fill="black">
+                    <input class=" btn btn-light btn-black-default location-btn" id="location-btn" placeholder="location">
+                    <input class="form-control py-0" type="search" placeholder="Search" aria-label="Search"
+                        style="border:2px solid white;">
+                    <button class="btn btn-outline-success primary-btn search-btn" type="submit"
+                        onclick="window.loadingOn()"><svg xmlns="http://www.w3.org/2000/svg" height="1em"
+                            viewBox="0 0 512 512" fill="black">
                             <path
                                 d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
                         </svg></button>
-                    <div class="d-flex align-items-center ms-4">
+                </div>
+            </form>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link ms-2 text-nowrap" aria-current="page" href="/product/post" style="color: #ADFF45;" onclick="window.loadingOn()">Sell
+                        Now</a>
+                </li>
+            </ul>
 
-                        <a id="sell-link" href="/product/post">Sell Now</a>
-                    </div>
-                </form>
-            </div>
-
-            <% if(username){%>
-                <% if (isAdmin) { %>
-                    
-                    <div class="" style="margin-right: -18rem;">
-
-                        <a href="/logout" class="on-click-btn btn btn-success log-in fs-6" onclick="window.loadingSliderOn()">Log Out</a>
-                        <a type="button" class="btn btn-success mx-1 sign-up text-black" href="/adminpanel" onclick="window.loadingSliderOn()">Admin Panel<a/>
-                        </div>
+            <% if (username) { %>
+                <% if(isAdmin){ %>
+                    <button navLink="/logout" class="on-click-btn log-in me-2 fs-6 p-2 py-1  text-nowrap ms-auto  h-50 bg-danger text-white border border-secondary" onclick="window.loadingOn()">LOG
+                        OUT</button>
+                    <button class=" sign-up-btn on-click-btn fs-6  py-1 px-1 text-nowrap h-50 "
+                        style="max-width:8rem;" navLink="/adminpanel" onclick="window.loadingOn()">ADMIN PANEL</button>
                     <% }else{ %>
-                        <button class="on-click-btn chat-nav" navLink="/chats">
 
-                          
-                              <svg style="width: 2rem; height:2rem; id="chat-btn-svg" class="mt-1"xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" class="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
-                              </svg>
-                              
+                        <div class="btn-group profile-dropdown ms-auto me-4" style="border: 1px solid #ADFF45;border-radius: 0px;">
+    
+                        <button class="on-click-btn chat-nav border-end " navLink="/chats" style="background-color: #ADFF45;">
+
+
+                            <svg style="width: 1.75rem; height:1.75rem;" id="chat-btn-svg" class="mx-1"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.25"
+                                stroke="#000000" >
+                                <path stroke-linecap="round" stroke-linejoin="round" 
+                                    d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+                            </svg>
+
 
                             <!-- <svg style="width: 2rem; height:2rem; margin-left:300%" id="chat-btn-svg" class="mt-1"
                                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -55,112 +65,98 @@
 
 
                         </button>
-                        <div class="btn-group profile-dropdown me-4">
-                            <button style="z-index: 9999;" type="button"
-                                class="btn btn-secondary dropdown-toggle btn-green-default profile-btn"
-                                data-bs-toggle="dropdown" aria-expanded="false" >
-                                Profile
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end p-0" style="width: 15rem; z-index: 9000;" onclick="window.loadingSliderOn()">
-                                <li>
-                                    <div class="d-flex align-items-center justify-content-center fw-bold"
-                                        style="width: 100%; height: 4rem;">
-                                        <h5 class="m-0 p-0">
-                                            <%= username %>
-                                        </h5>
-                                    </div>
-                                </li>
-                                <hr class="p-0 m-0">
-                                <li style="height: 3rem;" ><a
-                                        class="h-100 dropdown-item profile-item d-flex align-items-center  fs-5 fw-bold"
-                                        href=" /profile?nav=listings">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" style="width: 2rem; height:2rem;">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        </svg>
 
-                                        <h6 class="m-0 ms-4 me-4 fw-bold p-0">Profile</h6>
-                                    </a>
-                                </li>
-                                <li style="height: 3rem;"><a
-                                        class="h-100 dropdown-item profile-item d-flex align-items-center  fs-5 fw-bold"
-                                        href=" /wallet">
-                                        <svg style="width: 2rem; height:2rem;" xmlns="http://www.w3.org/2000/svg"
-                                            fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                            class="w-6 h-6">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
-                                        </svg>
+                                <button  type="button"
+                                    class="btn btn-secondary dropdown-toggle btn-green-default profile-btn"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    Profile
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end p-0" style="width: 15rem; z-index: 9000;"
+                                    onclick="window.loadingSliderOn()">
+                                    <li>
+                                        <div class="d-flex align-items-center justify-content-center fw-bold"
+                                            style="width: 100%; height: 4rem;">
+                                            <h5 class="m-0 p-0">
+                                                <%= username %>
+                                            </h5>
+                                        </div>
+                                    </li>
+                                    <hr class="p-0 m-0">
+                                    <li style="height: 3rem;"><a
+                                            class="h-100 dropdown-item profile-item d-flex align-items-center  fs-5 fw-bold"
+                                            href=" /profile?nav=listings">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor"
+                                                style="width: 2rem; height:2rem;">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            </svg>
+
+                                            <h6 class="m-0 ms-4 me-4 fw-bold p-0">Profile</h6>
+                                        </a>
+                                    </li>
+                                    <li style="height: 3rem;"><a
+                                            class="h-100 dropdown-item profile-item d-flex align-items-center  fs-5 fw-bold"
+                                            href=" /wallet">
+                                            <svg style="width: 2rem; height:2rem;"
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3" />
+                                            </svg>
 
 
-                                        <h6 class="m-0 ms-4 me-4 fw-bold p-0">Wallet</h6>
-                                    </a>
-                                </li>
-                                <li style="height: 3rem;"><a
-                                        class="h-100 dropdown-item profile-item d-flex align-items-center  fs-5 fw-bold"
-                                        href=" /transactions">
-                                        <svg style="width: 2rem; height:2rem;" height="24" viewBox="0 0 24 24"
-                                            width="24" xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                d="m17.0020048 13c.5522847 0 1 .4477153 1 1 0 .5128358-.3860402.9355072-.8833789.9932723l-.1166211.0067277h-11.58500005l3.29210679 3.2928932c.36048396.360484.38821349.927715.0831886 1.3200062l-.0831886.0942074c-.36048397.3604839-.92771502.3882135-1.32000623.0831886l-.09420734-.0831886-5-5c-.60257508-.6025751-.2205609-1.6142876.59347584-1.7011235l.11363094-.0059833zm-.3891054-8.79029539.0942074.08318861 5 5c.6025751.60257508.2205609 1.61428758-.5934759 1.70112348l-.1136309.0059833h-14c-.55228475 0-1-.4477153-1-1 0-.51283584.38604019-.93550716.88337887-.99327227l.11662113-.00672773h11.585l-3.2921068-3.29289322c-.3604839-.36048396-.3882135-.92771502-.0831886-1.32000622l.0831886-.09420734c.360484-.36048396.927715-.3882135 1.3200062-.08318861z" />
-                                        </svg>
+                                            <h6 class="m-0 ms-4 me-4 fw-bold p-0">Wallet</h6>
+                                        </a>
+                                    </li>
+                                    <li style="height: 3rem;"><a
+                                            class="h-100 dropdown-item profile-item d-flex align-items-center  fs-5 fw-bold"
+                                            href=" /transactions">
+                                            <svg style="width: 2rem; height:2rem;" height="24" viewBox="0 0 24 24"
+                                                width="24" xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="m17.0020048 13c.5522847 0 1 .4477153 1 1 0 .5128358-.3860402.9355072-.8833789.9932723l-.1166211.0067277h-11.58500005l3.29210679 3.2928932c.36048396.360484.38821349.927715.0831886 1.3200062l-.0831886.0942074c-.36048397.3604839-.92771502.3882135-1.32000623.0831886l-.09420734-.0831886-5-5c-.60257508-.6025751-.2205609-1.6142876.59347584-1.7011235l.11363094-.0059833zm-.3891054-8.79029539.0942074.08318861 5 5c.6025751.60257508.2205609 1.61428758-.5934759 1.70112348l-.1136309.0059833h-14c-.55228475 0-1-.4477153-1-1 0-.51283584.38604019-.93550716.88337887-.99327227l.11662113-.00672773h11.585l-3.2921068-3.29289322c-.3604839-.36048396-.3882135-.92771502-.0831886-1.32000622l.0831886-.09420734c.360484-.36048396.927715-.3882135 1.3200062-.08318861z" />
+                                            </svg>
 
-                                        <h6 class="m-0 ms-4 me-4 fw-bold p-0">Transactions</h6>
-                                    </a>
-                                </li>
-                                <!-- <li style="height: 3rem;"><a
-                                        class="h-100 dropdown-item profile-item d-flex align-items-center  fs-5 fw-bold"
-                                        href=" #">
-                                        <svg style="width: 2rem; height:2rem;" xmlns="http://www.w3.org/2000/svg"
-                                            fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                            class="w-6 h-6">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
-                                        </svg>
+                                            <h6 class="m-0 ms-4 me-4 fw-bold p-0">Transactions</h6>
+                                        </a>
+                                    </li>
+                                
 
-                                        <h6 class="m-0 ms-4 me-4 fw-bold p-0">Wishlist</h6>
-                                    </a></li> -->
+                                    <hr class="m-0 p-0">
+                                    <li style="height: 3.5rem;"><a
+                                            class="h-100 dropdown-item profile-item log-out-href d-flex align-items-center  fs-5 fw-bold"
+                                            href=" /logout">
+                                            <svg style="width: 2rem; height:2rem; margin-left:1px"
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                                            </svg>
 
-                                <hr class="m-0 p-0">
-                                <li style="height: 3.5rem;"><a
-                                        class="h-100 dropdown-item profile-item log-out-href d-flex align-items-center  fs-5 fw-bold"
-                                        href=" /logout">
-                                        <svg style="width: 2rem; height:2rem; margin-left:1px"
-                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
-                                        </svg>
-
-                                        <h6 class="m-0 ms-4 me-4 fw-bold p-0">Logout</h6>
-                                    </a>
-                                </li>
-                                <% } %>
-                            </ul>
-                        </div>
-                        <% } else { %>
-                            <div class="d-flex justify-content-end justify-self-end "
-                                style="width: 15rem; margin-right: -25rem;">
-
-                                <a type="button" class="btn btn-outline-success log-in fs-6" href="/login" onclick="window.loadingSliderOn()">LOG IN</a>
-                                <a type="button" class="btn btn-success mx-1 sign-up text-black" href="/signup" onclick="window.loadingSliderOn()">SIGN
-                                    UP<a />
+                                            <h6 class="m-0 ms-4 me-4 fw-bold p-0">Logout</h6>
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
 
-
                             <% } %>
+                            <% }else{ %>
 
-
-
+                                <button
+                                    class="on-click-btn log-in me-2 fs-6 p-2 py-1  text-nowrap ms-auto  h-50 " navLink="/login" onclick="window.loadingOn()">LOG
+                                    IN</button>
+                                <button class=" sign-up-btn on-click-btn fs-6  py-1 px-1 text-nowrap h-50 "
+                                    style="max-width:6rem;" navLink="/signup" onclick="window.loadingOn()">SIGN UP</button>
+                                <% } %>
         </div>
     </div>
 </nav>
 
 
+
 <div class="loading-track w-100 hide" id="loading-slider" style="height: 0.25rem;">
-<div class="loading-thumb h-75 "></div>
+    <div class="loading-thumb h-75 "></div>
 </div>
 
 <div id="loading-overlay" class="hide"></div>
-

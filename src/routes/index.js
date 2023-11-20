@@ -30,6 +30,10 @@ const {renderSearch, renderLanding, getWishlist } = require('../controllers/prod
 
 router.get('/', renderLanding)
 
+router.get('/elon',(req,res)=>{
+    res.render('elonma',{title:'elon'})
+})
+
 
 router.get('/login', (req, res) => {
     if (req.session.userID) res.redirect('/');

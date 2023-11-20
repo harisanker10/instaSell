@@ -2,9 +2,8 @@
 let locationInitialVal = '';
 document.addEventListener('DOMContentLoaded', async () => {
 
-    const locationBtn = document.querySelector('#location-btn');
-
-    locationBtn.addEventListener('blur', (event) => {
+    const setLocation = (event)=>{
+         
         window.loadingOn();
         const name = event.target.value;
         if(name.trim() === ''){
@@ -40,7 +39,21 @@ document.addEventListener('DOMContentLoaded', async () => {
                 locationBtn.value = '';
                 window.notify("Try a different location")
             })
+    }
 
+    const locationBtn = document.querySelector('#location-btn');
+
+    locationBtn.addEventListener('blur', (event) => {
+       
+        setLocation(event);
+
+
+    })
+    locationBtn.addEventListener('keypress', (event) => {
+        if(event.key === 'Enter'){
+            event.preventDefault()
+            setLocation(event);
+        }
 
 
     })

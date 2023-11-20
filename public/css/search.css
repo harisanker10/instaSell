@@ -102,7 +102,7 @@ a {
 }
 
 .side-nav {
-  height: calc(100vh - 56px);
+  min-height: calc(100vh - 56px);
   position: sticky;
   top: 56px;
   width: 18vw;
