@@ -4,40 +4,40 @@ try {
   const userID = datas.getAttribute("userId");
   const wishlist = datas.getAttribute("wishlist");
   const categoryLi = document.querySelectorAll("strong");
-  
+
   const subCats = document.querySelectorAll(".subCat-filter");
-  
+
   const sortBtns = document.querySelectorAll(".sort-buttons");
-  
+
   const minPriceInput = document.querySelector('#price-min-input')
   const maxPriceInput = document.querySelector('#price-max-input')
-  
+
   const prevBtn = document.querySelector('.previous-btn');
   const homeBtn = document.querySelector('.home-btn');
   const nextBtn = document.querySelector('.next-btn');
-  
-  
-  
+
+
+
   const state = {};
   state.page = 0;
-  
+
   let locationDetails = localStorage.getItem("locationDetails");
-  console.log(locationDetails?.lat);
-  
+
   if (locationDetails) {
     console.log(locationDetails?.lon);
     locationDetails = JSON.parse(locationDetails);
+    state.lat = locationDetails.lat;
+    state.lon = locationDetails.lon;
   } else {
-    window.notify("Can't get current location", 8000);
-    window.location.reload();
+    window.notify("Can't get current location. Add your location for better results", 'persist');
+    // window.location.reload();
   }
-  
-  state.lat = locationDetails.lat;
-  state.lon = locationDetails.lon;
-  
+
+
+
   const url = new URL(window.location.href)
   state.search = url.searchParams.get('search')
-  
+
   sortBtns.forEach((btn) => {
     btn.addEventListener("click", (event) => {
       state.sort = btn.getAttribute("sort");
@@ -47,9 +47,9 @@ try {
       fetchProducts();
     });
   });
-  
+
   sortBtns[0].click();
-  
+
   subCats.forEach((scat) => {
     scat.addEventListener("mouseover", () => {
       scat.classList.add("text-primary");
@@ -57,14 +57,14 @@ try {
     scat.addEventListener("mouseout", () => {
       scat.classList.remove("text-primary");
     });
-  
+
     scat.addEventListener("click", () => {
       subCats.forEach((scat) => scat.classList.remove("text-highlight"));
       categoryLi.forEach((cat) => cat.classList.remove("text-highlight"));
       scat.classList.add("text-highlight");
-  
+
       const parent = scat.closest(".category-container");
-  
+
       const categoryName = parent.querySelector(".category-name");
       categoryName.classList.add("text-highlight");
       const category = categoryName.getAttribute("catId");
@@ -72,11 +72,11 @@ try {
       state.category = category;
       state.search = "";
       state.subCategory = scat.getAttribute("subCatId");
-  
+
       fetchProducts();
     });
   });
-  
+
   categoryLi.forEach((cat) => {
     cat.addEventListener("mouseover", () => {
       cat.classList.add("text-primary");
@@ -84,7 +84,7 @@ try {
     cat.addEventListener("mouseout", () => {
       cat.classList.remove("text-primary");
     });
-  
+
     cat.addEventListener("click", () => {
       subCats.forEach((item) => item.classList.remove("text-highlight"));
       categoryLi.forEach((cat) => cat.classList.remove("text-highlight"));
@@ -95,7 +95,7 @@ try {
       fetchProducts();
     });
   });
-  
+
   const gridTemplate = `
   <% products.forEach(elt=> { %>
   
@@ -150,15 +150,15 @@ try {
     <% }) %>
   
     `;
-  
-  
-  
-  
+
+
+
+
   function fetchProducts() {
     window.loadingOn();
-      let url = `/search?`;
+    let url = `/search?`;
     console.log("state", state);
-  
+
     for (let key in state) {
       url += `${key}=${state[key] ? state[key] : ""}&`;
     }
@@ -170,7 +170,7 @@ try {
       })
       .then((res) => {
         console.log(res);
-  
+
         const html = ejs.render(gridTemplate, {
           products: res,
           userID: userID,
@@ -182,15 +182,15 @@ try {
       })
       .catch((err) => console.log(err));
   }
-  
-  
-  
+
+
+
   const main = () => {
     const cards = document.querySelectorAll(".product-card");
-  
+
     cards.forEach((card) => {
       const wishlistBtn = card.querySelector(".wishlist-btn");
-  
+
       if (wishlistBtn) {
         wishlistBtn.addEventListener("click", (event) => {
           event.stopImmediatePropagation();
@@ -226,25 +226,37 @@ try {
     });
   };
   main();
-  
+
   const locationMaxInput = document.querySelector("#location-max-input");
   const locationSlider = document.querySelector("#customRange1");
-  
+
   locationSlider.addEventListener("mouseup", (event) => {
+    if (!locationDetails) {
+      window.notify("Add location", 5000);
+      return;
+    }
     console.log(event.target.value);
     state.distance = event.target.value;
     fetchProducts();
   });
   locationSlider.addEventListener("input", (event) => {
+    if (!locationDetails) {
+      window.notify("Add location", 5000);
+      return;
+    }
     locationMaxInput.value = event.target.value;
   });
-  
+
   locationMaxInput.addEventListener("blur", (event) => {
+    if (!locationDetails) {
+      window.notify("Add location", 5000);
+      return;
+    }
     locationSlider.value = event.target.value;
     state.distance = event.target.value;
     fetchProducts();
   });
-  
+
   minPriceInput.addEventListener('blur', () => {
     if (!maxPriceInput.value) return;
     state.minPrice = minPriceInput.value;
@@ -257,28 +269,29 @@ try {
     state.maxPrice = maxPriceInput.value;
     fetchProducts();
   })
-  
+
   homeBtn.addEventListener('click', () => {
     state.page = 0;
     fetchProducts();
-    window.scroll({top:0,behavior:'smooth'}) 
+    window.scroll({ top: 0, behavior: 'smooth' })
   })
   nextBtn.addEventListener('click', () => {
     state.page += 1;
     fetchProducts();
-    window.scroll({top:0,behavior:'smooth'}) 
+    window.scroll({ top: 0, behavior: 'smooth' })
   })
   prevBtn.addEventListener('click', () => {
     state.page -= 1;
     fetchProducts();
-    window.scroll({top:0,behavior:'smooth'}) 
+    window.scroll({ top: 0, behavior: 'smooth' })
   })
-  
-  
-  console.log('state::::::::::::::::::::',state);
+
+
+  console.log('state::::::::::::::::::::', state);
   console.log(locationDetails);
   console.log('search param:::', url.searchParams.get('search'));
-  
-}catch(err){
+
+} catch (err) {
   console.log(err);
+  window.location.href = '/';
 }
