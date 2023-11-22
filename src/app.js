@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http'); 
 const {webhook} = require('./controllers/productController.js');
 
+
 const path = require('path');
 const bodyParser = require('body-parser');
 
@@ -11,6 +12,10 @@ const server = http.createServer(app);
 const errorHandler = require('./middleware/errorHandler')
 const sessionMiddleware = require('./middleware/sessionMiddleware.js')
 const localsSet = require('./middleware/localsSetup.js');
+const {connect} = require('../config/development/connection.js')
+connect();
+
+
 
 app.use(sessionMiddleware);
 
