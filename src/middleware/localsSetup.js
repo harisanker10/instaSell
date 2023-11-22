@@ -1,4 +1,5 @@
 
+require('dotenv').config();
 
 const localsSet = (req, res, next) => {
     if (req.session.isAdmin) res.locals.isAdmin = true;
@@ -10,6 +11,10 @@ const localsSet = (req, res, next) => {
         res.locals.username = null;
         res.locals.userID = null;
     }
+
+    res.locals.SERVER_URL = process.env.SERVER_URL;
+
+
     next();
 };
 
