@@ -327,6 +327,7 @@ const renderSearch = asyncHandler(async (req, res) => {
   if (distance) {
     if (!lat || !lon)
       throw new Error(`notify=Add location&redirect=/search?search=`);
+
     products = products.filter((item) => {
       if (item.location.lat) {
         const res = isInRadius(
