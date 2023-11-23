@@ -40,6 +40,7 @@ try {
 
   sortBtns.forEach((btn) => {
     btn.addEventListener("click", (event) => {
+      state.page = 0;
       state.sort = btn.getAttribute("sort");
       event.preventDefault();
       sortBtns.forEach((btn) => btn.classList.remove("sort-selected"));
@@ -59,6 +60,7 @@ try {
     });
 
     scat.addEventListener("click", () => {
+      state.page = 0;
       subCats.forEach((scat) => scat.classList.remove("text-highlight"));
       categoryLi.forEach((cat) => cat.classList.remove("text-highlight"));
       scat.classList.add("text-highlight");
@@ -86,6 +88,7 @@ try {
     });
 
     cat.addEventListener("click", () => {
+      state.page = 0;
       subCats.forEach((item) => item.classList.remove("text-highlight"));
       categoryLi.forEach((cat) => cat.classList.remove("text-highlight"));
       cat.classList.add("text-highlight");
@@ -171,6 +174,20 @@ try {
       .then((res) => {
         console.log(res);
 
+        if(state.page === 0){
+          prevBtn.classList.add('hide');
+          nextBtn.classList.remove('hide')
+        }
+        if(state.page > 0)prevBtn.classList.remove('hide');
+        if(res.length === 0 ){
+          window.loadingOff();
+          window.notify("End of Products");
+          nextBtn.classList.add('hide');
+          cardsContainer.innerHTML = `<div></div><h4 class="w-100 text-center">No products to display</h4>`
+          return;
+        }
+
+
         const html = ejs.render(gridTemplate, {
           products: res,
           userID: userID,
@@ -231,6 +248,7 @@ try {
   const locationSlider = document.querySelector("#customRange1");
 
   locationSlider.addEventListener("mouseup", (event) => {
+    state.page = 0;
     if (!locationDetails) {
       window.notify("Add location", 5000);
       return;
@@ -240,6 +258,7 @@ try {
     fetchProducts();
   });
   locationSlider.addEventListener("input", (event) => {
+    
     if (!locationDetails) {
       window.notify("Add location", 5000);
       return;
@@ -248,6 +267,7 @@ try {
   });
 
   locationMaxInput.addEventListener("blur", (event) => {
+    state.page = 0;
     if (!locationDetails) {
       window.notify("Add location", 5000);
       return;
@@ -258,12 +278,14 @@ try {
   });
 
   minPriceInput.addEventListener('blur', () => {
+    state.page = 0;
     if (!maxPriceInput.value) return;
     state.minPrice = minPriceInput.value;
     state.maxPrice = maxPriceInput.value;
     fetchProducts();
   })
   maxPriceInput.addEventListener('blur', () => {
+    state.page = 0;
     if (!minPriceInput.value) return;
     state.minPrice = minPriceInput.value;
     state.maxPrice = maxPriceInput.value;
@@ -271,16 +293,21 @@ try {
   })
 
   homeBtn.addEventListener('click', () => {
+    // prevBtn.classList.add('hide');
+    // nextBtn.classList.remove('hide');
     state.page = 0;
     fetchProducts();
     window.scroll({ top: 0, behavior: 'smooth' })
   })
   nextBtn.addEventListener('click', () => {
+    // prevBtn.classList.remove('hide')
     state.page += 1;
     fetchProducts();
     window.scroll({ top: 0, behavior: 'smooth' })
   })
   prevBtn.addEventListener('click', () => {
+    console.log('page state',state.page)
+    nextBtn.classList.remove('hide')
     state.page -= 1;
     fetchProducts();
     window.scroll({ top: 0, behavior: 'smooth' })
