@@ -53,10 +53,13 @@
             <div class="container main-container my-4">
 
                 <% if (order) { %>
-
-                    <button class="on-click-btn p-1 px-2 m-3 outline-black-btn"
+                
+                    <% if (courier?.status==='delivered') { %>
+                        
+                        <button class="on-click-btn p-1 px-2 m-3 outline-black-btn"
                         navLink="/product/order/download?productID=<%=order.productID._id%>&type=seller">Download Order
                         Invoice</button>
+                        <% } %>
                     <% if (!courier) { %>
                         <div class="courier-container w-75 mb-4" style="">
                             <div class="header" style="background-color: red;">Courier Details</div>
