@@ -1,3 +1,3 @@
 Install locally:
-NPM install
-NPM start
+npm install
+npm start
